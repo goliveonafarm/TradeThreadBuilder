@@ -5,12 +5,27 @@ class AttributeName {
         this._attrNickName = attrName;
         AttributeName.attrArray.push(this);
     }
+    static resetNickNames(){
+        AttributeName.attrArray.forEach(element => {
+            element._attrNickName = element._attrName;
+        });
+    }
+    static setAttrNickName(index, string){
+        AttributeName.attrArray[index]._attrNickName = string;
+    }
 }
 
-class Attribute {
-    constructor(attributeName, attrFloorMinVal, attrFloorMaxVal) {
+class BasicAttribute {
+    constructor(attributeName, attrFloorMinVal){
         this._attributeName = attributeName;
         this._attrFloorMinVal = attrFloorMinVal;
+    }
+}
+
+class Attribute extends BasicAttribute{
+    constructor(attributeName, attrFloorMinVal, attrFloorMaxVal) {
+        super(attributeName, attrFloorMinVal)
+
         this._attrFloorMaxVal = attrFloorMaxVal;
         this._attrFloorActVal = attrFloorMaxVal;
     }
