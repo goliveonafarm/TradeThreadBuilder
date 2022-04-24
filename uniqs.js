@@ -92,10 +92,12 @@ class Armor extends Base {
 }
 
 class Item {
-    constructor(base, ed, arr) {
+    constructor(base, arr) {
         this._base = Object.assign({}, base);
-        this._base._ed = ed;
         this._arr = arr;
+    }
+    deleteAttribute(index){
+        this._arr.splice(index, 1);
     }
 }
 
@@ -104,6 +106,7 @@ class Unique extends Item {
     constructor(base, name, ed, arr) {
         super(base, ed, arr)
         this._name = name;
+        this._base._ed = ed;
         Unique.uniqueArr.push(this);
     }
 }
@@ -143,8 +146,8 @@ const IAS = new AttributeName('Increased Attack Speed')
 const DmgReduce = new AttributeName('Damage Reduced by');
 const MageDmgReduce = new AttributeName('Magic Damage Reduced by');
 const RunWalk = new AttributeName('Faster Run/Walk %');
-const LifeSteal = new AttributeName('Life Stoeln per Hit %');
-const ManaSteal = new AttributeName('Mana Stoeln per Hit %');
+const LifeSteal = new AttributeName('Life Stolen per Hit %');
+const ManaSteal = new AttributeName('Mana Stolen per Hit %');
 const ReplLife = new AttributeName('Replenish Life');
 const Dex = new AttributeName('Dexterity');
 const Energy = new AttributeName('Energy');
@@ -191,5 +194,5 @@ const Soj = new Unique(Ring, 'Stone of the Jordan', null,
 //#endregion
 
 export {
-    AttributeName, Base, Unique
+    AttributeName, BasicAttribute, Base, Item, Unique
 }

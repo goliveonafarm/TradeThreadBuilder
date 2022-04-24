@@ -17,24 +17,54 @@
     <div class="container-xl bg-success pb-1">
         <div class="row">
             <div class="col-1">
-                <img src="questionIcon.png" class="img-fluid w-25" data-toggle="tooltip"
-                    title="Changing these values will update your trade thread in real time. Most buttons will have hover tooltips">
+                <img src="FontIcons/questionIcon.png" class="img-fluid w-50 rounded-circle" id="questionMarkToolTip">
+            </div>
+            <div class="col-11 toolTipClass" style="display:none;">
+                You can customize attribute names before or after adding your items to your trade list. Most buttons
+                will have a hover-over tooltip.
             </div>
         </div>
-        <div class="row" style="font-size: 11px;">
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
-        </div>
-        <div class="row">
+        <div class="row p-1">
             <div class="col">
-                <button type="button" class="btn btn-sm btn-warning" id="btnResetAttrNickID" data-toggle="tooltip"
-                title="Resets all attribute names back to the default values">! Reset</button>
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
+                    data-toggle="tooltip"
+                    title="Customizing attribute names will update your trade list in real time">Attribute names
+                    <img src="FontIcons/caretDown.svg">
+                </button>
+            </div>
+        </div>
+        <div class="row collapse" id="attrCollapseID">
+            <div class="col-3 attrColID"> </div>
+            <div class="col-3 attrColID"> </div>
+            <div class="col-3 attrColID"> </div>
+            <div class="col-3 attrColID"> </div>
+            <div class="row">
+                <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-warning" id="btnResetAttrNickID" data-toggle="tooltip"
+                        title="Reset all attribute names to the default values and update your trade thread">! Reset
+                        values</button>
+                </div>
+
+                <div class="col-4 offset-6">
+                    <button type="button" class="btn btn-sm btn-secondary" id="btnSaveAttrNickID" data-toggle="tooltip"
+                        title="Save your attribute names to local data to retrieve any time">Save attributes</button>
+
+                    <button type="button" class="btn btn-sm btn-secondary" id="btnLoadAttrNickID" data-toggle="tooltip"
+                        title="Load any attributes you saved">Load attributes</button>
+                </div>
+
             </div>
         </div>
     </div>
     <button type="button" class="btn btn-sm btn-warning" id="testID">!test</button>
+    <div class="container-xl bg-success pb-1">
+        <div class="row">
+            <div class="col-12">
+                <textarea class="w-100" rows="10" id="tradeThreadTextAreaID"></textarea>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
