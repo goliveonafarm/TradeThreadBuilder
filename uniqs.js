@@ -1,53 +1,86 @@
-class AttributeName {
+//#region attributename class
+
+export class AttributeName {
     static attrArray = []
     constructor(attrName) {
         this._attrName = attrName;
         this._attrNickName = attrName;
         AttributeName.attrArray.push(this);
     }
-    static resetNickNames(){
-        AttributeName.attrArray.forEach(element => {
+    static resetNickNames() {
+        this.attrArray.forEach(element => {
             element._attrNickName = element._attrName;
         });
     }
-    static setAttrNickName(index, string){
-        AttributeName.attrArray[index]._attrNickName = string;
+    static setAttrNickName(index, string) {
+        this.attrArray[index]._attrNickName = string;
     }
+    static updateValues(newAttributeArray){
+        AttributeName.attrArray.forEach(element=>{
+            let index = AttributeName.attrArray.indexOf(element);
+            element._attrNickName = newAttributeArray[index]._attrNickName;
+        })
+        console.log("updateValues() successful");
+    }
+    get attrNickName() { return this._attrNickName; }
+    set attrNickName(newNick) { this._attrNickName = newNick; }
+    get attrName() { return this._attrName; }
 }
-
-class BasicAttribute {
-    constructor(attributeName, attrFloorMinVal){
+//#endregion
+//#region Attribute class
+export class BasicAttribute {
+    constructor(attributeName, attrFloorMaxVal) {
         this._attributeName = attributeName;
-        this._attrFloorMinVal = attrFloorMinVal;
-    }
-}
-
-class Attribute extends BasicAttribute{
-    constructor(attributeName, attrFloorMinVal, attrFloorMaxVal) {
-        super(attributeName, attrFloorMinVal)
-
-        this._attrFloorMaxVal = attrFloorMaxVal;
         this._attrFloorActVal = attrFloorMaxVal;
+        this._attrType = 'basic'
     }
+    get attributeName() { return this._attributeName; }
+    set attributeName(attributeName) { this._attributeName = attributeName; }
+    get attrFloorActVal() { return this._attrFloorActVal }
+    set attrFloorActVal(newVal) { this._attrFloorActVal = newVal }
 }
 
-class SkillAttribute extends Attribute {
-    constructor(attributeName, classOrTreeNam, attrFloorMinVal, attrFloorMaxVal) {
+export class Attribute extends BasicAttribute {
+    constructor(attributeName, attrFloorMinVal, attrFloorMaxVal) {
+        super(attributeName, attrFloorMaxVal)
+        this._attrFloorMinVal = attrFloorMinVal;
+        this._attrFloorMaxVal = attrFloorMaxVal;
+        this._attrType = 'attribute'
+    }
+    get attrFloorMin() { return this._attrFloorMinVal }
+    set attrFloorMin(newVal) { this._attrFloorMinVal = newVal }
+    get attrFloorMaxVal() { return this._attrFloorMaxVal };
+    set attrFloorMaxVal(newVal) { this._attrFloorMaxVal = newVal }
+}
+
+export class SkillAttribute extends Attribute {
+    constructor(attributeName, classOrTreeName, attrFloorMinVal, attrFloorMaxVal) {
         super(attributeName, attrFloorMinVal, attrFloorMaxVal)
-        this._classOrTreeName = classOrTreeNam;
+        this._classOrTreeName = classOrTreeName;
+        this._attrType = 'skillAttribute'
     }
+    get classOrTreeName() { return this._classOrTreeName }
+    set classOrTreeName(newVal) { this._classOrTreeName = newVal }
 }
 
-class TwoFieldAttribute extends Attribute {
+export class TwoFieldAttribute extends Attribute {
     constructor(attributeName, attrFloorMinVal, attrFloorMaxVal, attrCeilMinVal, attrCeilMaxVal) {
         super(attributeName, attrFloorMinVal, attrFloorMaxVal)
         this._attrCeilMinVal = attrCeilMinVal;
         this._attrCeilMaxVal = attrCeilMaxVal;
         this._attrCeilActVal = attrCeilMaxVal;
+        this._attrType = 'twoFieldAttribute'
     }
+    get attrCeilMinVal() { return this._attrCeilMinVal }
+    set attrCeilMinVal(newVal) { this._attrCeilMinVal = newVal }
+    get attrCeilMaxVal() { return this._attrCeilMaxVal }
+    set attrCeilMaxVal(newVal) { this._attrCeilMaxVal = newVal }
+    get attrCeilActVal() { return this._attrCeilActVal }
+    set attrCeilActVal(newVal) { this._attrCeilActVal = newVal }
 }
+//#endregion
 
-class Base {
+export class Base {
     static baseArray = [];
     constructor(baseName, itemClass, tier) {
         this._baseName = baseName;
@@ -55,64 +88,107 @@ class Base {
         this._tier = tier;
         this._isEth = false;
         this._ed = null;
+        this._addedDef = 0;
+        this._sockets = 0;
+        this._type = 'Jewelry';
         Base.baseArray.push(this);
     }
-    setEth(boolVal) {
-        this._isEth = boolVal;
-    }
-    setEd(newEd) {
+    get baseName() { return this._baseName; }
+    get itemClass() { return this._itemClass; }
+    set ed(newEd) {
+        if (Object.hasOwn(this, '_defActVal')) this._defActVal = this._maxDef;
         this._ed = newEd;
-        if (Object.hasOwn(this, '_defActVal')) this._defActVal = this._base._baseMaxVal;
     }
+    get ed() { return this._ed; }
+    set isEth(bool) { this._isEth = bool; }
+    get isEth() { return this._isEth; }
 }
 
-class Weapon extends Base {
+export class Weapon extends Base {
     constructor(baseName, itemClass, tier, minDamage, maxDamage) {
         super(baseName, itemClass, tier)
         this._minDamage = minDamage;
         this._maxDamage = maxDamage;
+        this._type = 'Weapon';
     }
+    get minDamage() { return this._minDamage }
+    get maxDamage() { return this._maxDamage }
 }
 
-class Armor extends Base {
+export class Armor extends Base {
     constructor(baseName, itemClass, tier, minDef, maxDef) {
         super(baseName, itemClass, tier)
         this._minDef = minDef;
         this._maxDef = maxDef;
         this._defActVal = maxDef;
+        this._type = 'Armor'
+        this.getDef = function () {
+            let ethMultiplier = this._isEth ? 1.50 : 1.00;
+            if (this._ed === null) return Math.floor(this._defActVal * ethMultiplier);
+            return Math.floor((parseFloat((this._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._ed) * 0.01) + 1));
+        }
     }
-    getDef() {
-        let ethMultiplier = this._isEth ? 1.50 : 1.00;
-        if (this._ed === null) return Math.floor(this._defActVal * ethMultiplier);
-        return Math.floor((parseFloat((this._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._ed) * 0.01) + 1));
-    }
-    setDef(newDef) {
+    set defense(newDef) {
         this._defActVal = newDef;
     }
+    get defense() {
+        let ethMultiplier = this._isEth ? 1.50 : 1.00;
+        if (this._ed === null) {
+            this._defActVal = Math.floor(this._defActVal * ethMultiplier);
+        }
+        else { this._defActVal = Math.floor((parseFloat((this._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._ed) * 0.01) + 1)) };
+        return this._defActVal;
+    }
 }
 
-class Item {
-    constructor(base, arr) {
-        this._base = Object.assign({}, base);
-        this._arr = arr;
+export class Item {
+    constructor(base) {
+        this._base = base;
+        this._arr = [];
+        this._name = base._baseName;
+        this._magicClass = null;
+        this.addAttr = function (attr) {
+            let g = attr._attributeName._attrName;
+            if (g == 'Enhanced Defense %') { this._base._ed = attr._attrFloorActVal }
+            if (g == 'Defense') { this._base._addedDef = attr._attrFloorActVal }
+            this._arr.push(attr)
+            console.log(attr._attributeName._attrNickName)
+        }
     }
-    deleteAttribute(index){
+    deleteAttribute(index) {
         this._arr.splice(index, 1);
     }
+    setEd(newEd) {
+        this._base._ed = newEd;
+    }
+    addAttr(attr) {
+        if (attr._attributeName._attrName == 'Enhanced Defense %') {
+            //this._base.setEd(1);
+            //this._base.setEd(attr._attrFloorActVal);
+        }
+        this._arr.push(attr)
+    }
+    getdefense() {
+        let ethMultiplier = this.base_._isEth ? 1.50 : 1.00;
+        if (this._base._ed === null) return Math.floor(this._base._defActVal * ethMultiplier);
+        let f = Math.floor((parseFloat((this._base._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._base._ed) * 0.01) + 1));
+        console.log(f)
+    }
 }
 
-class Unique extends Item {
+export class Unique extends Item {
     static uniqueArr = [];
-    constructor(base, name, ed, arr) {
-        super(base, ed, arr)
+    constructor(base, name, ed) {
+        super(base)
         this._name = name;
         this._base._ed = ed;
+        this._magicClass = 'unique';
         Unique.uniqueArr.push(this);
     }
 }
 
 //#region attributes
-const Sockets = new AttributeName('Sockets');
+export const Sockets = new AttributeName('Sockets');
 const Ar = new AttributeName('Attack Rating');
 const ArAndED = new AttributeName('Attack Rating - Enhanced Damage');
 const Def = new AttributeName('Defense');
@@ -125,7 +201,8 @@ const ColdRes = new AttributeName('Cold Resist');
 const FireRes = new AttributeName('Fire Resist');
 const LightRes = new AttributeName('Lightning Resist');
 const PsnRes = new AttributeName('Poison Resist');
-const EnnhancedDmg = new AttributeName('Enhanced Damage %')
+const EnnhancedDmg = new AttributeName('Enhanced Damage %');
+const EnnhancedDef = new AttributeName('Enhanced Defense %')
 const MaxDmg = new AttributeName('Maximum Damage');
 const MinDmg = new AttributeName('Minimum Damage');
 const StackSize = new AttributeName('Quantity');
@@ -164,35 +241,25 @@ const AttackerTakesDmg = new AttributeName('Attacker Takes Damage of');
 const Repair = new AttributeName('Repairs 1 duarbility in seconds x');
 const PsnLength = new AttributeName('Poison Length Reduced by %');
 const LevelRequirement = new AttributeName('Level Requirement');
-//#endregion
-//#region  Armors
+
+
 const DuskShroud = new Armor('Dusk Shroud', 'Armor', 'Elite', 361, 467);
-const OrmusRobes = new Unique(DuskShroud, 'Orumus Robes\'', null,
-    [
-        new Attribute(Ar, 10, 15),
-        new Attribute(Ar, 10, 15),
-        new TwoFieldAttribute(ArAndED, 10, 20, 300, 200),
-        new SkillAttribute(ClassSkills, 'Druid', 1, 2)
-    ]);
+const OrmusRobes = new Unique(DuskShroud, 'Ormus\' Robes', null);
+OrmusRobes.addAttr(new Attribute(Sockets, 0, 1));
+OrmusRobes.addAttr(new Attribute(Ar, 10, 15));
+OrmusRobes.addAttr(new Attribute(Ar, 10, 15));
+OrmusRobes.addAttr(new TwoFieldAttribute(ArAndED, 10, 20, 300, 200));
+OrmusRobes.addAttr(new SkillAttribute(ClassSkills, 'Druid', 1, 2));
+OrmusRobes.addAttr(new Attribute(EnnhancedDef, 11, 21));
+
 const WireFleece = new Armor('Wire Fleece', 'Armor', 'Elite', 364, 470);
-const GladiatorsBane = new Unique(WireFleece, 'The Gladiator\'s Bane', null,
-    [
-        new Attribute(Ar, 10, 20)
-    ]);
+const GladiatorsBane = new Unique(WireFleece, 'The Gladiator\'s Bane', 25);
+GladiatorsBane.addAttr(new Attribute(Ar, 10, 20));
+
 const OrgreAxe = new Weapon('Ogre Axe', 'PoleArm', 'Elite', 28, 145);
-const Bonehew = new Unique(OrgreAxe, 'Bonehew', 320,
-    [
-        new Attribute(Ar, 10, 20)
-    ]);
+const Bonehew = new Unique(OrgreAxe, 'Bonehew', 320);
+Bonehew.addAttr(new Attribute(Ar, 10, 20));
+
 const Ring = new Base('Ring', 'Jewelry', null);
-const Soj = new Unique(Ring, 'Stone of the Jordan', null,
-    [
-        new Attribute(Ar, 10, 20)
-    ]);
-
-
-//#endregion
-
-export {
-    AttributeName, BasicAttribute, Base, Item, Unique
-}
+const Soj = new Unique(Ring, 'Stone of the Jordan', null)
+Soj.addAttr(new Attribute(Ar, 10, 20));

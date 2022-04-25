@@ -42,26 +42,69 @@
             <div class="row">
                 <div class="col-2">
                     <button type="button" class="btn btn-sm btn-warning" id="btnResetAttrNickID" data-toggle="tooltip"
-                        title="Reset all attribute names to the default values and update your trade thread">! Reset
+                        title="Reset attribute names and update your trade list">! Reset
                         values</button>
                 </div>
 
                 <div class="col-4 offset-6">
                     <button type="button" class="btn btn-sm btn-secondary" id="btnSaveAttrNickID" data-toggle="tooltip"
-                        title="Save your attribute names to local data to retrieve any time">Save attributes</button>
+                        title="Save your attribute values to localStorage">Save attributes</button>
 
                     <button type="button" class="btn btn-sm btn-secondary" id="btnLoadAttrNickID" data-toggle="tooltip"
-                        title="Load any attributes you saved">Load attributes</button>
+                        title="Retrieve attribute values from localStorage">Load attributes</button>
                 </div>
 
             </div>
         </div>
     </div>
-    <button type="button" class="btn btn-sm btn-warning" id="testID">!test</button>
+    <button type="button" class="btn btn-sm btn-warning" id="testID1">!test</button>
     <div class="container-xl bg-success pb-1">
+        <div class="row p-1">
+            <div class="col">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
+                    data-toggle="tooltip"
+                    title="Customizing attribute names will update your trade list in real time">Clipboard
+                    <img src="FontIcons/clipboardIcon.svg">
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
+                    data-toggle="tooltip"
+                    title="">Sort
+                    <img src="FontIcons/sortDownIcon.svg">
+                </button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                    title="This will add category names for your trade list (also sorts it)">Categorize
+                </button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                    title="Save your trade list to local storage and retrieve them later">Save
+                    <img src="FontIcons/save2.svg">
+                </button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                    data-toggle="tooltip" title="Load your trade list from local storage">Load
+                    <img src="FontIcons/downloadIcon.svg">
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                    title="This will clear your entire trade list and you will have to load or start over"> ! Clear
+                </button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100" rows="10" id="tradeThreadTextAreaID"></textarea>
+                <textarea class="w-100 text-nowrap" rows="10" id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
     </div>
