@@ -250,16 +250,12 @@ OrmusRobes.addAttr(new Attribute(FireDmg, 10, 15));
 OrmusRobes.addAttr(new Attribute(LightDmg, 10, 15));
 OrmusRobes.addAttr(new Attribute(ManaRegen, 10, 15));
 const WireFleece = new Armor('Wire Fleece', 'Armor', 'Elite', 364, 470);
-const GladiatorsBane = new Unique(WireFleece, 'The Gladiator\'s Bane', 25);
+const GladiatorsBane = new Unique(WireFleece, 'Gladiator\'s Bane', null);
 GladiatorsBane.addAttr(new Attribute(EnhancedDef, 150, 200));
 GladiatorsBane.addAttr(new Attribute(DmgReduce, 15, 20));
 GladiatorsBane.addAttr(new Attribute(MageDmgReduce, 15, 20));
-
-
-
-const OgreAxe = new Weapon('Ogre Axe', 'PoleArm', 'Elite', 28, 145);
-const Bonehew = new Unique(OgreAxe, 'Bonehew', 320);
-
-
-const Ring = new Base('Ring', 'Jewelry', null);
-const Soj = new Unique(Ring, 'Stone of the Jordan', null)
+const BalrogSkin = new Armor('Balrog Skin', 'Armor', 'Elite', 410, 517);
+const ArkainesValor = new Unique(BalrogSkin, 'Arkaine\'s Valor');
+ArkainesValor.addAttr(new Attribute(EnhancedDef, 150, 180));
+ArkainesValor.addAttr(new Attribute(Skills, 1, 2));
+ArkainesValor.addAttr(new Attribute(DmgReduce, 10, 15));

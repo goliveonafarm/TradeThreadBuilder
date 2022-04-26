@@ -253,9 +253,8 @@ function updateTradeList() {
 
         tradeThreadTextArea.value += `${tempString}\n`;
 
-        //infoWindow.innerText = tempString;
-
-    });
+        infoWindow.innerText = tempString;
+});
 }
 
 
@@ -430,8 +429,16 @@ for (const radio of ethRads) {
 }
 
 function updateCurrentItemInfoWindow() {
+    
     infoWindow.innerText = ``;
     let element = currentItem;
+
+    element._arr.forEach(elementOne => {
+        if (elementOne._attributeName._attrName == "% Enhanced Defense") { element._base._ed = elementOne._attrFloorActVal; }
+        if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
+    })
+
+
     let tempString = ``;
     let name = element._name;
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
@@ -439,7 +446,9 @@ function updateCurrentItemInfoWindow() {
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[13]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[12]._attrNickName}`;
     if (element._base._ed == 0) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
+    
 
+    
     tempString += `${name}${isEth}${sockets}${ed}${def}`;
     if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
     //iterate through attribute array
@@ -456,7 +465,11 @@ function updateCurrentItemInfoWindow() {
             }
         }
     })
+    
+
+    console.log('yes we got here')
     infoWindow.innerText = tempString;
+    
 }
 
 sortTradeList();
