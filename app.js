@@ -240,9 +240,7 @@ function updateTradeList() {
         array.forEach(elementTwo => {
             (console.log("element two: ", elementTwo))
             if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
-                tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
                 if (elementTwo._attrType == 'skillAttribute') {
-                    alert('hit')
                     tempString += ` / ${elementTwo._classOrTreeName} ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
                 }
                 if (elementTwo._attrType == 'twoFieldAttribute') {
@@ -505,7 +503,6 @@ function updateCurrentItemInfoWindow() {
     let array = element._arr;
     array.forEach(elementTwo => {
         if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
-            tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` / ${elementTwo._classOrTreeName} ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
             }
