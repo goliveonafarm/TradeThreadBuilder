@@ -13,16 +13,21 @@
     <title>Trade thread builder</title>
 </head>
 
-<body>
+<body class="bg-success bg-gradient">
 
-    <div class="container-xl bg-success pb-1 bg-gradient">
+    <div class="container-xl pt-1 pb-1">
         <div class="row">
             <div class="col-1">
                 <img src="FontIcons/infoCircleIcon.svg" class="img-fluid w-50 rounded-circle" id="questionMarkToolTip">
             </div>
-            <div class="col-11 toolTipClass" style="display:none;">
+            <div class="col toolTipClass" style="display:none;">
                 Customizing attribute names will not change what is already in your trade list. Most buttons
                 have a mouse-over tooltip.
+            </div>
+            <div class="col-10"></div>
+            <div class="col-1">
+                <img id="moonIconID" src="FontIcons/moonIcon.svg">
+                <img id="sunIconID" src="FontIcons/sunIcon.svg">
             </div>
         </div>
         <div class="row p-1">
@@ -35,7 +40,7 @@
                 </button>
             </div>
         </div>
-        <div class="row collapse" id="attrCollapseID">
+        <div class="row collapse " id="attrCollapseID">
             <div class="col-3 attrColID"> </div>
             <div class="col-3 attrColID"> </div>
             <div class="col-3 attrColID"> </div>
@@ -87,8 +92,8 @@
             </div>
         </div>
     </div>
-    <div class="container-xl bg-success bg-gradient pb-1" id="attrAreaID"></div>
-    <div class="container-xl bg-success bg-gradient pb-1">
+    <div class="container-xl  pb-1" id="attrAreaID"></div>
+    <div class="container-xl  pb-1">
         <div class="row">
             <div class="col-auto"><label>Sockets</label>
                 <div class="form-check form-check-inline ">
@@ -162,7 +167,8 @@
                 </button>
             </div>
             <div class="col-10">
-                <label id="lblCurrentItemID">t</label>
+                <label id="lblCurrentItemID"> -- This is the console section and provides information about your
+                    selection -- </label>
             </div>
         </div>
 
