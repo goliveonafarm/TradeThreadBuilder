@@ -15,8 +15,8 @@ export class AttributeName {
     static setAttrNickName(index, string) {
         this.attrArray[index]._attrNickName = string;
     }
-    static updateValues(newAttributeArray){
-        AttributeName.attrArray.forEach(element=>{
+    static updateValues(newAttributeArray) {
+        AttributeName.attrArray.forEach(element => {
             let index = AttributeName.attrArray.indexOf(element);
             element._attrNickName = newAttributeArray[index]._attrNickName;
         })
@@ -162,7 +162,7 @@ export class Item {
     }
     addAttr(attr) {
         if (attr._attributeName._attrName == '% Enhanced Defense') {
-           // this._base._ed = attr._attributeName._attrFloorActVal;
+            // this._base._ed = attr._attributeName._attrFloorActVal;
             alert('hit')
             //this._base.setEd(attr._attrFloorActVal);
         }
@@ -187,20 +187,22 @@ export class Unique extends Item {
 }
 
 //#region attributes
+const EnhancedDef = new AttributeName('% Enhanced Defense');
+const EnhancedDmg = new AttributeName('% Enhanced Damage');
+const Def = new AttributeName('Defense');
 const Ar = new AttributeName('Attack Rating');
 const ArAndED = new AttributeName('Attack Rating - Enhanced Damage');
-const Def = new AttributeName('Defense');
+const DmgDemon = new AttributeName('Damage to Demons %')
+const DefVsMisl = new AttributeName('Defense vs Missiles')
 const ColdDmg = new AttributeName('Cold Damage');
 const FireDmg = new AttributeName('Fire Damage');
 const LightDmg = new AttributeName('Lightning Damage');
 const PsnDmg = new AttributeName('Poison Damage');
-const AllRes = new AttributeName('All Resist');
-const ColdRes = new AttributeName('Cold Resist');
-const FireRes = new AttributeName('Fire Resist');
-const LightRes = new AttributeName('Lightning Resist');
-const PsnRes = new AttributeName('Poison Resist');
-const EnhancedDmg = new AttributeName('% Enhanced Damage');
-const EnhancedDef = new AttributeName('% Enhanced Defense');
+const AllRes = new AttributeName('All Resist %');
+const ColdRes = new AttributeName('Cold Resist %');
+const FireRes = new AttributeName('Fire Resist %');
+const LightRes = new AttributeName('Lightning Resist %');
+const PsnRes = new AttributeName('Poison Resist %');
 const MaxDmg = new AttributeName('Maximum Damage');
 const MinDmg = new AttributeName('Minimum Damage');
 const StackSize = new AttributeName('Quantity');
@@ -230,6 +232,8 @@ const Dex = new AttributeName('Dexterity');
 const Energy = new AttributeName('Energy');
 const Life = new AttributeName('Life');
 const Str = new AttributeName('Strength');
+const Vit = new AttributeName('Vitality')
+const empty = new AttributeName('')
 //#endregion
 //#region useless AttributeNames?
 const HitFlee = new AttributeName('Hit causes Monster to Flee');
@@ -241,6 +245,31 @@ const AttackerTakesDmg = new AttributeName('Attacker Takes Damage of');
 const Repair = new AttributeName('Repairs 1 duarbility in seconds x');
 const PsnLength = new AttributeName('Poison Length Reduced by %');
 const LevelRequirement = new AttributeName('Level Requirement');
+
+const SlayerGuard = new Armor('Slayer Guard', 'Barbarian Helm', 'Exceptional', 93, 120);
+const ArreatsFace = new Unique(SlayerGuard, 'Arreat\s Face', null);
+ArreatsFace.addAttr(new Attribute(EnhancedDef, 150, 200));
+ArreatsFace.addAttr(new Attribute(LifeSteal, 3, 6));
+const FuryVisor = new Armor('Fury Visor', 'Barbarian Helm', 'Elite', 105, 150);
+const Wolfhowl = new Unique(FuryVisor, 'Wolfhowl', null);
+Wolfhowl.addAttr(new Attribute(EnhancedDef, 120, 150));
+Wolfhowl.addAttr(new SkillAttribute(empty, 'Warcries', 2, 3));
+Wolfhowl.addAttr(new SkillAttribute(empty, 'Feral Rage', 3, 6));
+Wolfhowl.addAttr(new SkillAttribute(empty, 'Lycanthropy', 3, 6));
+Wolfhowl.addAttr(new SkillAttribute(empty, 'Werewolf', 3, 6));
+const DestroyerHelm = new Armor('Destroyer Helm', 'Barbarian Helm', 'Elite', 111, 156);
+const DemonhornsEdge = new Unique(DestroyerHelm, 'Demonhorn\'s Edge', null);
+DemonhornsEdge.addAttr(new Attribute(EnhancedDef, 120, 150));
+DemonhornsEdge.addAttr(new Attribute(LifeSteal, 3, 6));
+DemonhornsEdge.addAttr(new Attribute(AttackerTakesDmg, 55, 77));
+DemonhornsEdge.addAttr(new SkillAttribute(empty, 'Warcries', 1, 3));
+DemonhornsEdge.addAttr(new SkillAttribute(empty, 'Combat Masteries', 1, 3));
+DemonhornsEdge.addAttr(new SkillAttribute(empty, 'Combat Skills', 1, 3))
+const ConquerorCrown = new Armor('Conqueror Crown', 'Barbarian Helm', 'Elite', 114, 159);
+const HalaberdsReign = new Unique(ConquerorCrown, 'Halaberd\'s Reign', 0);
+HalaberdsReign.addAttr(new Attribute(ReplLife, 15, 23));
+HalaberdsReign.addAttr(new SkillAttribute(empty, 'Battle Command', 1, 2))
+HalaberdsReign.addAttr(new SkillAttribute(empty, 'Battle Orders', 1, 2))
 
 const DuskShroud = new Armor('Dusk Shroud', 'Armor', 'Elite', 361, 467);
 const OrmusRobes = new Unique(DuskShroud, 'Ormus\' Robes', 0);
@@ -255,7 +284,26 @@ GladiatorsBane.addAttr(new Attribute(EnhancedDef, 150, 200));
 GladiatorsBane.addAttr(new Attribute(DmgReduce, 15, 20));
 GladiatorsBane.addAttr(new Attribute(MageDmgReduce, 15, 20));
 const BalrogSkin = new Armor('Balrog Skin', 'Armor', 'Elite', 410, 517);
-const ArkainesValor = new Unique(BalrogSkin, 'Arkaine\'s Valor');
+const ArkainesValor = new Unique(BalrogSkin, 'Arkaine\'s Valor', null);
 ArkainesValor.addAttr(new Attribute(EnhancedDef, 150, 180));
 ArkainesValor.addAttr(new Attribute(Skills, 1, 2));
 ArkainesValor.addAttr(new Attribute(DmgReduce, 10, 15));
+const ShadowPlate = new Armor('Shadow Plate', 'Armor', 'Elite', 446, 557);
+const SteelCarapace = new Unique(ShadowPlate, 'Steel Carapace', null);
+SteelCarapace.addAttr(new Attribute(EnhancedDef, 190, 220));
+SteelCarapace.addAttr(new Attribute(ManaRegen, 10, 15));
+SteelCarapace.addAttr(new Attribute(ColdRes, 40, 60));
+SteelCarapace.addAttr(new Attribute(DmgReduce, 9, 14));
+const SacredArmor = new Armor('Sacred Armor', 'Armor', 'Elite', 487, 600);
+const TemplarsMight = new Unique(SacredArmor, 'Templar\'s Might', null);
+TemplarsMight.addAttr(new Attribute(EnhancedDef, 170, 220));
+TemplarsMight.addAttr(new Attribute(DefVsMisl, 250, 300));
+TemplarsMight.addAttr(new Attribute(Str, 10, 15));
+TemplarsMight.addAttr(new Attribute(Vit, 10, 15));
+TemplarsMight.addAttr(new Attribute(MaxStam, 40, 50));
+TemplarsMight.addAttr(new SkillAttribute(ClassSkillTree, 'Offensive Auras', 1, 2))
+const TyraelsMight = new Unique(SacredArmor, 'Tyrael\'s Might', null);
+TyraelsMight.addAttr(new Attribute(EnhancedDef, 120, 150));
+TyraelsMight.addAttr(new Attribute(DmgDemon, 50, 100));
+TyraelsMight.addAttr(new Attribute(Str, 20, 30));
+TyraelsMight.addAttr(new Attribute(AllRes, 20, 30));
