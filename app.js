@@ -2,6 +2,39 @@ import * as exports from './uniqs.js';
 Object.entries(exports).forEach(([name, exported]) => window[name] = exported);
 let myListIndex = 0;
 let myTradeItems = [];
+let sortWithCategory = false;
+let deleteFlag = false;
+let chosenMagicClass = null;
+let chosenClass = null;
+let chosenName = null;
+let currentItem = null;
+let infoWindow = document.getElementById('lblCurrentItemID');
+let attributeArea = document.getElementById('attrAreaID');
+
+
+document.querySelectorAll(".returnTypeClass").forEach(item => {
+    item.addEventListener("click", () => {
+        chosenMagicClass = (item.innerText);
+        document.getElementById('returnTypeBtnID').textContent = chosenMagicClass;
+    })
+})
+
+document.getElementById('categBtnID').addEventListener("click", () => {
+    sortWithCategory = true;
+    sortTradeList();
+    sortWithCategory = false;
+    infoWindow.innerText = "Categorized by item class";
+})
+document.getElementById('sortBtnID').addEventListener("click", () => {
+    sortTradeList();
+    infoWindow.innerText = "Sorted trading list"
+});
+document.getElementById('removeBtnID').addEventListener("click", () => {
+    sortTradeList();
+    deleteFlag = true;
+    infoWindow.innerText = `Click on an item in the trade window to remove it`;
+})
+
 
 let questionMarkToolTip = document.getElementById('questionMarkToolTip');
 questionMarkToolTip.addEventListener("mouseover", () => {
@@ -15,17 +48,34 @@ questionMarkToolTip.addEventListener("mouseleave", () => {
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
     const jsonArr = JSON.stringify(AttributeName.attrArray);
     localStorage.setItem("attrArray", jsonArr);
-    console.log(`Saved attribute nicknames`);
+    infoWindow.innerText = "Saved custom attribute names";
+
 });
-document.getElementById('btnLoadAttrNickID').addEventListener('click', loadAttrNickNames);
+document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
+    loadAttrNickNames();
+    infoWindow.innerText = "Loaded custom attribute names";
+});
 
 function loadAttrNickNames() {
     const attrJSONStr = localStorage.getItem("attrArray");
     const parsedAttrArr = JSON.parse(attrJSONStr);
     exports.AttributeName.updateValues(parsedAttrArr);
     setAttrNickNames();
-    console.log(`loadAttrNickNames() successful`);
+
 }
+document.getElementById('saveBtnID').addEventListener('click', () => {
+    const tradeJSONArr = JSON.stringify(myTradeItems);
+    localStorage.setItem("tradeArray", tradeJSONArr);
+    infoWindow.innerText = "Saved trade list";
+
+})
+document.getElementById('loadBtnID').addEventListener('click', () => {
+    const tradeJSONStr = localStorage.getItem("tradeArray");
+    const parsedTradeStr = JSON.parse(tradeJSONStr);
+    myTradeItems = parsedTradeStr;
+    updateTradeList();
+    infoWindow.innerText = "Loaded trade list";
+})
 
 let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
 tradeThreadTextArea.style.resize = "none";
@@ -34,22 +84,37 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
     let myString = document.getElementById('tradeThreadTextAreaID').value.substring(0, selectStart);
     let mySplitArray = myString.split('\n');
     myListIndex = mySplitArray.length - 1;
-    console.log('this number will let you pick a row 0, 1,...nth', myListIndex);
+    if (deleteFlag) {
+        myTradeItems.splice(myListIndex, 1);
+        sortTradeList();
+        infoWindow.innerText = `Item in position ${myListIndex} removed`;
+    }
+})
+document.getElementById('clearBtnID').addEventListener("click", () => {
+    tradeThreadTextArea.value = ``;
+    myTradeItems = [];
+    infoWindow.innerText = "Trade thread deleted. Load or start a new one";
+
+})
+document.getElementById('clipboardBtnID').addEventListener("click", () => {
+    tradeThreadTextArea.select();
+    document.execCommand("copy");
+    infoWindow.innerText = "Copied to clipboard!"
 })
 function updateAttrNickname(index) {
     let _index = index;
     let attrTextAreas = document.querySelector('#attrTextAreaID' + _index).value;
-    AttributeName.setAttrNickName(index, attrTextAreas)
+    exports.AttributeName.setAttrNickName(index, attrTextAreas)
 }
 function resetAttrNickNames() {
-    AttributeName.resetNickNames();
+    exports.AttributeName.resetNickNames();
     setAttrNickNames();
 }
 function setAttrNickNames() {
     let attrHTMLRows = document.querySelectorAll('.attrColID');
     attrHTMLRows.forEach(element => element.innerHTML = ``);
     //Creates the rows, columns, and txtarea for editing attribute nick names
-    AttributeName.attrArray.forEach(element => {
+    exports.AttributeName.attrArray.forEach(element => {
         let index = (exports.AttributeName.attrArray.indexOf(element));
         let row = document.createElement("div");
         row.style.fontSize = "11px"
@@ -90,6 +155,11 @@ function createItem(baseName) {//Base.baseArray[0]
     let Z = JSON.parse(JSON.stringify(base[0]))
     myTradeItems.push(new Item(Z));
 }
+
+document.getElementById('btnAddItemID').addEventListener("click", () => {
+    addUnique(currentItem._name);
+    sortTradeList();
+})
 //1.12 Add copy of unique to trade
 function addUnique(uniqName) {
     let unique = exports.Unique.uniqueArr.filter(function (e) {
@@ -105,7 +175,7 @@ function addUnique(uniqName) {
     Object.assign(G, B, { _base: Z });
     //Object.assign(g, unique);
     myTradeItems.push(G)
-    console.log('Added unique to trade list: ', G, `\nCurrent Trade List:`, myTradeItems)
+    //console.log('Added unique to trade list: ', G, `\nCurrent Trade List:`, myTradeItems)
 }
 
 //1.2 removeItem based on myListIndex (modified by click event in textarea)
@@ -138,74 +208,255 @@ function removeAttribute(index) {
 //2.2test remove from item[0]
 //removeAttribute(0);
 
-//display trade list
-function displayTradeList() {
-    myTradeItems.forEach(element => {
-        //console.log(element);
-
-        if (element instanceof exports.Unique) {
-            //console.log('its unique: ', element, element.constructor.name);
-            // console.log(element._arr);
-        }
-        else if (element._base instanceof exports.Armor) {
-            //console.log('its armor:' , element.constructor.name)
-        }
-        else if (element._base instanceof exports.Weapon) {
-            // console.log('its weapon:' , element.constructor.name, element._base[0].constructor.name)
-        }
-    });
-}
-
-displayTradeList();
 loadAttrNickNames();
-
-addUnique('Ormus\' Robes');
-addUnique('Ormus\' Robes');
-addUnique('Ormus\' Robes');
-addUnique('The Gladiator\'s Bane')
-myTradeItems[3]._base._isEth = true;
-console.log(myTradeItems[3]._base);
-
-createItem('Dusk Shroud')
-document.getElementById(`testID1`).addEventListener("click", updateTradeList);
 
 function updateTradeList() {
     tradeThreadTextArea.value = ``;
+    let lastClassType = null;;
     myTradeItems.forEach(element => {
+        if (sortWithCategory) {
+            if (lastClassType != element._base._itemClass) {
+                if (lastClassType != null) { tradeThreadTextArea.value += `\n` }
+                lastClassType = element._base._itemClass;
+                tradeThreadTextArea.value += `${lastClassType}\n`;
+            }
+        }
+        let array = element._arr;
+        array.forEach(elementOne => {
+            if (elementOne._attributeName._attrName == "% Enhanced Defense") { element._base._ed = elementOne._attrFloorActVal; }
+            if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
+        })
         let tempString = ``;
         let name = element._name;
-        let magicClass = element._magicClass
         let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
         let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
-        let ed = (element._base._ed != null) ? ` / ${element._base._ed}% ed` : ``;
-        let def = ` / ${calcDefHere(element)} def`
-        let array = element._arr;
+        let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[13]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[12]._attrNickName}`;
+        if (element._base._ed == 0) { ed = `` }
+        let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
+
         tempString += `${name}${isEth}${sockets}${ed}${def}`;
         if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
-        array.forEach(element => {
-            tempString += ` / ${element._attributeName._attrNickName} ${element._attrFloorActVal}`;
-            if (element._attrType == 'skillAttribute') {
-                tempString += ` / ${element._classOrTreeName} ${element._attributeName._attrNickName} ${element._attrFloorActVal}`;
-            }
-            if (element._attrType == 'twoFieldAttribute') {
-                tempString += ` / ${element._attributeName._attrNickName} ${element._attrFloorActVal}-${element._attrCeilActVal}`;
+        //iterate through attribute array
+        array.forEach(elementTwo => {
+            (console.log("element two: " ,elementTwo))
+            if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
+                tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
+                if (elementTwo._attrType == 'skillAttribute') {
+                    tempString += ` / ${elementTwo._classOrTreeName} ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
+                }
+                if (elementTwo._attrType == 'twoFieldAttribute') {
+                    tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}-${elementTwo._attrCeilActVal}`;
+                }
             }
         })
-        console.log(tempString)
-        
+
+
         tradeThreadTextArea.value += `${tempString}\n`;
+
+        //infoWindow.innerText = tempString;
+
     });
 }
 
 
 function calcDefHere(element) {
-    let isEth = (element._base._isEth) ? 1.50 : 1.00;
-    let ed = element._base._ed;
-    let def = element._base._defActVal;
-    let addedDef = element._base._addedDef;
+    let ethMultiplier = (element._base._isEth) ? 1.50 : 1.00;
+    let ed = parseFloat(element._base._ed);
+    let def = parseFloat(element._base._defActVal);
+    let addedDef = parseFloat(element._base._addedDef);
     def += addedDef;
-
-    let ethMultiplier = isEth ? 1.50 : 1.00;
+    if(ed != 0){def = def + 1} 
     if (ed === null) return Math.floor(def * ethMultiplier);
-    return Math.floor((parseFloat((def + 1) * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
+    return Math.floor((parseFloat(def  * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
 }
+
+function sortTradeList() {
+    deleteFlag = false;
+    myTradeItems.sort()
+    myTradeItems.sort((a, b) => (a._name > b._name) ? 1 : ((b._name > a._name) ? -1 : 0))
+    if (sortWithCategory) { myTradeItems.sort((a, b) => (a._base._itemClass > b._base._itemClass) ? 1 : ((b._base._itemClass > a._base._itemClass) ? -1 : 0)) }
+    updateTradeList();
+}
+
+const classListArr = exports.Base.baseArray.map(element => {
+    return element._itemClass;
+})
+let classList = [...new Set(classListArr)];
+classList.sort();
+
+classList.forEach(item => {
+    const liItem = document.createElement("li");
+    const liItemTextNode = document.createTextNode(item);
+    liItem.appendChild(liItemTextNode);
+    liItem.classList.add("dropdown-item");
+    liItem.addEventListener("click", function () {
+        chosenClass = item;
+        document.getElementById('btnPushClassListID').textContent = `${item}`;
+        populateItemBtn();
+    })
+    document.getElementById("ulPushClassListID").appendChild(liItem);
+})
+
+function populateItemBtn() {
+    const result = exports.Unique.uniqueArr.filter(function (e) {
+        return e._magicClass == chosenMagicClass;
+    })
+
+    const secondResult = result.filter(function (e) {
+        return e._base._itemClass == chosenClass;
+    })
+    const itemListArr = secondResult.map(element => {
+        return element._name;
+    })
+    let itemList = [...new Set(itemListArr)];
+    itemList.sort();
+    document.getElementById("ulPushPickItemListID").innerHTML = ``;
+    itemList.forEach(item => {
+        const liItem = document.createElement("li");
+        const liItemTextNode = document.createTextNode(item);
+        liItem.appendChild(liItemTextNode);
+        liItem.classList.add("dropdown-item");
+        liItem.addEventListener("click", function () {
+            chosenName = item;
+            document.getElementById('btnPickItemListID').textContent = `${item}`;
+            setEditFields();
+        })
+        document.getElementById("ulPushPickItemListID").appendChild(liItem);
+    })
+}
+
+function setEditFields() {
+    //if unique
+    if (chosenMagicClass == 'Unique') {
+        const uniqListArr = exports.Unique.uniqueArr.map(element => {
+            if (element._name == chosenName) return element;
+        })
+        let uniqList = [...new Set(uniqListArr)];
+
+        attributeArea.innerHTML = ``;
+        let grabInScope = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
+
+        currentItem = grabInScope;
+        updateCurrentItemInfoWindow();
+
+
+        grabInScope._arr.forEach(item => {
+
+            let aa = generateRowForField(item);
+            document.getElementById('attrAreaID').appendChild(aa)
+        })
+
+
+    }
+    //if not unique (magical or base)
+}
+
+let floorActIndexer = 0;
+function generateRowForField(attr) {
+
+    //1.create row
+    const thisRow = document.createElement("div");
+    thisRow.classList.add("row");
+    thisRow.classList.add("removableAttrRowClass");
+    //2.check and create if twofield attribute
+    //f aFMinV aFMaxV aFAV
+    //1.1F
+    const attrNickCol = document.createElement("div");
+    attrNickCol.classList.add("col");
+    const attrNickText = document.createTextNode(`${attr._attributeName._attrNickName}`);
+    attrNickCol.appendChild(attrNickText);
+    thisRow.appendChild(attrNickCol)
+    //1.2 aFinV
+    const attrFloorMinCol = document.createElement("div");
+    attrFloorMinCol.classList.add("col");
+    const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
+    attrFloorMinCol.appendChild(attrFloorMinText);
+    thisRow.appendChild(attrFloorMinCol)
+    //1.3 aFMaxV
+    const attrFloorMaxCol = document.createElement("div");
+    attrFloorMaxCol.classList.add("col");
+    const attrFloormaxCol = document.createTextNode(`${attr._attrFloorMaxVal}`);
+    attrFloorMaxCol.appendChild(attrFloormaxCol);
+    thisRow.appendChild(attrFloorMaxCol)
+    //1.4 aFAV text area
+    const attrFloorActTextArea = document.createElement("textarea");
+    attrFloorActTextArea.classList.add("col-2");
+    attrFloorActTextArea.setAttribute("type", "number");
+    attrFloorActTextArea.setAttribute("rows", 1);
+    attrFloorActTextArea.setAttribute("id", `attrFloorTextAreaID${floorActIndexer}`)
+    attrFloorActTextArea.innerHTML = `${attr._attrFloorActVal}`;
+    attrFloorActTextArea.addEventListener("keyup", (e) => {
+        attr._attrFloorActVal = (e.target.value)
+        updateCurrentItemInfoWindow();
+    })
+    floorActIndexer++;
+    thisRow.appendChild(attrFloorActTextArea)
+
+
+
+    //?. return row
+    return thisRow;
+}
+
+function updateAttr(attr, classID, index) {
+    console.log(attr)
+    let textBoxValue = document.getElementById(`${classID}${index}`);
+    console.log(attr._attrFloorActVal)
+    console.log("textboxvalue:", textBoxValue);
+    attr._attrFloorActVal = textBoxValue.value
+    console.log(attr._attrFloorActVal)
+    updateCurrentItemInfoWindow();
+    console.log(attr)
+}
+
+const sockRads = document.querySelectorAll('.classSocketQuery');
+for (const radio of sockRads) {
+    radio.addEventListener("click", (e) => {
+
+        currentItem._base._sockets = parseInt(e.target.value);
+        updateCurrentItemInfoWindow();
+
+    })
+}
+
+const ethRads = document.querySelectorAll('.classEthQuery');
+for (const radio of ethRads) {
+    radio.addEventListener("click", (e) => {
+
+        currentItem._base._isEth = (e.target.value == 'True');
+        updateCurrentItemInfoWindow();
+
+    })
+}
+
+function updateCurrentItemInfoWindow() {
+    infoWindow.innerText = ``;
+    let element = currentItem;
+    let tempString = ``;
+    let name = element._name;
+    let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
+    let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
+    let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[13]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[12]._attrNickName}`;
+    if (element._base._ed == 0) { ed = `` }
+    let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
+
+    tempString += `${name}${isEth}${sockets}${ed}${def}`;
+    if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
+    //iterate through attribute array
+    let array = element._arr;
+    array.forEach(elementTwo => {
+        console.log(elementTwo)
+        if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
+            tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
+            if (elementTwo._attrType == 'skillAttribute') {
+                tempString += ` / ${elementTwo._classOrTreeName} ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
+            }
+            if (elementTwo._attrType == 'twoFieldAttribute') {
+                tempString += ` / ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}-${elementTwo._attrCeilActVal}`;
+            }
+        }
+    })
+    infoWindow.innerText = tempString;
+}
+
+sortTradeList();

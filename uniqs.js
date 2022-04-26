@@ -143,16 +143,15 @@ export class Armor extends Base {
 
 export class Item {
     constructor(base) {
-        this._base = base;
+        this._base = base; //JSON.parse(JSON.stringify(base));
         this._arr = [];
         this._name = base._baseName;
-        this._magicClass = null;
+        this._magicClass = 'Base';
         this.addAttr = function (attr) {
             let g = attr._attributeName._attrName;
-            if (g == 'Enhanced Defense %') { this._base._ed = attr._attrFloorActVal }
+            if (g == '% Enhanced Defense') { this._base._ed = attr._attrFloorActVal }
             if (g == 'Defense') { this._base._addedDef = attr._attrFloorActVal }
             this._arr.push(attr)
-            console.log(attr._attributeName._attrNickName)
         }
     }
     deleteAttribute(index) {
@@ -162,8 +161,9 @@ export class Item {
         this._base._ed = newEd;
     }
     addAttr(attr) {
-        if (attr._attributeName._attrName == 'Enhanced Defense %') {
-            //this._base.setEd(1);
+        if (attr._attributeName._attrName == '% Enhanced Defense') {
+           // this._base._ed = attr._attributeName._attrFloorActVal;
+            alert('hit')
             //this._base.setEd(attr._attrFloorActVal);
         }
         this._arr.push(attr)
@@ -172,7 +172,6 @@ export class Item {
         let ethMultiplier = this.base_._isEth ? 1.50 : 1.00;
         if (this._base._ed === null) return Math.floor(this._base._defActVal * ethMultiplier);
         let f = Math.floor((parseFloat((this._base._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._base._ed) * 0.01) + 1));
-        console.log(f)
     }
 }
 
@@ -182,13 +181,12 @@ export class Unique extends Item {
         super(base)
         this._name = name;
         this._base._ed = ed;
-        this._magicClass = 'unique';
+        this._magicClass = 'Unique';
         Unique.uniqueArr.push(this);
     }
 }
 
 //#region attributes
-export const Sockets = new AttributeName('Sockets');
 const Ar = new AttributeName('Attack Rating');
 const ArAndED = new AttributeName('Attack Rating - Enhanced Damage');
 const Def = new AttributeName('Defense');
@@ -201,8 +199,8 @@ const ColdRes = new AttributeName('Cold Resist');
 const FireRes = new AttributeName('Fire Resist');
 const LightRes = new AttributeName('Lightning Resist');
 const PsnRes = new AttributeName('Poison Resist');
-const EnnhancedDmg = new AttributeName('Enhanced Damage %');
-const EnnhancedDef = new AttributeName('Enhanced Defense %')
+const EnhancedDmg = new AttributeName('% Enhanced Damage');
+const EnhancedDef = new AttributeName('% Enhanced Defense');
 const MaxDmg = new AttributeName('Maximum Damage');
 const MinDmg = new AttributeName('Minimum Damage');
 const StackSize = new AttributeName('Quantity');
@@ -225,6 +223,8 @@ const MageDmgReduce = new AttributeName('Magic Damage Reduced by');
 const RunWalk = new AttributeName('Faster Run/Walk %');
 const LifeSteal = new AttributeName('Life Stolen per Hit %');
 const ManaSteal = new AttributeName('Mana Stolen per Hit %');
+const LifeRegen = new AttributeName('Regenerate Life %');
+const ManaRegen = new AttributeName('Regenerate Mana %');
 const ReplLife = new AttributeName('Replenish Life');
 const Dex = new AttributeName('Dexterity');
 const Energy = new AttributeName('Energy');
@@ -242,24 +242,24 @@ const Repair = new AttributeName('Repairs 1 duarbility in seconds x');
 const PsnLength = new AttributeName('Poison Length Reduced by %');
 const LevelRequirement = new AttributeName('Level Requirement');
 
-
 const DuskShroud = new Armor('Dusk Shroud', 'Armor', 'Elite', 361, 467);
-const OrmusRobes = new Unique(DuskShroud, 'Ormus\' Robes', null);
-OrmusRobes.addAttr(new Attribute(Sockets, 0, 1));
-OrmusRobes.addAttr(new Attribute(Ar, 10, 15));
-OrmusRobes.addAttr(new Attribute(Ar, 10, 15));
-OrmusRobes.addAttr(new TwoFieldAttribute(ArAndED, 10, 20, 300, 200));
-OrmusRobes.addAttr(new SkillAttribute(ClassSkills, 'Druid', 1, 2));
-OrmusRobes.addAttr(new Attribute(EnnhancedDef, 11, 21));
-
+const OrmusRobes = new Unique(DuskShroud, 'Ormus\' Robes', 0);
+OrmusRobes.addAttr(new Attribute(Def, 10, 20));
+OrmusRobes.addAttr(new Attribute(ColdDmg, 10, 15));
+OrmusRobes.addAttr(new Attribute(FireDmg, 10, 15));
+OrmusRobes.addAttr(new Attribute(LightDmg, 10, 15));
+OrmusRobes.addAttr(new Attribute(ManaRegen, 10, 15));
 const WireFleece = new Armor('Wire Fleece', 'Armor', 'Elite', 364, 470);
 const GladiatorsBane = new Unique(WireFleece, 'The Gladiator\'s Bane', 25);
-GladiatorsBane.addAttr(new Attribute(Ar, 10, 20));
+GladiatorsBane.addAttr(new Attribute(EnhancedDef, 150, 200));
+GladiatorsBane.addAttr(new Attribute(DmgReduce, 15, 20));
+GladiatorsBane.addAttr(new Attribute(MageDmgReduce, 15, 20));
 
-const OrgreAxe = new Weapon('Ogre Axe', 'PoleArm', 'Elite', 28, 145);
-const Bonehew = new Unique(OrgreAxe, 'Bonehew', 320);
-Bonehew.addAttr(new Attribute(Ar, 10, 20));
+
+
+const OgreAxe = new Weapon('Ogre Axe', 'PoleArm', 'Elite', 28, 145);
+const Bonehew = new Unique(OgreAxe, 'Bonehew', 320);
+
 
 const Ring = new Base('Ring', 'Jewelry', null);
 const Soj = new Unique(Ring, 'Stone of the Jordan', null)
-Soj.addAttr(new Attribute(Ar, 10, 20));

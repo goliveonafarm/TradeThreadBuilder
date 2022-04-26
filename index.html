@@ -14,14 +14,15 @@
 </head>
 
 <body>
-    <div class="container-xl bg-success pb-1">
+
+    <div class="container-xl bg-success pb-1 bg-gradient">
         <div class="row">
             <div class="col-1">
-                <img src="FontIcons/questionIcon.png" class="img-fluid w-50 rounded-circle" id="questionMarkToolTip">
+                <img src="FontIcons/infoCircleIcon.svg" class="img-fluid w-50 rounded-circle" id="questionMarkToolTip">
             </div>
             <div class="col-11 toolTipClass" style="display:none;">
-                You can customize attribute names before or after adding your items to your trade list. Most buttons
-                will have a hover-over tooltip.
+                Customizing attribute names will not change what is already in your trade list. Most buttons
+                have a mouse-over tooltip.
             </div>
         </div>
         <div class="row p-1">
@@ -45,69 +46,188 @@
                         title="Reset attribute names and update your trade list">! Reset
                         values</button>
                 </div>
-
                 <div class="col-4 offset-6">
                     <button type="button" class="btn btn-sm btn-secondary" id="btnSaveAttrNickID" data-toggle="tooltip"
-                        title="Save your attribute values to localStorage">Save attributes</button>
-
+                        title="Save your attribute names to localStorage. This page loads your custom values on load">Save
+                        attributes</button>
                     <button type="button" class="btn btn-sm btn-secondary" id="btnLoadAttrNickID" data-toggle="tooltip"
-                        title="Retrieve attribute values from localStorage">Load attributes</button>
+                        title="Retrieve attribute names from localStorage">Load attributes</button>
                 </div>
+            </div>
+        </div>
 
+        <div class="row p-1">
+            <div class="col">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                        id="returnTypeBtnID">Type</button>
+                    <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                        <li class="dropdown-item returnTypeClass" href="#" id=467>Unique</li>
+                        <li class="dropdown-item returnTypeClass" href="#" id=470>Base</li>
+                        <li class="dropdown-item returnTypeClass" href="#" id=474>Magic</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                        id="btnPushClassListID">Class</button>
+                    <ul class="dropdown-menu" id="ulPushClassListID" aria-labelledby="dropdownMenuButton">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                        id="btnPickItemListID">Pick item</button>
+                    <ul class="dropdown-menu" id="ulPushPickItemListID" aria-labelledby="dropdownMenuButton">
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <button type="button" class="btn btn-sm btn-warning" id="testID1">!test</button>
-    <div class="container-xl bg-success pb-1">
+    <div class="container-xl bg-success bg-gradient pb-1" id="attrAreaID"></div>
+    <div class="container-xl bg-success bg-gradient pb-1">
+        <div class="row">
+            <div class="col-auto"><label>Sockets</label>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="0"
+                        checked>
+                    <label class="form-check-label" for="flexRadioDefault20">
+                        0
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="1">
+                    <label class="form-check-label" for="flexRadioDefault21">
+                        1
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="2">
+                    <label class="form-check-label" for="flexRadioDefault22">
+                        2
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="3">
+                    <label class="form-check-label" for="flexRadioDefault23">
+                        3
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="4">
+                    <label class="form-check-label" for="flexRadioDefault24">
+                        4
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="5">
+                    <label class="form-check-label" for="flexRadioDefault25">
+                        5
+                    </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="6">
+                    <label class="form-check-label" for="flexRadioDefault26">
+                        6
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto">
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classEthQuery" type="radio" name="socketsEthGroup" value="False"
+                            checked>
+                        <label class="form-check-label" for="flexRadioDefault11">
+                            Non Ethereal
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classEthQuery" type="radio" value="True" name="socketsEthGroup">
+                        <label class="form-check-label" for="flexRadioDefault10">
+                            Ethereal
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row p-1">
+            <div class="col-2">
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="btnAddItemID"
+                    data-toggle="tooltip" title="Adds the current item to your trade thread">Add item
+                    <img src="FontIcons/earmarkIcon.svg">
+                </button>
+            </div>
+            <div class="col-10">
+                <label id="lblCurrentItemID">t</label>
+            </div>
+        </div>
+
         <div class="row p-1">
             <div class="col">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
-                    data-toggle="tooltip"
-                    title="Customizing attribute names will update your trade list in real time">Clipboard
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                    id="clipboardBtnID" data-toggle="tooltip"
+                    title="Copies your trade thread. You can paste directly it into your trading thread">Clipboard
                     <img src="FontIcons/clipboardIcon.svg">
                 </button>
             </div>
             <div class="col">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
-                    data-toggle="tooltip"
-                    title="">Sort
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="sortBtnID"
+                    aria-controls="attrCollapseID" data-toggle="tooltip" title="">Sort
                     <img src="FontIcons/sortDownIcon.svg">
                 </button>
             </div>
 
             <div class="col">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
                     title="This will add category names for your trade list (also sorts it)">Categorize
                 </button>
             </div>
 
             <div class="col">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
-                    title="Save your trade list to local storage and retrieve them later">Save
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="saveBtnID"
+                    title="Save your trade list to local storage and retrieve it later">Save
                     <img src="FontIcons/save2.svg">
                 </button>
             </div>
 
             <div class="col">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="loadBtnID"
                     data-toggle="tooltip" title="Load your trade list from local storage">Load
                     <img src="FontIcons/downloadIcon.svg">
                 </button>
             </div>
+
+            <div class="col">
+                <button class="btn btn-sm btn-warning text-nowrap" type="button" aria-expanded="false" id="removeBtnID"
+                    data-toggle="tooltip" title="Click this button then an item on your trade list to remove it">Remove
+                    item
+                    <img src="FontIcons/earmarkMinusIcon.svg">
+                </button>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
             <div class="col">
                 <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
-                    title="This will clear your entire trade list and you will have to load or start over"> ! Clear
+                    id="clearBtnID"
+                    title="This will clear your entire trade list and you will have to load or start over">
+                    <img src="FontIcons/warningIcon2.svg"> Clear
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap" rows="10" id="tradeThreadTextAreaID"></textarea>
+                <textarea class="w-100 text-nowrap" rows="15" id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
     </div>
+    </div>
+
 </body>
 
 </html>
