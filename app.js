@@ -35,7 +35,6 @@ document.getElementById('removeBtnID').addEventListener("click", () => {
     infoWindow.innerText = `Click on an item in the trade window to remove it`;
 })
 
-
 let questionMarkToolTip = document.getElementById('questionMarkToolTip');
 questionMarkToolTip.addEventListener("mouseover", () => {
     document.querySelector(".toolTipClass").style.display = "block";
@@ -57,11 +56,14 @@ document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
 });
 
 function loadAttrNickNames() {
-    const attrJSONStr = localStorage.getItem("attrArray");
-    const parsedAttrArr = JSON.parse(attrJSONStr);
-    exports.AttributeName.updateValues(parsedAttrArr);
-    setAttrNickNames();
-
+    try {
+        const attrJSONStr = localStorage.getItem("attrArray");
+        const parsedAttrArr = JSON.parse(attrJSONStr);
+        exports.AttributeName.updateValues(parsedAttrArr);
+        setAttrNickNames();
+    } catch (error) {
+        console.error.error
+    }
 }
 document.getElementById('saveBtnID').addEventListener('click', () => {
     const tradeJSONArr = JSON.stringify(myTradeItems);
@@ -171,11 +173,16 @@ function addUnique(uniqName) {
     let base = exports.Base.baseArray.filter(function (e) {
         return e._baseName == `${unique[0]._base._baseName}`;
     })
-    let G = {}
-    let B = JSON.parse(JSON.stringify(unique[0]));
-    let Z = JSON.parse(JSON.stringify(base[0]))
-    Object.assign(G, B, { _base: Z });
-    myTradeItems.push(G)
+    try {
+        let G = {}
+        let B = JSON.parse(JSON.stringify(unique[0]));
+        let Z = JSON.parse(JSON.stringify(base[0]))
+        Object.assign(G, B, { _base: Z });
+        myTradeItems.push(G)
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 //1.2 removeItem based on myListIndex (modified by click event in textarea)
@@ -265,7 +272,7 @@ function calcDefHere(element) {
     let def = parseFloat(element._base._defActVal);
     let addedDef = parseFloat(element._base._addedDef);
     if (ed === null) return (def * ethMultiplier);
-    if (ed != 0 && ed!= null) { def += 1 }
+    if (ed != 0 && ed != null) { def += 1 }
     return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
 }
 
@@ -512,7 +519,7 @@ function updateCurrentItemInfoWindow() {
                 tempString += ` ${elementTwo._classOrTreeName}`;
             }
 
-            tempString +=  ` ${elementTwo._attrFloorActVal}`
+            tempString += ` ${elementTwo._attrFloorActVal}`
 
             if (elementTwo._attrType == 'twoFieldAttribute') {
                 tempString += ` - ${elementTwo._attrCeilActVal}`;
@@ -525,12 +532,16 @@ function updateCurrentItemInfoWindow() {
 
 let body = document.getElementsByTagName('body');
 document.getElementById('moonIconID').addEventListener("click", setNightMode);
-document.getElementById('sunIconID').addEventListener("click",setDayMode);
+document.getElementById('sunIconID').addEventListener("click", setDayMode);
 
 let isDay = false;
 function checkNightDay() {
-    const isDayJSONStr = localStorage.getItem('dayMode');
-    isDay = JSON.parse(isDayJSONStr);
+    try {
+        const isDayJSONStr = localStorage.getItem('dayMode');
+        isDay = JSON.parse(isDayJSONStr);
+    } catch {
+        console.error.error
+    }
     if (isDay) { setDayMode(); }
     if (!isDay) { setNightMode(); }
 }
