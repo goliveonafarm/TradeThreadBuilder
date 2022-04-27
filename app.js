@@ -264,10 +264,9 @@ function calcDefHere(element) {
     let ed = parseFloat(element._base._ed);
     let def = parseFloat(element._base._defActVal);
     let addedDef = parseFloat(element._base._addedDef);
-    def += addedDef;
-    if (ed != 0) { def = def + 1 }
-    if (ed === null) return Math.floor(def * ethMultiplier);
-    return Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
+    if (ed === null) return (def * ethMultiplier);
+    if (ed != 0 && ed!= null) { def += 1 }
+    return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
 }
 
 function sortTradeList() {

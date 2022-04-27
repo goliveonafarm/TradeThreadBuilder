@@ -177,10 +177,11 @@ export class Item {
 
 export class Unique extends Item {
     static uniqueArr = [];
-    constructor(base, name, ed) {
+    constructor(base, name, ed, addedDef = 0) {
         super(base)
         this._name = name;
         this._base._ed = ed;
+        this._base._addedDef = addedDef;
         this._magicClass = 'Unique';
         Unique.uniqueArr.push(this);
     }
@@ -278,8 +279,8 @@ OrmusRobes.addAttr(new Attribute(ColdDmg, 10, 15));
 OrmusRobes.addAttr(new Attribute(FireDmg, 10, 15));
 OrmusRobes.addAttr(new Attribute(LightDmg, 10, 15));
 OrmusRobes.addAttr(new Attribute(ManaRegen, 10, 15));
-const WireFleece = new Armor('Wire Fleece', 'Armor', 'Elite', 364, 470);
-const GladiatorsBane = new Unique(WireFleece, 'Gladiator\'s Bane', null);
+const WireFleece = new Armor('Wire Fleece', 'Armor', 'Elite', 375, 481);
+const GladiatorsBane = new Unique(WireFleece, 'Gladiator\'s Bane', null, 50);
 GladiatorsBane.addAttr(new Attribute(EnhancedDef, 150, 200));
 GladiatorsBane.addAttr(new Attribute(DmgReduce, 15, 20));
 GladiatorsBane.addAttr(new Attribute(MageDmgReduce, 15, 20));
