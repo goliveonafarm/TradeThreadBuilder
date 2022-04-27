@@ -222,7 +222,9 @@ const BlockAndFasterBlock = new AttributeName('Chance of Blocking - Faster Block
 const FHR = new AttributeName('Faster Hit Recovery');
 const IAS = new AttributeName('Increased Attack Speed')
 const DmgReduce = new AttributeName('Damage Reduced by');
+const DmgReducePercent = new AttributeName('Damage Reduced by %')
 const MageDmgReduce = new AttributeName('Magic Damage Reduced by');
+const MageDmgReducePercent = new AttributeName('Magic Damage Reduced by')
 const RunWalk = new AttributeName('Faster Run/Walk %');
 const LifeSteal = new AttributeName('Life Stolen per Hit %');
 const ManaSteal = new AttributeName('Mana Stolen per Hit %');
@@ -272,6 +274,100 @@ HalaberdsReign.addAttr(new Attribute(ReplLife, 15, 23));
 HalaberdsReign.addAttr(new SkillAttribute(empty, 'Battle Command', 1, 2))
 HalaberdsReign.addAttr(new SkillAttribute(empty, 'Battle Orders', 1, 2))
 
+const Sash = new Armor('Sash', 'Belt', 'Normal', 2, 2);
+const LightBelt = new Armor('Light Belt', 'Belt', 'Normal', 3, 3);
+const Belt = new Armor('Belt', 'Belt', 'Normal', 5, 5);
+const HeavyBelt = new Armor('Heavy Belt', 'Belt', 'Normal', 6, 6);
+const GoldWrap = new Unique(HeavyBelt, 'Gold Wrap', null, 25);
+GoldWrap.addAttr(new Attribute(EnhancedDef, 40, 60));
+GoldWrap.addAttr(new Attribute(GoldFind, 50, 80));
+const PlatedBelt = new Armor('Plated Belt', 'Belt', 'Normal', 8, 11);
+const DemonhideSash = new Armor('Demonhide Sash', 'Belt', 'Exceptional', 29, 34);
+const StringOfEars = new Unique(DemonhideSash, 'String of Ears', null, 15);
+StringOfEars.addAttr(new Attribute(EnhancedDef, 150, 180));
+StringOfEars.addAttr(new Attribute(LifeSteal, 6, 8));
+StringOfEars.addAttr(new Attribute(DmgReducePercent, 10, 15));
+StringOfEars.addAttr(new Attribute(MageDmgReduce, 10, 15))
+const SharkskinBelt = new Armor('Sharkskin Belt', 'Belt', 'Exceptional', 31, 36);
+const Razortail = new Unique(SharkskinBelt, 'Razortail', null, 15)
+Razortail.addAttr(new Attribute(EnhancedDef, 120, 150));
+const MeshBelt = new Armor('Mesh Belt', 'Belt', 'Exceptional', 35, 40);
+const GloomsTrap = new Unique(MeshBelt, 'Gloom\'s Trap', null, 0);
+GloomsTrap.addAttr(new Attribute(EnhancedDef, 120, 150));
+const BattleBelt = new Armor('Battle Belt', 'Belt', 'Exceptional', 37, 42);
+const Snowclash = new Unique(BattleBelt, 'Snowclash', null, 0);
+Snowclash.addAttr(new Attribute(EnhancedDef, 130, 170));
+const WarBelt = new Armor('War Belt', 'Belt', 'Exceptional', 41, 52);
+const Thundergods = new Unique(WarBelt, 'Thundergod\'s Vigor', null, 0);
+Thundergods.addAttr(new Attribute(EnhancedDef, 160, 200));
+const SpiderwebSash = new Armor('Spiderweb Sash', 'Belt', 'Elite', 55, 62);
+const ArachnidMesh = new Unique(SpiderwebSash, 'Arachnid Mesh', null, 0);
+ArachnidMesh.addAttr(new Attribute(EnhancedDef, 90, 120));
+const VampirefangBelt = new Armor('Vampirefang Belt', 'Belt', 'Elite', 56, 63);
+const NosferatusCoil = new Unique(VampirefangBelt, 'Nosferatu\'s Coil', null, 0);
+const MithrilCoil = new Armor('Mithril Coil', 'Belt', 'Elite', 58, 65);
+const VerdungosHeartyCord = new Unique(MithrilCoil, 'Verdungo\s Heraty Cord', null, 0);
+VerdungosHeartyCord.addAttr(new Attribute(EnhancedDef, 90, 140));
+VerdungosHeartyCord.addAttr(new Attribute(Vit, 30, 40));
+VerdungosHeartyCord.addAttr(new Attribute(ReplLife, 10, 13));
+VerdungosHeartyCord.addAttr(new Attribute(MaxStam, 100, 120));
+VerdungosHeartyCord.addAttr(new Attribute(DmgReducePercent, 10, 15))
+
+
+const AncientArmor = new Armor('Ancient Armor', 'Armor', 'Normal', 208, 233);
+const SilksOfTheVictor = new Unique(AncientArmor, 'Silks of the Victor', null, 0);
+SilksOfTheVictor.addAttr(new Attribute(EnhancedDef, 100, 120));
+const Serpentskin = new Armor('Serpentskin Armor', 'Armor', 'Exceptional', 111, 126);
+const SkinOfTheViperMagi = new Unique(Serpentskin, 'Skin of the Vipermagi', 120, 0);
+SkinOfTheViperMagi.addAttr(new Attribute(MageDmgReduce, 9, 13));
+const DemonhideArmor = new Armor('Demonhide Armor', 'Armor', 'Exceptional', 122, 136);
+const SkinOfTheFlayedOne = new Unique(DemonhideArmor, 'Skin of the Flayed One', null, 0);
+SkinOfTheFlayedOne.addAttr(new Attribute(EnhancedDef, 150, 190));
+SkinOfTheFlayedOne.addAttr(new Attribute(LifeSteal, 5, 7));
+SkinOfTheFlayedOne.addAttr(new Attribute(ReplLife, 15, 25));
+const TrellisedArmor = new Armor('Trellised Armor', 'Armor', 'Exceptional', 138, 153);
+const IronPelt = new Unique(TrellisedArmor, 'Iron Pelt', null, 0);
+IronPelt.addAttr(new Attribute(EnhancedDef, 50, 100));
+IronPelt.addAttr(new Attribute(DmgReduce, 15, 20));
+IronPelt.addAttr(new Attribute(MageDmgReduce, 15, 20));
+const TigulatedMail = new Armor('Tigulated Mail', 'Armor', 'Exceptional', 176, 190);
+const CrowCaw = new Unique(TigulatedMail, 'Crow Caw', null, 0);
+CrowCaw.addAttr(new Attribute(EnhancedDef, 150, 180));
+const LinkedMail = new Armor('Linked Mail', 'Armor', 'Exceptional', 158, 172);
+const SpiritForge = new Unique(LinkedMail, 'Spirit Forge', null, 0);
+SpiritForge.addAttr(new Attribute(EnhancedDef, 120, 160));
+const Cuirass = new Armor('Cuirass', 'Armor', 'Exceptional', 188, 202);
+const DurielsShell = new Unique(Cuirass, 'Duriel\s Shell', null, 0);
+DurielsShell.addAttr(new Attribute(EnhancedDef, 160, 200));
+const MeshArmor = new Armor('Mesh Armor', 'Armor', 'Exceptional', 198, 213);
+const Shaftstop = new Unique(MeshArmor, 'Shaftstop', null, 0);
+Shaftstop.addAttr(new Attribute(EnhancedDef, 180, 220));
+const RussetArmor = new Armor('Russet Armor', 'Armor', 'Exceptional', 225, 243);
+const SkuldersIre = new Unique(RussetArmor, 'Skulder\'s Ire', null, 0);
+SkuldersIre.addAttr(new Attribute(EnhancedDef, 160, 200));
+const MagePlate = new Armor('Mage Plate', 'Armor', 'Exceptional', 225, 261);
+const QueHegans = new Unique(MagePlate, 'Que-Hegan\'s Wisdom', null, 0);
+QueHegans.addAttr(new Attribute(EnhancedDef, 140, 160));
+QueHegans.addAttr(new Attribute(MageDmgReduce, 6, 10));
+const TemplarCoat = new Armor('Templar Coat', 'Armor', 'Exceptional', 252, 274);
+const GuardianAngel = new Unique(TemplarCoat, 'Guardian Angel', null, 0);
+GuardianAngel.addAttr(new Attribute(EnhancedDef, 180, 200));
+const SharktoothArmor = new Armor('Sharktooth Armor', 'Armor', 'Exceptional', 242, 258);
+const Toothrow = new Unique(SharktoothArmor, 'Toothrow', null, 0);
+Toothrow.addAttr(new Attribute(EnhancedDef, 160, 220));
+Toothrow.addAttr(new Attribute(Def, 40, 60));
+Toothrow.addAttr(new Attribute(AttackerTakesDmg, 20, 40));
+const EmbossedPlate = new Armor('Embossed Plate', 'Armor', 'Exceptional', 282, 303);
+const AtmasWail = new Unique(EmbossedPlate, 'Atma\'s Wail', null, 0);
+AtmasWail.addAttr(new Attribute(EnhancedDef, 120, 160));
+const ChaosArmor = new Armor('Chaos Armor', 'Armor', 'Exceptional', 315, 342);
+const BlackHades = new Unique(ChaosArmor, 'Black Hades', null, 0);
+BlackHades.addAttr(new Attribute(EnhancedDef, 140, 200));
+BlackHades.addAttr(new Attribute(DmgDemon, 30, 60));
+BlackHades.addAttr(new Attribute(Ar, 200, 250));
+const OrnatePlate = new Armor('Ornate Plate', 'Armor', 'Exceptional', 417, 450);
+const Corpsemourn = new Unique(OrnatePlate, 'Corpsemourn', null, 0);
+Corpsemourn.addAttr(new Attribute(EnhancedDef, 150, 180));
 const DuskShroud = new Armor('Dusk Shroud', 'Armor', 'Elite', 361, 467);
 const OrmusRobes = new Unique(DuskShroud, 'Ormus\' Robes', 0);
 OrmusRobes.addAttr(new Attribute(Def, 10, 20));
