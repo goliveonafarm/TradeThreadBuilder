@@ -62,8 +62,9 @@ function loadAttrNickNames() {
         exports.AttributeName.updateValues(parsedAttrArr);
         setAttrNickNames();
     } catch (error) {
-        console.error.error
+        setAttrNickNames();
     }
+    setAttrNickNames();
 }
 document.getElementById('saveBtnID').addEventListener('click', () => {
     const tradeJSONArr = JSON.stringify(myTradeItems);
