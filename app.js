@@ -235,7 +235,7 @@ function updateTradeList() {
         }
         let array = element._arr;
         array.forEach(elementOne => {
-            if (elementOne._attributeName._attrName == "% Enhanced Defense") { element._base._ed = elementOne._attrFloorActVal; }
+            if (elementOne._attributeName._attrName == "% Enhanced Defense" || elementOne._attributeName._attrName == "% Enhanced Damage") { element._base._ed = elementOne._attrFloorActVal; }
             if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
         })
         let tempString = ``;
@@ -243,7 +243,7 @@ function updateTradeList() {
         let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
         let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
         let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
-        if (element._base._ed == 0) { ed = `` }
+        if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
         let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
 
         tempString += `${name}${isEth}${sockets}${ed}${def}`;
@@ -251,7 +251,7 @@ function updateTradeList() {
         //iterate through attribute array
         array.forEach(elementTwo => {
             (console.log("element two: ", elementTwo))
-            if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
+            if (elementTwo._attributeName._attrName != '% Enhanced Defense' && elementTwo._attributeName._attrName != '% Enhanced Damage') {
                 tempString += ` / ${elementTwo._attributeName._attrNickName}`;
 
                 if (elementTwo._attrType == 'skillAttribute') {
@@ -489,7 +489,7 @@ function updateCurrentItemInfoWindow() {
     let element = currentItem;
 
     element._arr.forEach(elementOne => {
-        if (elementOne._attributeName._attrName == "% Enhanced Defense") { element._base._ed = elementOne._attrFloorActVal; }
+        if (elementOne._attributeName._attrName == "% Enhanced Defense" || elementOne._attributeName._attrName == "% Enhanced Damage") { element._base._ed = elementOne._attrFloorActVal; }
         if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
     })
 
@@ -499,7 +499,7 @@ function updateCurrentItemInfoWindow() {
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
-    if (element._base._ed == 0) { ed = `` }
+    if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
 
 
@@ -509,7 +509,7 @@ function updateCurrentItemInfoWindow() {
     //iterate through attribute array
     let array = element._arr;
     array.forEach(elementTwo => {
-        if (elementTwo._attributeName._attrName != '% Enhanced Defense') {
+        if (elementTwo._attributeName._attrName != '% Enhanced Defense' && elementTwo._attributeName._attrName != '% Enhanced Damage') {
             tempString += ` / ${elementTwo._attributeName._attrNickName}`;
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` ${elementTwo._classOrTreeName}`;

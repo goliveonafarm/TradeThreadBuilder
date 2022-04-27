@@ -199,7 +199,11 @@ const DefVsMisl = new AttributeName('Defense vs Missiles')
 const ColdDmg = new AttributeName('Cold Damage');
 const FireDmg = new AttributeName('Fire Damage');
 const LightDmg = new AttributeName('Lightning Damage');
-const PsnDmg = new AttributeName('Poison Damage');
+const PsnDmg = new AttributeName('Poison Damage')
+const ColdDmgPerc= new AttributeName ('Cold Damage +%');
+const FireDmgPerc= new AttributeName ('Fire Damage +%');
+const LightDmgPerc= new AttributeName ('Lightning Damage +%');
+;const PsntDmgPerc= new AttributeName ('Poison Damage +%');
 const AllRes = new AttributeName('All Resist %');
 const ColdRes = new AttributeName('Cold Resist %');
 const FireRes = new AttributeName('Fire Resist %');
@@ -209,7 +213,7 @@ const LightAsbInt = new AttributeName('Lightning Absorb');
 const ColdAbsorbPerc = new AttributeName('Cold Absorb %');
 const EnemyLightResist = new AttributeName ('Enemy Lightning Reist -%');
 const EnemyFireResist = new AttributeName('Enemy Fire Resist -%');
-const EnemyColdResist = new AttributeName('Enemy Cold Resist');
+const EnemyColdResist = new AttributeName('Enemy Cold Resist-%');
 const EnemyPsnResist = new AttributeName('Enemy Poison Resist -%');
 const MaxDmg = new AttributeName('Maximum Damage');
 const MinDmg = new AttributeName('Minimum Damage');
@@ -220,6 +224,7 @@ const GoldFind = new Attribute('Gold Find %')
 const Mana = new AttributeName('Mana');
 const DmgToMana = new AttributeName('Damage Taken Goes to Mana %');
 const ManaOnKill = new AttributeName('Mana After Each Kill');
+const LifeOnKill = new AttributeName('Life After Each Kill')
 const AllSkills = new AttributeName('All Skills');
 const Skills = new AttributeName('Skills');
 const ClassSkills = new AttributeName('Class Skills');
@@ -510,14 +515,67 @@ const MatriarchalBow = new Weapon('Matriarchal Bow', 'Amazon', 'Elite', 20, 47);
 const BloodRavensCharge = new Unique(MatriarchalBow, 'Blood Raven\s Charge', null, 0);
 BloodRavensCharge.addAttr(new Attribute(EnhancedDmg, 180, 230));
 BloodRavensCharge.addAttr(new Attribute(ArPerc, 200, 300));
-BloodRavensCharge.addAttr(new SkillAttribute(ClassSkillTree, 'Bow and Crossbow Skills', 2, 4));
+BloodRavensCharge.addAttr(new SkillAttribute(empty, 'Bow and Crossbow Skills', 2, 4));
 const MatriarchalSpear = new Weapon('Matriarchal Spear', 'Amazon', 'Elite', 65, 95);
 const Stoneraven = new Unique(MatriarchalSpear, 'Stoneraven', null, 0);
 Stoneraven.addAttr(new Attribute(EnhancedDmg, 230, 280));
 Stoneraven.addAttr(new Attribute(Def, 400, 600));
 Stoneraven.addAttr(new Attribute(AllRes, 30, 50));
-Stoneraven.addAttr(new SkillAttribute(ClassSkillTree, 'Javelin and Spear Skills', 1, 3));
+Stoneraven.addAttr(new SkillAttribute(empty, 'Javelin and Spear Skills', 1, 3));
 const MatriarchalJavelin = new Weapon('Matriarchal Javelin', 'Amazon', 'Elite', 30, 54);
 const Thunderstroke = new Unique(MatriarchalJavelin, 'Thunderstroke', null, 0);
 Thunderstroke.addAttr(new Attribute(EnhancedDmg, 150, 200));
-Thunderstroke.addAttr(new SkillAttribute(ClassSkillTree, 'Javelin and Spear Skills', 2, 3));
+Thunderstroke.addAttr(new SkillAttribute(empty, 'Javelin and Spear Skills', 2, 3));
+
+const SwirlingCrystal = new Weapon('Swirling Crystal', 'Sorceress Orb', '', 18, 42);
+const Oculus = new Unique(SwirlingCrystal, 'Oculus', null, 0);
+const EldritchOrb = new Weapon('Eldritch Orb', 'Sorceress Orb', '', 18, 50);
+const EschutasTemper = new Unique(EldritchOrb, 'Eschuta\'s Temper', null, 0);
+EschutasTemper.addAttr(new SkillAttribute(empty, 'Sorceress Skills', 1, 3));
+EschutasTemper.addAttr(new Attribute(FireDmgPerc, 10, 20));
+EschutasTemper.addAttr(new Attribute(LightDmgPerc, 10, 20));
+EschutasTemper.addAttr(new Attribute(Energy, 20, 30));
+const DimensionalShard = new Weapon('Dimensional Shard', 'Sorceress Orb', '', 30, 53);
+const DeathsFathom = new Unique(DimensionalShard, 'Death\'s Fathom', null, 0);
+DeathsFathom.addAttr(new Attribute(ColdDmgPerc, 15, 30));
+DeathsFathom.addAttr(new Attribute(LightRes, 25, 40));
+DeathsFathom.addAttr(new Attribute(FireRes, 25, 40));
+
+const Wand = new Weapon('Wand', 'Wand', 'Normal', 2, 4);
+const TorchOfIro = new Unique(Wand, 'Torch of Iro', null, 0);
+const YewWand = new Weapon('Yew Wand', 'Wand', 'Normal', 2, 8);
+const Maelstrom = new Unique(YewWand, 'Maelstrom', null, 0);
+Maelstrom.addAttr(new SkillAttribute(empty, 'Iron Maiden', 1, 3));
+Maelstrom.addAttr(new SkillAttribute(empty, 'Amplify Damage', 1, 3));
+Maelstrom.addAttr(new SkillAttribute(empty, 'Terror', 1, 3));
+Maelstrom.addAttr(new SkillAttribute(empty, 'Corpse Explosion', 1, 3));
+const BoneWand = new Weapon('Bone Wand', 'Wand', 'Normal', 3, 7);
+const Gravespine = new Unique(BoneWand, 'Gravespine', null, 0);
+Gravespine.addAttr(new Attribute(Mana, 25, 50));
+const GrimWand = new Weapon('GrimWand', 'Wand', 'Normal', 5, 11);
+let UmesLament = new Unique(GrimWand, 'Ume\'s Lament', 'Wand', 5, 11);
+const BurntWand = new Weapon('Burnt Wand', 'Wand', 'Exceptional', 8, 18)
+const SuicideBranch = new Unique(BurntWand, 'Suicide Branch', null, 0);
+const PetrifiedWand = new Weapon('Petrified Wand', 'Wand', 'Exceptional', 8, 24);
+const CarinShard = new Unique(PetrifiedWand, 'Carin Shard', null, 0);
+const TombWand = new Weapon('Tomb Wand', 'Wand', 'Exceptional', 10, 22);
+const ArmOfKingLeoric = new Unique(TombWand, 'Arm of King Leoric', null, 0);
+const GraveWand = new Weapon('Grave Wand', 'Wand', 'Exceptional', 13, 29);
+const BlackhandKey = new Unique(GraveWand, 'Blackhand Key', null, 0);
+const LichWand = new Weapon('Lich Wand', 'Wand', 'Elite', 10, 31);
+const Boneshade = new Unique(LichWand, 'Boneshade', null, 0);
+Boneshade.addAttr(new SkillAttribute(empty, 'Bone Spirit', 1, 2));
+Boneshade.addAttr(new SkillAttribute(empty, 'Bone Spear', 2, 3));
+Boneshade.addAttr(new SkillAttribute(empty, 'Bone Wall', 2, 3));
+Boneshade.addAttr(new SkillAttribute(empty, 'Bone Armor', 4, 5));
+Boneshade.addAttr(new SkillAttribute(empty, 'Teeth', 4, 5));
+const UnearthedWand = new Weapon('Unearthed Wand', 'Wand', 'Elite', 22, 28);
+const DeathsWeb = new Unique(UnearthedWand, 'Death\'s Web', null, 0);
+DeathsWeb.addAttr(new SkillAttribute(empty, 'Poison and Bone Spells', 1, 2));
+DeathsWeb.addAttr(new Attribute(EnemyPsnResist, 40, 50));
+DeathsWeb.addAttr(new Attribute(ManaOnKill, 7, 12));
+DeathsWeb.addAttr(new Attribute(LifeOnKill, 7, 12));
+
+
+
+
