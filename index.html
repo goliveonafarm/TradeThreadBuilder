@@ -35,7 +35,8 @@
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
                     data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
                     data-toggle="tooltip"
-                    title="Customizing attribute names will update your trade list in real time">Attribute names
+                    title="You can customize the attribute names at any time, but only new items will display changes. If you have an error, reset values, save, then load.">Attribute
+                    names
                     <img src="FontIcons/caretDown.svg">
                 </button>
             </div>
@@ -64,7 +65,9 @@
         <div class="row p-1">
             <div class="col">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                    <button data-toggle="tooltip"
+                        title="You have to select a type and class to generate a list. Currently only uniques available"
+                        type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
                         id="returnTypeBtnID">Type</button>
                     <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
                         <li class="dropdown-item returnTypeClass" href="#" id=467>Unique</li>
@@ -76,6 +79,7 @@
             <div class="col">
                 <div class="dropdown">
                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                        data-toggle="tooltip" title="You must also choose a type before picking an item"
                         id="btnPushClassListID">Class</button>
                     <ul class="dropdown-menu" id="ulPushClassListID" aria-labelledby="dropdownMenuButton">
 
@@ -85,6 +89,7 @@
             <div class="col">
                 <div class="dropdown">
                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
+                        data-toggle="tooltip" title="You must pick both a type and class before this button works"
                         id="btnPickItemListID">Pick item</button>
                     <ul class="dropdown-menu" id="ulPushPickItemListID" aria-labelledby="dropdownMenuButton">
                     </ul>
@@ -159,7 +164,6 @@
             </div>
         </div>
         <div class="row p-1">
-            
             <div class="col">
                 <label id="lblCurrentItemID"> -- This is the console section and provides information about your
                     selection -- </label>
@@ -175,7 +179,7 @@
             <div class="col">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
                     id="clipboardBtnID" data-toggle="tooltip"
-                    title="Copies your trade thread. You can paste directly it into your trading thread">Clipboard
+                    title="Copies your entire trade list. You can paste directly it into your trading thread">Clipboard
                     <img src="FontIcons/clipboardIcon.svg">
                 </button>
             </div>
@@ -221,15 +225,24 @@
                 <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                     id="clearBtnID"
                     title="This will clear your entire trade list and you will have to load or start over">
-                    <img src="FontIcons/warningIcon2.svg"> Clear
+                    Clear Trade List
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap" rows="15" id="tradeThreadTextAreaID"></textarea>
+                <textarea class="w-100 text-nowrap" rows="17" id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
+        <row>
+            <div class="col">
+                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                    id="clearAllBtnID"
+                    title="This will only delete the local data used on this page. You can use a program like CCleaner to clear all of it. After clearing storage you can still save your current values and not lose anything">
+                    <img src="FontIcons/warningIcon2.svg"> Clear local data
+                </button>
+            </div>
+        </row>
     </div>
     </div>
 

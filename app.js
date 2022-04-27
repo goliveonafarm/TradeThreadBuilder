@@ -359,14 +359,10 @@ function setEditFields() {
         currentItem = grabInScope;
         updateCurrentItemInfoWindow();
 
-
         grabInScope._arr.forEach(item => {
-
             let aa = generateRowForField(item);
             document.getElementById('attrAreaID').appendChild(aa)
         })
-
-
     }
     //if not unique (magical or base)
 }
@@ -451,12 +447,7 @@ function generateRowForField(attr) {
         thisRow.classList.add("justify-content-center")
         thisRow.appendChild(attrCeilActTextArea);
     }
-
     floorActIndexer++;
-
-
-
-
     //?. return row
     return thisRow;
 }
@@ -574,6 +565,14 @@ function setNightMode() {
     isDay = false;
     const jsonArr = JSON.stringify(isDay);
     localStorage.setItem('dayMode', isDay);
+}
+document.getElementById('clearAllBtnID').addEventListener("click", clearLocalData);
+function clearLocalData() {
+    localStorage.removeItem("attrArray");
+    localStorage.removeItem("tradeArray");
+    localStorage.removeItem("dayMode");
+    document.getElementById('clearAllBtnID');
+    infoWindow.innerText = `Local storage cleared`
 }
 
 sortTradeList();
