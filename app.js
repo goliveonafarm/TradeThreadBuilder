@@ -276,7 +276,7 @@ function calcDefHere(element) {
     let ed = parseFloat(element._base._ed);
     let def = parseFloat(element._base._defActVal);
     let addedDef = parseFloat(element._base._addedDef);
-    if (ed === null) return (def * ethMultiplier);
+    if (ed === null || isNaN(ed)) return ((def * ethMultiplier)+addedDef);
     if (ed != 0 && ed != null) { def += 1 }
     return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
 }
