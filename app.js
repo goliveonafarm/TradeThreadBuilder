@@ -45,7 +45,7 @@ questionMarkToolTip.addEventListener("mouseleave", () => {
 
 //save/load Attributes from local storage
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
-    const jsonArr = JSON.stringify(AttributeName.attrArray);
+    const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
     localStorage.setItem("attrArray", jsonArr);
     infoWindow.innerText = "Saved custom attribute names";
 
@@ -58,9 +58,11 @@ document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
 function loadAttrNickNames() {
     try {
         const attrJSONStr = localStorage.getItem("attrArray");
-        const parsedAttrArr = JSON.parse(attrJSONStr);
-        exports.AttributeName.updateValues(parsedAttrArr);
-        setAttrNickNames();
+        if (attrJSONStr != null) {
+            const parsedAttrArr = JSON.parse(attrJSONStr);
+            exports.AttributeName.updateValues(parsedAttrArr)
+        };
+
     } catch (error) {
         setAttrNickNames();
     }
@@ -74,10 +76,12 @@ document.getElementById('saveBtnID').addEventListener('click', () => {
 })
 document.getElementById('loadBtnID').addEventListener('click', () => {
     const tradeJSONStr = localStorage.getItem("tradeArray");
-    const parsedTradeStr = JSON.parse(tradeJSONStr);
-    myTradeItems = parsedTradeStr;
-    updateTradeList();
-    infoWindow.innerText = "Loaded trade list";
+    if (tradeJSONStr != null) {
+        const parsedTradeStr = JSON.parse(tradeJSONStr);
+        myTradeItems = parsedTradeStr;
+        updateTradeList();
+        infoWindow.innerText = "Loaded trade list";
+    }
 })
 
 let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
@@ -539,7 +543,7 @@ let isDay = false;
 function checkNightDay() {
     try {
         const isDayJSONStr = localStorage.getItem('dayMode');
-        isDay = JSON.parse(isDayJSONStr);
+        if (isDayJSONStr != null) { isDay = JSON.parse(isDayJSONStr) };
     } catch {
         console.error.error
     }
@@ -573,3 +577,4 @@ function setNightMode() {
 }
 
 sortTradeList();
+
