@@ -161,8 +161,11 @@ function createItem(baseName) {
 }
 
 document.getElementById('btnAddItemID').addEventListener("click", () => {
-    addUnique(currentItem._name);
-    sortTradeList();
+    try {
+        addUnique(currentItem._name);
+        sortTradeList();
+        infoWindow.innerText = `Current item was added`;
+    } catch (error) {infoWindow.innerText = `You do not currently have an item to add`;}
 })
 
 function addUnique(uniqName) {
@@ -179,9 +182,7 @@ function addUnique(uniqName) {
         Object.assign(G, B, { _base: Z });
         myTradeItems.push(G)
     }
-    catch (error) {
-        console.error(error);
-    }
+    catch (error) { infoWindow.innerText=`There was some kind of error I dont know about`}
 }
 
 function removeItem(myListIndex) {
@@ -253,7 +254,7 @@ classList.forEach(item => {
         infoWindow.innerText = ``;
         ethSockRadRow.hidden = true;
         populateItemBtn();
-        document.getElementById('btnPickItemListID').textContent='Pick item'
+        document.getElementById('btnPickItemListID').textContent = 'Pick item'
 
     })
     document.getElementById("ulPushClassListID").appendChild(liItem);
@@ -307,7 +308,7 @@ function setEditFields() {
         let grabInScope = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
         currentItem = grabInScope;
 
-        if(currentItem._base._type == `Weapon` || currentItem._base._type == `Armor`){    ethSockRadRow.hidden = false;}
+        if (currentItem._base._type == `Weapon` || currentItem._base._type == `Armor`) { ethSockRadRow.hidden = false; }
 
         updateCurrentItemInfoWindow(currentItem);
         //add special row if no ed and no extra defense
