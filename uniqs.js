@@ -1,5 +1,3 @@
-//#region attributename class
-
 export class AttributeName {
     static attrArray = []
     constructor(attrName) {
@@ -26,8 +24,7 @@ export class AttributeName {
     set attrNickName(newNick) { this._attrNickName = newNick; }
     get attrName() { return this._attrName; }
 }
-//#endregion
-//#region Attribute class
+
 export class BasicAttribute {
     constructor(attributeName, attrFloorMaxVal) {
         this._attributeName = attributeName;
@@ -78,7 +75,6 @@ export class TwoFieldAttribute extends Attribute {
     get attrCeilActVal() { return this._attrCeilActVal }
     set attrCeilActVal(newVal) { this._attrCeilActVal = newVal }
 }
-//#endregion
 
 export class Base {
     static baseArray = [];
@@ -88,7 +84,7 @@ export class Base {
         this._tier = tier;
         this._isEth = false;
         this._ed = null;
-        this._addedDef = 0;
+        this._addedthisRowField = 0;
         this._sockets = 0;
         this._type = 'Jewelry';
         Base.baseArray.push(this);
@@ -96,7 +92,7 @@ export class Base {
     get baseName() { return this._baseName; }
     get itemClass() { return this._itemClass; }
     set ed(newEd) {
-        if (Object.hasOwn(this, '_defActVal')) this._defActVal = this._maxDef;
+        if (Object.hasOwn(this, '_thisRowFieldActVal')) this._defActVal = this._maxDef;
         this._ed = newEd;
     }
     get ed() { return this._ed; }
@@ -122,11 +118,6 @@ export class Armor extends Base {
         this._maxDef = maxDef;
         this._defActVal = maxDef;
         this._type = 'Armor'
-        this.getDef = function () {
-            let ethMultiplier = this._isEth ? 1.50 : 1.00;
-            if (this._ed === null) return Math.floor(this._defActVal * ethMultiplier);
-            return Math.floor((parseFloat((this._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._ed) * 0.01) + 1));
-        }
     }
     set defense(newDef) {
         this._defActVal = newDef;
@@ -147,31 +138,16 @@ export class Item {
         this._arr = [];
         this._name = base._baseName;
         this._magicClass = 'Base';
-        this.addAttr = function (attr) {
-            let g = attr._attributeName._attrName;
-            if (g == '% Enhanced Defense') { this._base._ed = attr._attrFloorActVal }
-            if (g == 'Defense') { this._base._addedDef = attr._attrFloorActVal }
-            this._arr.push(attr)
-        }
-    }
-    deleteAttribute(index) {
-        this._arr.splice(index, 1);
+
     }
     setEd(newEd) {
         this._base._ed = newEd;
     }
     addAttr(attr) {
-        if (attr._attributeName._attrName == '% Enhanced Defense') {
-            // this._base._ed = attr._attributeName._attrFloorActVal;
-            alert('hit')
-            //this._base.setEd(attr._attrFloorActVal);
-        }
+        let g = attr._attributeName._attrName;
+        if (g == '% Enhanced Defense') { this._base._ed = attr._attrFloorActVal }
+        if (g == 'Defense') { this._base._addedDef = attr._attrFloorActVal }
         this._arr.push(attr)
-    }
-    getdefense() {
-        let ethMultiplier = this.base_._isEth ? 1.50 : 1.00;
-        if (this._base._ed === null) return Math.floor(this._base._defActVal * ethMultiplier);
-        let f = Math.floor((parseFloat((this._base._defActVal + 1) * ethMultiplier)) * ((parseFloat(this._base._ed) * 0.01) + 1));
     }
 }
 
@@ -193,25 +169,32 @@ const EnhancedDmg = new AttributeName('% Enhanced Damage');
 const Def = new AttributeName('Defense');
 const Ar = new AttributeName('Attack Rating');
 const ArPerc = new AttributeName('Attacking Rating %')
+const ArUndead = new AttributeName('Attack Rating vs Undead +')
+const ArDemon = new AttributeName('Attack Rating vs Demons +')
 const ArAndED = new AttributeName('Attack Rating - Enhanced Damage');
 const DmgDemon = new AttributeName('Damage to Demons %')
+const DmgUndead = new AttributeName('Damage to Undead %')
 const DefVsMisl = new AttributeName('Defense vs Missiles')
 const ColdDmg = new AttributeName('Cold Damage');
 const FireDmg = new AttributeName('Fire Damage');
 const LightDmg = new AttributeName('Lightning Damage');
 const PsnDmg = new AttributeName('Poison Damage')
-const ColdDmgPerc= new AttributeName ('Cold Damage +%');
-const FireDmgPerc= new AttributeName ('Fire Damage +%');
-const LightDmgPerc= new AttributeName ('Lightning Damage +%');
-;const PsntDmgPerc= new AttributeName ('Poison Damage +%');
+const ColdDmgPerc = new AttributeName('Cold Damage +%');
+const FireDmgPerc = new AttributeName('Fire Damage +%');
+const LightDmgPerc = new AttributeName('Lightning Damage +%');
+const PsntDmgPerc = new AttributeName('Poison Damage +%');
 const AllRes = new AttributeName('All Resist %');
 const ColdRes = new AttributeName('Cold Resist %');
 const FireRes = new AttributeName('Fire Resist %');
 const LightRes = new AttributeName('Lightning Resist %');
 const PsnRes = new AttributeName('Poison Resist %');
+const ColdAsbInt = new AttributeName('Cold Absorb')
+const FireAsbInt = new AttributeName('Fire Absorb')
 const LightAsbInt = new AttributeName('Lightning Absorb');
 const ColdAbsorbPerc = new AttributeName('Cold Absorb %');
-const EnemyLightResist = new AttributeName ('Enemy Lightning Reist -%');
+const FireAbsorbPerc = new AttributeName('Fire Absorb %');
+const LightAbsorbPerc = new AttributeName('Lightning Absorb %')
+const EnemyLightResist = new AttributeName('Enemy Lightning Reist -%');
 const EnemyFireResist = new AttributeName('Enemy Fire Resist -%');
 const EnemyColdResist = new AttributeName('Enemy Cold Resist-%');
 const EnemyPsnResist = new AttributeName('Enemy Poison Resist -%');
@@ -220,7 +203,8 @@ const MinDmg = new AttributeName('Minimum Damage');
 const StackSize = new AttributeName('Quantity');
 const LightRad = new AttributeName('Light Radius');
 const MagicFind = new AttributeName('Magic Find %');
-const GoldFind = new Attribute('Gold Find %')
+const GoldFind = new AttributeName('Gold Find %')
+const RedcVendPrices = new AttributeName('Reduces Vendor Prices %')
 const Mana = new AttributeName('Mana');
 const DmgToMana = new AttributeName('Damage Taken Goes to Mana %');
 const ManaOnKill = new AttributeName('Mana After Each Kill');
@@ -231,6 +215,7 @@ const ClassSkills = new AttributeName('Class Skills');
 const ClassSkillTree = new AttributeName('Class Skill Tree');
 const FCR = new AttributeName('Faster Cast Rate');
 const BlockAndFasterBlock = new AttributeName('Chance of Blocking - Faster Block Rate');
+const IncrChanceBlockPerc = new AttributeName('Increase Chance to Block %')
 const FHR = new AttributeName('Faster Hit Recovery');
 const IAS = new AttributeName('Increased Attack Speed')
 const DmgReduce = new AttributeName('Damage Reduced by');
@@ -248,11 +233,9 @@ const Energy = new AttributeName('Energy');
 const Life = new AttributeName('Life');
 const Str = new AttributeName('Strength');
 const Vit = new AttributeName('Vitality')
-const empty = new AttributeName('')
-//#endregion
-//#region useless AttributeNames?
 const HitFlee = new AttributeName('Hit causes Monster to Flee');
 const MaxStam = new AttributeName('Maximum Stamina');
+const empty = new AttributeName('');
 const IgnoreTgtDef = new AttributeName('Ignore Target Defense');
 const Knockback = new AttributeName('Knockback');
 const PrevMnstHeal = new AttributeName('Prevent Monster Heal');
@@ -260,6 +243,10 @@ const AttackerTakesDmg = new AttributeName('Attacker Takes Damage of');
 const Repair = new AttributeName('Repairs 1 duarbility in seconds x');
 const PsnLength = new AttributeName('Poison Length Reduced by %');
 const LevelRequirement = new AttributeName('Level Requirement');
+const Durability = new AttributeName('Durability');
+const AllAttributes = new AttributeName('All attributes +');
+const ExperGained = new AttributeName('Experience Gained %')
+
 
 const SlayerGuard = new Armor('Slayer Guard', 'Barbarian Helm', 'Exceptional', 93, 120);
 const ArreatsFace = new Unique(SlayerGuard, 'Arreat\s Face', null);
@@ -499,6 +486,254 @@ SpiritKeeper.addAttr(new Attribute(FireRes, 30, 40));
 SpiritKeeper.addAttr(new Attribute(LightAsbInt, 9, 14));
 SpiritKeeper.addAttr(new Attribute(ColdAbsorbPerc, 15, 25));
 
+const LeatherGloves = new Armor('Leather Gloves', 'Gloves', 'Normal', 2, 3);
+const HandOfBroc = new Unique(LeatherGloves, 'HandOfBroc', 14, 10);
+const HeavyGloves = new Armor('Heavy Gloves', 'Gloves', 'Normal', 5, 6);
+const Bloodfist = new Unique(HeavyGloves, 'Bloodfist', null, 10);
+Bloodfist.addAttr(new Attribute(EnhancedDef, 10, 20));
+const ChainGloves = new Armor('Chain Gloves', 'Gloves', 'Normal', 8, 9);
+const ChanceGuards = new Unique(ChainGloves, 'Chance Guards', null, 15);
+ChanceGuards.addAttr(new Attribute(EnhancedDef, 20, 30));
+ChanceGuards.addAttr(new Attribute(MagicFind, 25, 40));
+const LightGauntlets = new Armor('Light Gauntlets', 'Gloves', 'Normal', 9, 11);
+const Magefist = new Unique(LightGauntlets, 'Magefist', null, 10);
+Magefist.addAttr(new Attribute(EnhancedDef, 20, 30));
+const Gauntlets = new Armor('Gauntlets', 'Gloves', 'Normal', 12, 15);
+const Frostburn = new Unique(Gauntlets, 'Frostburn', null, 30);
+Frostburn.addAttr(new Attribute(EnhancedDef, 10, 20));
+const DemonhideGloves = new Armor('Demonhide Gloves', 'Gloves', 'Exceptional', 28, 35);
+const VenomGrip = new Unique(DemonhideGloves, 'Venom Grip', null, 0);
+VenomGrip.addAttr(new Attribute(EnhancedDef, 130, 160));
+VenomGrip.addAttr(new Attribute(Def, 15, 25));
+const SharkskinGloves = new Armor('Sharkskin Gloves', 'Gloves', 'Exceptional', 33, 39);
+const GravePalm = new Unique(SharkskinGloves, 'Gravepalm', null, 0);
+GravePalm.addAttr(new Attribute(EnhancedDef, 140, 180));
+GravePalm.addAttr(new Attribute(DmgUndead, 100, 200));
+GravePalm.addAttr(new Attribute(ArUndead, 100, 200));
+const HeavyBracers = new Armor('Heavy Bracers', 'Gloves', 'Exceptional', 37, 44);
+const Ghoulhide = new Unique(HeavyBracers, 'Ghoulhide', null, 0);
+Ghoulhide.addAttr(new Attribute(EnhancedDef, 150, 190));
+Ghoulhide.addAttr(new Attribute(ManaSteal, 4, 5));
+const BattleGauntlets = new Armor('Battle Gauntlets', 'Gloves', 'Exceptional', 39, 47);
+const LavaGout = new Unique(BattleGauntlets, 'Lava Gout', null, 0);
+LavaGout.addAttr(new Attribute(EnhancedDef, 150, 200));
+const WarGauntlets = new Armor('War Gauntlets', 'Gloves', 'Exceptional', 43, 53)
+const Hellmouth = new Unique(WarGauntlets, 'Hellmouth', null, 0);
+Hellmouth.addAttr(new Attribute(EnhancedDef, 150, 200));
+const VampireboneGloves = new Armor('Vampirebone Gloves', 'Gloves', 'Elite', 56, 65);
+const DraculsGrasp = new Unique(VampireboneGloves, 'Draculs Grasp', null, 0);
+DraculsGrasp.addAttr(new Attribute(EnhancedDef, 90, 120));
+DraculsGrasp.addAttr(new Attribute(Str, 10, 15));
+DraculsGrasp.addAttr(new Attribute(LifeOnKill, 5, 10));
+DraculsGrasp.addAttr(new Attribute(LifeSteal, 7, 10));
+const Vambraces = new Armor('Vambraces', 'Gloves', 'Elite', 59, 67);
+const SoulDrainer = new Unique(Vambraces, 'Soul Drainer', null, 0);
+SoulDrainer.addAttr(new Attribute(EnhancedDef, 90, 120));
+SoulDrainer.addAttr(new Attribute(ManaSteal, 4, 7));
+SoulDrainer.addAttr(new Attribute(LifeSteal, 4, 7));
+const OgreGauntlets = new Armor('Ogre Gauntlets', 'Gloves', 'Elite', 62, 71)
+const Steelrend = new Unique(OgreGauntlets, 'Steelrend', null, 0);
+Steelrend.addAttr(new Attribute(Def, 170, 210));
+Steelrend.addAttr(new Attribute(EnhancedDmg, 30, 60));
+Steelrend.addAttr(new Attribute(Str, 15, 20));
+
+const Cap = new Armor('Cap', 'Helm', 'Normal', 3, 5);
+const BiggonsBonnet = new Unique(Cap, 'Biggin\'s Bonnet', 30, 14);
+const SkullCap = new Armor('Skull Cap', 'Helm', 'Normal', 8, 11);
+const Tarnhelm = new Unique(SkullCap, 'Tarnhelm', null, 0);
+Tarnhelm.addAttr(new Attribute(MagicFind, 25, 50));
+const Helm = new Armor('Helm', 'Helm', 'Normal', 15, 18);
+const CoifOfGlory = new Unique(Helm, 'Coif of Glory', null, 10);
+const FullHelm = new Armor('Full Helm', 'Helm', 'Normal', 23, 26);
+const Duskdeep = new Unique(FullHelm, 'Duskdeep', 44, 11);
+const GreatHelm = new Armor('Great Helm', 'Helm', 'Normal', 30, 35);
+const Howltusk = new Unique(GreatHelm, 'Howltusk', 80, 0);
+const Mask = new Armor('Mask', 'Helm', 'Normal', 9, 27);
+const TheFaceOfHorror = new Unique(Mask, 'Face of Horror', null, 25);
+const Crown = new Armor('Crown', 'Helm', 'Normal', 25, 45);
+const UndeadCrown = new Unique(Crown, 'Undead Crown', null, 40);
+UndeadCrown.addAttr(new Attribute(EnhancedDef, 30, 60));
+UndeadCrown.addAttr(new Attribute(ArUndead, 50, 100));
+const BoneHelm = new Armor('Bonehelm', 'Helm', 'Normal', 33, 36);
+const Wormskull = new Unique(BoneHelm, 'Wormskull', null, 0);
+const WarHat = new Armor('War Hat', 'Helm', 'Exceptional', 45, 53);
+const PeasantCrown = new Unique(WarHat, 'Peasant Crown', 100, 0);
+PeasantCrown.addAttr(new Attribute(ReplLife, 6, 12));
+const Sallet = new Armor('Sallet', 'Helm', 'Exceptional', 52, 62);
+const Rockstopper = new Unique(Sallet, 'Rockstopper', null, 0);
+Rockstopper.addAttr(new Attribute(EnhancedDef, 160, 220));
+Rockstopper.addAttr(new Attribute(ColdRes, 20, 40));
+Rockstopper.addAttr(new Attribute(FireRes, 20, 50));
+Rockstopper.addAttr(new Attribute(LightRes, 20, 40));
+const Casque = new Armor('Casque', 'Helm', 'Exceptional', 63, 72);
+const Stealskull = new Unique(Casque, 'Stealskull', null, 0);
+Stealskull.addAttr(new Attribute(EnhancedDef, 200, 240));
+Stealskull.addAttr(new Attribute(MagicFind, 30, 50));
+const Basinet = new Armor('Basinet', 'Helm', 'Exceptional', 75, 84);
+const DarksightHelm = new Unique(Basinet, 'Darksight Helm', null, 0);
+DarksightHelm.addAttr(new Attribute(FireRes, 20, 40));
+const WingedHelm = new Armor('Winged Helm', 'Helm', 'Normal', 85, 98);
+const ValkyrieWing = new Unique(WingedHelm, 'Valkyrie Wing', null, 0);
+ValkyrieWing.addAttr(new Attribute(EnhancedDef, 150, 200));
+ValkyrieWing.addAttr(new SkillAttribute(empty, 'Amazon Skills', 1, 2));
+ValkyrieWing.addAttr(new Attribute(ManaOnKill, 2, 4));
+const DeathMask = new Armor('Death Mask', 'Helm', 'Exceptional', 54, 86);
+const BlackhornsFace = new Unique(DeathMask, 'Death Mask', null, 0);
+BlackhornsFace.addAttr(new Attribute(EnhancedDef, 180, 220));
+const GrandCrown = new Armor('Grand Crown', 'Helm', 'Exceptional', 78, 113);
+const CrownOfThieves = new Unique(GrandCrown, 'Crown of Thieves', null, 0);
+CrownOfThieves.addAttr(new Attribute(EnhancedDef, 160, 200));
+CrownOfThieves.addAttr(new Attribute(LifeSteal, 9, 12));
+const GrimHelm = new Armor('Grim Helm', 'Helm', 'Exceptional', 60, 125);
+const VampireGaze = new Unique(GrimHelm, 'Vampire Gaze', 100, 0);
+VampireGaze.addAttr(new Attribute(LifeSteal, 6, 8));
+VampireGaze.addAttr(new Attribute(ManaSteal, 6, 8));
+VampireGaze.addAttr(new Attribute(DmgReducePercent, 15, 20));
+VampireGaze.addAttr(new Attribute(MageDmgReduce, 10, 15));
+const Shako = new Armor('Shako', 'Helm', 'Elite', 98, 141);
+const HarlequinCrest = new Unique(Shako, 'Shako Harlequin Crest', null, 0);
+const Armet = new Armor('Armet', 'Helm', 'Elite', 105, 149);
+const SteelShade = new Unique(Armet, 'Steel Shade', null, 0)
+SteelShade.addAttr(new Attribute(EnhancedDef, 100, 130));
+SteelShade.addAttr(new Attribute(ReplLife, 10, 18));
+SteelShade.addAttr(new Attribute(ManaSteal, 4, 8));
+SteelShade.addAttr(new Attribute(FireAsbInt, 5, 11));
+const SpiredHelm = new Armor('Spired Helm', 'Helm', 'Elite', 114, 159);
+const VeilOfSteel = new Unique(SpiredHelm, 'Veil of Steel', 60, 140);
+const NightwingsVeil = new Unique(SpiredHelm, 'Nightwing\'s Veil', null, 0);
+NightwingsVeil.addAttr(new Attribute(EnhancedDef, 90, 120));
+NightwingsVeil.addAttr(new Attribute(ColdDmg, 8, 15));
+NightwingsVeil.addAttr(new Attribute(Dex, 10, 20));
+NightwingsVeil.addAttr(new Attribute(ColdAsbInt, 5, 9));
+const Demonhead = new Armor('Demonhead', 'Helm', 'Elite', 101, 154);
+const AndarielsVisage = new Unique(Demonhead, 'Andariel\'s Visage', null, 0);
+AndarielsVisage.addAttr(new Attribute(EnhancedDef, 100, 150));
+AndarielsVisage.addAttr(new Attribute(LifeSteal, 8, 10));
+AndarielsVisage.addAttr(new Attribute(Str, 25, 30));
+const Corona = new Armor('Corona', 'Helm', 'Elite', 111, 165);
+const CrownOfAges = new Unique(Corona, 'Crown of Ages', 50, 0);
+CrownOfAges.addAttr(new Attribute(Def, 100, 150));
+CrownOfAges.addAttr(new Attribute(DmgReducePercent, 10, 15));
+CrownOfAges.addAttr(new Attribute(AllRes, 20, 30));
+const BoneVisage = new Armor('Bone Visage', 'Helm', 'Elite', 100, 157)
+const GiantSkull = new Unique(BoneVisage, 'Giant Skull', null, 0);
+GiantSkull.addAttr(new Attribute(Def, 250, 320));
+GiantSkull.addAttr(new Attribute(Str, 25, 35));
+
+const GildedShield = new Armor('Gilded Shield', 'Paladin Shield', 'Exceptional', 144, 168);
+const HeraldOfZakarum = new Unique(GildedShield, 'Herald of Zakarum', null, 0);
+HeraldOfZakarum.addAttr(new Attribute(EnhancedDef, 150, 200));
+const SacredRondache = new Armor('Sacred Rondache', 'Paladin Shield', 'Elite', 138, 164);
+const AlmaNegra = new Unique(SacredRondache, 'Alma Negra', null, 0);
+AlmaNegra.addAttr(new Attribute(EnhancedDef, 180, 210));
+AlmaNegra.addAttr(new SkillAttribute(empty, 'Paladin Skills', 1, 2));
+AlmaNegra.addAttr(new Attribute(EnhancedDmg, 40, 75));
+AlmaNegra.addAttr(new Attribute(ArPerc, 40, 75));
+AlmaNegra.addAttr(new Attribute(MageDmgReduce, 5, 9));
+const ZakarumShield = new Armor('Zakarum Shield', 'Paladin Shield', 'Elite', 169, 193);
+const Dragonscale = new Unique(ZakarumShield, 'Dragonscale', null, 0);
+Dragonscale.addAttr(new Attribute(EnhancedDef, 170, 200));
+Dragonscale.addAttr(new Attribute(Str, 15, 25));
+Dragonscale.addAttr(new Attribute(FireAbsorbPerc, 10, 20));
+
+const Buckler = new Armor('Buckler', 'Shield', 'Normal', 4, 6);
+const PeltaLunata = new Unique(Buckler, 'Pelta Lunata', null, 30);
+PeltaLunata.addAttr(new Attribute(EnhancedDef, 30, 40));
+const SmallShield = new Armor('Small Shield', 'Shield', 'Normal', 8, 10);
+const UmbralDisk = new Unique(SmallShield, 'Umbral Disk', null, 30);
+UmbralDisk.addAttr(new Attribute(EnhancedDef, 40, 50));
+UmbralDisk.addAttr(new Attribute(Durability, 10, 15));
+const LargeShield = new Armor('Large Shield', 'Shield', 'Normal', 12, 14);
+const Stormguild = new Unique(LargeShield, 'Stormguild', null, 30);
+Stormguild.addAttr(new Attribute(EnhancedDef, 50, 60));
+const KiteShield = new Armor('Kite Shield', 'Shield', 'Normal', 16, 18);
+const Steelclash = new Unique(KiteShield, 'Steelclash', null, 20);
+Steelclash.addAttr(new Attribute(EnhancedDef, 60, 100));
+const SpikedShield = new Armor('Spiked Shield', 'Shield', 'Normal', 15, 25);
+const SwordbackHold = new Unique(SpikedShield, 'Swordback Hold', null, 10);
+SwordbackHold.addAttr(new Attribute(EnhancedDef, 30, 60));
+const TowerShield = new Armor('Tower Shield', 'Shield', 'Normal', 22, 25);
+const BverritKeep = new Unique(TowerShield, 'Bverrit Keep', null, 30);
+BverritKeep.addAttr(new Attribute(EnhancedDef, 80, 120));
+const Boneshield = new Armor('Bone Shield', 'Shield', 'Normal', 10, 30);
+const WallOfTheEyeless = new Unique(Boneshield, 'Wall of the Eyeless', null, 10);
+WallOfTheEyeless.addAttr(new Attribute(EnhancedDef, 30, 40));
+const GothicShield = new Armor('Gothic Shield', 'Shield', 'Normal', 30, 35);
+const TheWard = new Unique(GothicShield, 'Ward', 100, 40);
+TheWard.addAttr(new Attribute(AllRes, 30, 50));
+const Defender = new Armor('Defender Shield', 'Shield', 'Exceptional', 41, 49);
+const Visceratuant = new Unique(Defender, 'Visceratuant', null, 0);
+Visceratuant.addAttr(new Attribute(EnhancedDef, 100, 150));
+const RoundShield = new Armor('Round Shield', 'Shield', 'Exceptional', 47, 55);
+const MosersBlessed = new Unique(RoundShield, 'Moser\'s Blessed', null, 0);
+MosersBlessed.addAttr(new Attribute(EnhancedDef, 180, 220));
+const Scutum = new Armor('Scutum', 'Shield', 'Exceptional', 53, 61);
+const Stormchaser = new Unique(Scutum, 'Stormchaser', null, 0);
+Stormchaser.addAttr(new Attribute(EnhancedDef, 160, 220));
+const BarbedShield = new Armor('Barbed Shield', 'Shield', 'Exceptional', 58, 78);
+const LanceGuard = new Unique(BarbedShield, 'Lance Guard', null, 0);
+LanceGuard.addAttr(new Attribute(EnhancedDef, 70, 120));
+const DragonShield = new Armor('Dragon Shield', 'Shield', 'Exceptional', 59, 67);
+const TiamatsRebuke = new Unique(DragonShield, 'Tiamats Rebuke', null, 0);
+TiamatsRebuke.addAttr(new Attribute(EnhancedDef, 140, 200));
+TiamatsRebuke.addAttr(new Attribute(AllRes, 25, 35));
+const GrimShield = new Armor('Grim Shield', 'Shield', 'Exceptional', 50, 150);
+const LidlessWall = new Unique(GrimHelm, 'Lidless Wall', null, 0);
+LidlessWall.addAttr(new Attribute(EnhancedDef, 80, 130));
+LidlessWall.addAttr(new Attribute(ManaOnKill, 3, 5));
+const Pavise = new Armor('Pavise', 'Shield', 'Exceptional', 68, 78);
+const Gerkes = new Unique(Pavise,'Gerke\'s', null, 0);
+Gerkes.addAttr(new Attribute(EnhancedDef, 180, 240));
+Gerkes.addAttr(new Attribute(AllRes, 20, 30));
+Gerkes.addAttr(new Attribute(DmgReduce, 11, 16));
+Gerkes.addAttr(new Attribute(MageDmgReduce, 14, 18));
+const AncientShield = new Armor('Ancient Shield', 'Shield', 'Exceptional', 80, 93);
+const RadamentsSphere = new Unique(AncientShield, 'Radament\'s Sphere', null, 0);
+RadamentsSphere.addAttr(new Attribute(EnhancedDef, 160, 200));
+
+const Heater = new Armor('Heater', 'Shield', 'Elite', 95, 110);
+const Luna = new Armor('Luna', 'Shield', 'Elite', 108, 123);
+const BlackoakShield = new Unique(Luna, 'Blackoak Shield', null, 0);
+BlackoakShield.addAttr(new Attribute(EnhancedDef, 160, 200));
+const Hyperion = new Armor('Hyperion', 'Shield', 'Elite', 119, 135);
+const Monarch = new Armor('Monarch', 'Shield', 'Elite', 133, 148);
+const Stormshield = new Unique(Monarch, 'Stormshield', null, 0)
+const BladeBarrier = new Armor('BladeBarrier', 'Shield', 'Elite', 147, 163);
+const SpikeThorn = new Unique(BladeBarrier, 'Spike Thorn', null, 0);
+SpikeThorn.addAttr(new Attribute(EnhancedDef, 120, 150));
+const Aegis = new Armor('Aegis', 'Shield', 'Elite', 145, 161);
+const MedusasGaze = new Unique(Aegis, 'Medusa\'s Gaze', null, 0);
+MedusasGaze.addAttr(new Attribute(EnhancedDef, 150, 180));
+MedusasGaze.addAttr(new Attribute(LifeSteal, 5, 9));
+MedusasGaze.addAttr(new Attribute(ColdRes, 40, 80));
+const TrollNest = new Armor('Troll Nest', 'Shield', 'Elite', 158, 173);
+const HeadHuntersGlory = new Unique(TrollNest, 'Head Hunter\'s Glory', null, 0);
+HeadHuntersGlory.addAttr(new Attribute(Def, 320, 420));
+HeadHuntersGlory.addAttr(new Attribute(DefVsMisl, 300, 350));
+HeadHuntersGlory.addAttr(new Attribute(FireRes, 20, 30));
+HeadHuntersGlory.addAttr(new Attribute(PsnRes, 30, 40));
+HeadHuntersGlory.addAttr(new Attribute(LifeOnKill, 5, 7));
+const Ward = new Armor('Ward', 'Shield', 'Elite', 153, 170);
+const SpiritWard = new Unique(Ward, 'Spirit Ward', null, 0);
+SpiritWard.addAttr(new Attribute(EnhancedDef, 130, 180));
+SpiritWard.addAttr(new Attribute(IncrChanceBlockPerc, 20, 30));
+SpiritWard.addAttr(new Attribute(ColdAsbInt, 6, 11));
+
+const HierophantTrophy = new Armor('Hierophant Trophy', 'Shrunken Head', 'Exceptional', 58, 70);
+const Homunculus = new Unique(HierophantTrophy, 'Homunculus', null, 0);
+Homunculus.addAttr(new Attribute(EnhancedDef, 150, 200));
+const BloodlordSkull = new Armor('Bloodlord Skull', 'Shrunken Head', 'Elite', 103, 148);
+const DarkforceSpawn = new Unique(BloodlordSkull, 'Darkforce Spawn', null, 0);
+DarkforceSpawn.addAttr(new Attribute(EnhancedDef, 140, 180));
+DarkforceSpawn.addAttr(new SkillAttribute(empty, 'Summoning Skills', 1, 3));
+DarkforceSpawn.addAttr(new SkillAttribute(empty, 'Poison and Bone Spells', 1, 3));
+DarkforceSpawn.addAttr(new SkillAttribute(empty, 'Cursses', 1, 3));
+const SuccubusSkull = new Armor('Succubus Skull', 'Shrunken Head', 'Elite', 100, 146);
+const Boneflame = new Unique(SuccubusSkull, 'Boneflame', null, 0);
+Boneflame.addAttr(new Attribute(EnhancedDef, 120, 150));
+Boneflame.addAttr(new SkillAttribute(empty, 'Necromancer Skill Levels', 2, 3))
+Boneflame.addAttr(new Attribute(AllRes, 20, 30));
+
 const CeremonialBow = new Weapon('Ceremonial Bow', 'Amazon', 'Exceptional', 19, 41);
 const LycandersAim = new Unique(CeremonialBow, 'Lycander\'s Aim', null, 0);
 LycandersAim.addAttr(new Attribute(EnhancedDmg, 150, 200));
@@ -576,6 +811,73 @@ DeathsWeb.addAttr(new Attribute(EnemyPsnResist, 40, 50));
 DeathsWeb.addAttr(new Attribute(ManaOnKill, 7, 12));
 DeathsWeb.addAttr(new Attribute(LifeOnKill, 7, 12));
 
+const SmallCharm = new Base('Small Charm', 'Charm', 'Elite');
+const Annihilus = new Unique(SmallCharm, 'Annihilus', null, 0);
+Annihilus.addAttr(new Attribute(AllAttributes, 10, 20));
+Annihilus.addAttr(new Attribute(AllRes, 10, 20));
+Annihilus.addAttr(new Attribute(ExperGained, 5, 10));
+const LargeCharm = new Base('Large Charm', 'Charm', 'Elite');
+const HellfireTorch = new Unique(LargeCharm, 'Hellfire Torch', null, 0);
+HellfireTorch.addAttr(new Attribute(AllAttributes, 10, 20));
+HellfireTorch.addAttr(new Attribute(AllRes, 10, 20));
+HellfireTorch.addAttr(new SkillAttribute(empty, 'EDItTHISSSSSSSSSSSS Skills +', 3, 3))
+const GrandCharm = new Base('Grand Charm', 'Charm', 'Elite');
+const GheedsFortune = new Unique(GrandCharm, 'Gheed\'s Fortune', null, 0);
+GheedsFortune.addAttr(new Attribute(GoldFind, 80, 160));
+GheedsFortune.addAttr(new Attribute(RedcVendPrices, 10, 15));
+GheedsFortune.addAttr(new Attribute(MagicFind, 20, 40));
 
+const Amulet = new Base('Amulet', 'Amulet', 'Elite');
+const NokozanRelic = new Unique(Amulet, 'Nokozan Relic', null, 0);
+const EyeOfTheEtlich = new Unique(Amulet, 'Eye of Etlich', null, 0);
+EyeOfTheEtlich.addAttr(new Attribute(LightRad, 1, 5));
+EyeOfTheEtlich.addAttr(new Attribute(LifeSteal, 3, 7));
+EyeOfTheEtlich.addAttr(new TwoFieldAttribute(ColdDmg, 1, 2, 3, 5,))
+EyeOfTheEtlich.addAttr(new Attribute(DefVsMisl, 10, 40));
+const MahimOakCurio = new Unique(Amulet, 'Mahim-Oak Curio', null, 0);
+const SaracensChance = new Unique(Amulet, 'Saracen\'s Chance', null, 0);
+SaracensChance.addAttr(new Attribute(AllRes, 15, 25));
+const CatsEye = new Unique(Amulet, 'Cat\'s Eye', null, 0);
+const CrescentMoon = new Unique(Amulet, 'Crescent Moon', null, 0);
+CrescentMoon.addAttr(new Attribute(LifeSteal, 3, 6));
+CrescentMoon.addAttr(new Attribute(ManaSteal, 11, 15));
+const AtmasScarab = new Unique(Amulet, 'Atma\'s Scarab', null, 0);
+const RisingSun = new Unique(Amulet, 'Rising Sun', null, 0);
+const HighlordsWrath = new Unique(Amulet, 'Highlord\'s Wrath', null, 0);
+const MarasKaleidoscope = new Unique(Amulet, 'Mara\'s Kaleidoscope', null, 0);
+MarasKaleidoscope.addAttr(new Attribute(AllRes, 20, 30));
+const SeraphsHymn = new Unique(Amulet, 'Seraph\'s Hymn', null, 0);
+SeraphsHymn.addAttr(new SkillAttribute(empty, 'Defensive Auras', 1, 2));
+SeraphsHymn.addAttr(new Attribute(DmgDemon, 20, 50));
+SeraphsHymn.addAttr(new Attribute(ArDemon, 150, 250));
+SeraphsHymn.addAttr(new Attribute(DmgUndead, 20, 50));
+SeraphsHymn.addAttr(new Attribute(ArUndead, 150, 250));
+const Metalgrid = new Unique(Amulet, 'Metalgrid', null, 0);
+Metalgrid.addAttr(new Attribute(Ar, 400, 450));
+Metalgrid.addAttr(new Attribute(AllRes, 25, 35));
+Metalgrid.addAttr(new Attribute(Def, 300, 350));
 
-
+const Ring = new Base('Ring', 'Ring', 'Elite');
+const Nagelring = new Unique(Ring, 'Nagelring', null, 0);
+Nagelring.addAttr(new Attribute(Ar, 50, 75));
+Nagelring.addAttr(new Attribute(MagicFind, 15, 30));
+const ManaldHeal = new Unique(Ring, 'Manald Heal', null, 0);
+ManaldHeal.addAttr(new Attribute(ManaSteal, 4, 7));
+ManaldHeal.addAttr(new Attribute(ReplLife, 5, 8));
+const StoneOfTheJordan = new Unique(Ring, 'Soj', null, 0);
+const DwarfStar = new Unique(Ring, 'Dwarf Star', null, 0);
+DwarfStar.addAttr(new Attribute(MageDmgReduce, 12, 15));
+const RavenFrost = new Unique(Ring, 'RavenFrost', null, 0);
+RavenFrost.addAttr(new Attribute(Ar, 150, 250));
+RavenFrost.addAttr(new Attribute(Dex, 15, 20));
+const BulKathosWeddingBand = new Unique(Ring, 'BK Bul-Katho\'s Wedding Band', null, 0);
+BulKathosWeddingBand.addAttr(new Attribute(LifeSteal, 3, 5));
+const CarrionWind = new Unique(Ring, 'Carrion Wind', null, 0);
+CarrionWind.addAttr(new Attribute(LifeSteal, 6, 9));
+CarrionWind.addAttr(new Attribute(DefVsMisl, 100, 160));
+const NaturesPeace = new Unique(Ring, 'Nature\'s Peace', null, 0);
+NaturesPeace.addAttr(new Attribute(PsnRes, 20, 30));
+NaturesPeace.addAttr(new Attribute(DmgReduce, 7, 11));
+const WispProjector = new Unique(Ring, 'Wisp Projector', null, 0);
+WispProjector.addAttr(new Attribute(LightAbsorbPerc, 10, 20));
+WispProjector.addAttr(new Attribute(MagicFind, 10, 20));

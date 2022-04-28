@@ -4,14 +4,25 @@ let myListIndex = 0;
 let myTradeItems = [];
 let sortWithCategory = false;
 let deleteFlag = false;
-let chosenMagicClass = null;
+let isDay = false;
+let chosenMagicClass = 'Unique';
 let chosenClass = null;
 let chosenName = null;
 let currentItem = null;
+let floorActIndexer = 0;
+let ethSockRadRow = document.getElementById('ethSockRadID');
+let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
 let infoWindow = document.getElementById('lblCurrentItemID');
 let attributeArea = document.getElementById('attrAreaID');
+let body = document.getElementsByTagName('body');
+tradeThreadTextArea.style.resize = "none";
+let openUp = 0;
 
-
+document.getElementById('openUpID').addEventListener("click", () => {
+    openUp++;
+    if (openUp == 4) { document.getElementById('revealCounterID').hidden = false; }
+})
+//this is disabled until after figuring out custom items
 document.querySelectorAll(".returnTypeClass").forEach(item => {
     item.addEventListener("click", () => {
         chosenMagicClass = (item.innerText);
@@ -25,10 +36,7 @@ document.getElementById('categBtnID').addEventListener("click", () => {
     sortWithCategory = false;
     infoWindow.innerText = "Categorized by item class";
 })
-document.getElementById('sortBtnID').addEventListener("click", () => {
-    sortTradeList();
-    infoWindow.innerText = "Sorted trading list"
-});
+
 document.getElementById('removeBtnID').addEventListener("click", () => {
     sortTradeList();
     deleteFlag = true;
@@ -42,8 +50,6 @@ questionMarkToolTip.addEventListener("mouseover", () => {
 questionMarkToolTip.addEventListener("mouseleave", () => {
     document.querySelector(".toolTipClass").style.display = "none";
 });
-
-//save/load Attributes from local storage
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
     const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
     localStorage.setItem("attrArray", jsonArr);
@@ -55,19 +61,6 @@ document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
     infoWindow.innerText = "Loaded custom attribute names";
 });
 
-function loadAttrNickNames() {
-    try {
-        const attrJSONStr = localStorage.getItem("attrArray");
-        if (attrJSONStr != null) {
-            const parsedAttrArr = JSON.parse(attrJSONStr);
-            exports.AttributeName.updateValues(parsedAttrArr)
-        };
-
-    } catch (error) {
-        setAttrNickNames();
-    }
-    setAttrNickNames();
-}
 document.getElementById('saveBtnID').addEventListener('click', () => {
     const tradeJSONArr = JSON.stringify(myTradeItems);
     localStorage.setItem("tradeArray", tradeJSONArr);
@@ -84,8 +77,6 @@ document.getElementById('loadBtnID').addEventListener('click', () => {
     }
 })
 
-let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
-tradeThreadTextArea.style.resize = "none";
 tradeThreadTextArea.addEventListener("mouseup", e => {
     let selectStart = e.target.selectionStart;
     let myString = document.getElementById('tradeThreadTextAreaID').value.substring(0, selectStart);
@@ -94,7 +85,7 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
     if (deleteFlag) {
         myTradeItems.splice(myListIndex, 1);
         sortTradeList();
-        infoWindow.innerText = `Item in position ${myListIndex} removed`;
+        infoWindow.innerText = `Item # ${myListIndex + 1} removed`;
     }
 })
 document.getElementById('clearBtnID').addEventListener("click", () => {
@@ -108,11 +99,35 @@ document.getElementById('clipboardBtnID').addEventListener("click", () => {
     document.execCommand("copy");
     infoWindow.innerText = "Copied to clipboard!"
 })
+
+function loadAttrNickNames() {
+    try {
+        const attrJSONStr = localStorage.getItem("attrArray");
+        if (attrJSONStr != null) {
+            const parsedAttrArr = JSON.parse(attrJSONStr);
+            
+            
+            if(parsedAttrArr.length != exports.AttributeName.attrArray.length){
+                exports.AttributeName.resetNickNames();
+                localStorage.removeItem("attrArray");
+                alert('An update or error has caused your attribute nick names to reset, sorry!')
+            }else{
+                exports.AttributeName.updateValues(parsedAttrArr)
+            }
+        };
+
+    } catch (error) {
+    }
+    setAttrNickNames();
+}
+
 function updateAttrNickname(index) {
     let _index = index;
     let attrTextAreas = document.querySelector('#attrTextAreaID' + _index).value;
     exports.AttributeName.setAttrNickName(index, attrTextAreas)
 }
+
+document.getElementById('btnResetAttrNickID').addEventListener('click', resetAttrNickNames);
 function resetAttrNickNames() {
     exports.AttributeName.resetNickNames();
     setAttrNickNames();
@@ -120,15 +135,11 @@ function resetAttrNickNames() {
 function setAttrNickNames() {
     let attrHTMLRows = document.querySelectorAll('.attrColID');
     attrHTMLRows.forEach(element => element.innerHTML = ``);
-    //Creates the rows, columns, and txtarea for editing attribute nick names
     exports.AttributeName.attrArray.forEach(element => {
-        //get index
         let index = (exports.AttributeName.attrArray.indexOf(element));
-        //create row for all cols
         let row = document.createElement("div");
         row.style.fontSize = "11px"
         row.classList.add("row");
-        //_attrName col
         let nameCol = document.createElement("div");
         nameCol.classList.add("col-6");
         nameCol.innerText = `${element._attrName}`;
@@ -152,13 +163,7 @@ function setAttrNickNames() {
     console.log('setAttrNickNames() successful')
 }
 
-document.getElementById('btnResetAttrNickID').addEventListener('click', resetAttrNickNames);
-
-//#region item creation
-// let myListIndex = 0; clicked LineNumber in trade thread
-
-//1.11 Create new item - takes base and sets _arr to null, adds copy to trade
-function createItem(baseName) {//Base.baseArray[0]
+function createItem(baseName) {
     let base = exports.Base.baseArray.filter(function (e) {
         return e._baseName == `${baseName}`
     })
@@ -170,7 +175,7 @@ document.getElementById('btnAddItemID').addEventListener("click", () => {
     addUnique(currentItem._name);
     sortTradeList();
 })
-//1.12 Add copy of unique to trade
+
 function addUnique(uniqName) {
     let unique = exports.Unique.uniqueArr.filter(function (e) {
         return e._name == `${uniqName}`
@@ -190,41 +195,26 @@ function addUnique(uniqName) {
     }
 }
 
-//1.2 removeItem based on myListIndex (modified by click event in textarea)
 function removeItem(myListIndex) {
     console.log("Removed item:", myTradeItems[myListIndex]);
     myTradeItems.splice(myListIndex, 1);
 }
 
-//2.1 add attribute to selected item
 //console.log(unique.constructor.name )
-
 function addAttribute(attrNameClass, attrValue, index) {
-    //takes trade list and myListIndex
-    let _currentItem = myTradeItems[index]; //myList[0];
-    //AttributeName.attrArray[0];
+    let _currentItem = myTradeItems[index];
     let _attr = exports.AttributeName.attrArray.filter(function (e) { return e._attrName == `${attrNameClass}` });
-    //console.log(_attr)
-    let _attrValue = attrValue; //40;
+    let _attrValue = attrValue;
     _currentItem._arr.push(new exports.BasicAttribute(_attr, _attrValue));
 }
 
-//2.1test add attribute to item[0]
-//addAttribute('Sockets', 4);
-//console.log(myTradeItems[myListIndex]._arr)
-
-//2.2 remove attribute (runs off class function)
 function removeAttribute(index) {
     myTradeItems.splice(index, 1)
 }
-//2.2test remove from item[0]
-//removeAttribute(0);
-
-loadAttrNickNames();
 
 function updateTradeList() {
     tradeThreadTextArea.value = ``;
-    let lastClassType = null;;
+    let lastClassType = null;
     myTradeItems.forEach(element => {
         if (sortWithCategory) {
             if (lastClassType != element._base._itemClass) {
@@ -233,41 +223,9 @@ function updateTradeList() {
                 tradeThreadTextArea.value += `${lastClassType}\n`;
             }
         }
-        let array = element._arr;
-        array.forEach(elementOne => {
-            if (elementOne._attributeName._attrName == "% Enhanced Defense" || elementOne._attributeName._attrName == "% Enhanced Damage") { element._base._ed = elementOne._attrFloorActVal; }
-            if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
-        })
-        let tempString = ``;
-        let name = element._name;
-        let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
-        let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
-        let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
-        if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
-        let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
+        let myString = updateCurrentItemInfoWindow(element);
+        tradeThreadTextArea.value += `${myString}\n`;
 
-        tempString += `${name}${isEth}${sockets}${ed}${def}`;
-        if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
-        //iterate through attribute array
-        array.forEach(elementTwo => {
-            (console.log("element two: ", elementTwo))
-            if (elementTwo._attributeName._attrName != '% Enhanced Defense' && elementTwo._attributeName._attrName != '% Enhanced Damage') {
-                tempString += ` / ${elementTwo._attributeName._attrNickName}`;
-
-                if (elementTwo._attrType == 'skillAttribute') {
-                    tempString += ` ${elementTwo._classOrTreeName} `;
-                }
-
-                tempString += ` ${elementTwo._attrFloorActVal}`
-
-                if (elementTwo._attrType == 'twoFieldAttribute') {
-                    tempString += `  - ${elementTwo._attrCeilActVal}`;
-                }
-            }
-        })
-        tradeThreadTextArea.value += `${tempString}\n`;
-
-        //infoWindow.innerText = tempString;
     });
 }
 
@@ -276,7 +234,7 @@ function calcDefHere(element) {
     let ed = parseFloat(element._base._ed);
     let def = parseFloat(element._base._defActVal);
     let addedDef = parseFloat(element._base._addedDef);
-    if (ed === null || isNaN(ed)) return ((def * ethMultiplier)+addedDef);
+    if (ed === null || isNaN(ed)) return ((def * ethMultiplier) + addedDef);
     if (ed != 0 && ed != null) { def += 1 }
     return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
 }
@@ -303,6 +261,9 @@ classList.forEach(item => {
     liItem.addEventListener("click", function () {
         chosenClass = item;
         document.getElementById('btnPushClassListID').textContent = `${item}`;
+        attributeArea.innerHTML = ``;
+        infoWindow.innerText = ``;
+        ethSockRadRow.hidden = true;
         populateItemBtn();
     })
     document.getElementById("ulPushClassListID").appendChild(liItem);
@@ -337,7 +298,6 @@ function populateItemBtn() {
                 elem.checked = 'false'
             })
             ethRads[0].checked = "true"
-
             document.getElementById('btnPickItemListID').textContent = `${item}`;
             setEditFields();
         })
@@ -347,35 +307,74 @@ function populateItemBtn() {
 
 function setEditFields() {
     //if unique
+    ethSockRadRow.hidden = false;
     if (chosenMagicClass == 'Unique') {
         const uniqListArr = exports.Unique.uniqueArr.map(element => {
             if (element._name == chosenName) return element;
         })
         let uniqList = [...new Set(uniqListArr)];
-
         attributeArea.innerHTML = ``;
         let grabInScope = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
-
         currentItem = grabInScope;
-        updateCurrentItemInfoWindow();
+        updateCurrentItemInfoWindow(currentItem);
+        //add special row if no ed and no extra defense
+        if (grabInScope._base._ed == null && grabInScope._base._addedDef == 0 && grabInScope._base._actDef != undefined) {
 
+
+
+            let newRow = generateRowForDefOnly(currentItem)
+
+            attributeArea.appendChild(newRow);
+        }
         grabInScope._arr.forEach(item => {
-            let aa = generateRowForField(item);
-            document.getElementById('attrAreaID').appendChild(aa)
+            let newRow = generateRowForField(item);
+            attributeArea.appendChild(newRow)
         })
     }
-    //if not unique (magical or base)
+    //if not unique (magical or base)////////////////////////////////////////////////////////////
 }
 
-let floorActIndexer = 0;
-function generateRowForField(attr) {
-    console.log(attr)
-    //1.create row
+function generateRowForDefOnly(itemToGen) {
+    let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row");
     thisRow.classList.add("removableAttrRowClass");
-    //2.check and create if twofield attribute
-    //f aFMinV aFMaxV aFAV
+    //1.1 f
+    const attrNickCol = document.createElement("div");
+    attrNickCol.classList.add("col");
+    const attrNickText = document.createTextNode(`${exports.AttributeName.attrArray[2]._attrNickName}`);
+    attrNickCol.appendChild(attrNickText);
+    thisRow.appendChild(attrNickCol)
+    //2.1 dMin
+    const baseMinCol = document.createElement("div");
+    baseMinCol.classList.add("col");
+    const baseMinText = document.createTextNode(`${base._minDef}`);
+    baseMinCol.appendChild(baseMinText);
+    thisRow.appendChild(baseMinCol)
+    //2.2 dmax
+    const baseMaxCol = document.createElement("div");
+    baseMaxCol.classList.add("col");
+    const baseMaxText = document.createTextNode(`${base._maxDef}`);
+    baseMaxCol.appendChild(baseMaxText);
+    thisRow.appendChild(baseMaxCol)
+    //2.3 dAct
+    const defActTextArea = document.createElement("textarea");
+    defActTextArea.classList.add("col-2");
+    defActTextArea.setAttribute("type", "number");
+    defActTextArea.setAttribute("rows", 1);
+    defActTextArea.innerHTML = `${base._maxDef}`;
+    defActTextArea.style.resize = "none";
+    defActTextArea.style.overflow = "hidden";
+    defActTextArea.addEventListener("keyup", (e) => { base._defActVal = (e.target.value) });
+    thisRow.appendChild(defActTextArea);
+    return thisRow;
+}
+
+function generateRowForField(attr) {
+    console.log(attr)
+    const thisRow = document.createElement("div");
+    thisRow.classList.add("row");
+    thisRow.classList.add("removableAttrRowClass");
     //1.1F 0
     if (attr._attributeName._attrName != ``) {
         const attrNickCol = document.createElement("div");
@@ -414,11 +413,10 @@ function generateRowForField(attr) {
     attrFloorActTextArea.style.overflow = "hidden";
     attrFloorActTextArea.addEventListener("keyup", (e) => {
         attr._attrFloorActVal = (e.target.value)
-        updateCurrentItemInfoWindow();
+        updateCurrentItemInfoWindow(currentItem);
     })
     thisRow.appendChild(attrFloorActTextArea)
     if (attr instanceof TwoFieldAttribute) {
-        alert('success')
         //1.5 aCMinVal
         const attrACMinValcol = document.createElement("div");
         attrACMinValcol.classList.add("col");
@@ -442,13 +440,12 @@ function generateRowForField(attr) {
         attrCeilActTextArea.style.overflow = "hidden";
         attrCeilActTextArea.addEventListener("keyup", (e) => {
             attr._attrCeilActVal = (e.target.value)
-            updateCurrentItemInfoWindow();
+            updateCurrentItemInfoWindow(currentItem);
         })
         thisRow.classList.add("justify-content-center")
         thisRow.appendChild(attrCeilActTextArea);
     }
     floorActIndexer++;
-    //?. return row
     return thisRow;
 }
 
@@ -459,40 +456,32 @@ function updateAttr(attr, classID, index) {
     console.log("textboxvalue:", textBoxValue);
     attr._attrFloorActVal = textBoxValue.value
     console.log(attr._attrFloorActVal)
-    updateCurrentItemInfoWindow();
+    updateCurrentItemInfoWindow(currentItem);
     console.log(attr)
 }
 
 const sockRads = document.querySelectorAll('.classSocketQuery');
 for (const radio of sockRads) {
     radio.addEventListener("click", (e) => {
-
         currentItem._base._sockets = parseInt(e.target.value);
-        updateCurrentItemInfoWindow();
-
+        updateCurrentItemInfoWindow(currentItem);
     })
 }
 
 const ethRads = document.querySelectorAll('.classEthQuery');
 for (const radio of ethRads) {
     radio.addEventListener("click", (e) => {
-
         currentItem._base._isEth = (e.target.value == 'True');
-        updateCurrentItemInfoWindow();
-
+        updateCurrentItemInfoWindow(currentItem);
     })
 }
 
-function updateCurrentItemInfoWindow() {
-
+function updateCurrentItemInfoWindow(element) {
     infoWindow.innerText = ``;
-    let element = currentItem;
-
     element._arr.forEach(elementOne => {
         if (elementOne._attributeName._attrName == "% Enhanced Defense" || elementOne._attributeName._attrName == "% Enhanced Damage") { element._base._ed = elementOne._attrFloorActVal; }
         if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
     })
-
 
     let tempString = ``;
     let name = element._name;
@@ -501,12 +490,8 @@ function updateCurrentItemInfoWindow() {
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
-
-
-
     tempString += `${name}${isEth}${sockets}${ed}${def}`;
     if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
-    //iterate through attribute array
     let array = element._arr;
     array.forEach(elementTwo => {
         if (elementTwo._attributeName._attrName != '% Enhanced Defense' && elementTwo._attributeName._attrName != '% Enhanced Damage') {
@@ -514,23 +499,18 @@ function updateCurrentItemInfoWindow() {
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` ${elementTwo._classOrTreeName}`;
             }
-
             tempString += ` ${elementTwo._attrFloorActVal}`
-
             if (elementTwo._attrType == 'twoFieldAttribute') {
                 tempString += ` - ${elementTwo._attrCeilActVal}`;
             }
         }
     })
     infoWindow.innerText = tempString;
+    return (tempString);
 }
 
-
-let body = document.getElementsByTagName('body');
 document.getElementById('moonIconID').addEventListener("click", setNightMode);
 document.getElementById('sunIconID').addEventListener("click", setDayMode);
-
-let isDay = false;
 function checkNightDay() {
     try {
         const isDayJSONStr = localStorage.getItem('dayMode');
@@ -538,10 +518,9 @@ function checkNightDay() {
     } catch {
         console.error.error
     }
-    if (isDay) { setDayMode(); }
-    if (!isDay) { setNightMode(); }
+    (isDay) ? setDayMode() : setNightMode();
 }
-checkNightDay();
+
 function setDayMode() {
     body[0].classList.remove("bg-dark")
     body[0].classList.add('bg-success')
@@ -574,6 +553,7 @@ function clearLocalData() {
     document.getElementById('clearAllBtnID');
     infoWindow.innerText = `Local storage cleared`
 }
-
+checkNightDay();
+loadAttrNickNames();
 sortTradeList();
 
