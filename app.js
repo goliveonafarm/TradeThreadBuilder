@@ -43,13 +43,6 @@ document.getElementById('removeBtnID').addEventListener("click", () => {
     infoWindow.innerText = `Click on an item in the trade window to remove it`;
 })
 
-let questionMarkToolTip = document.getElementById('questionMarkToolTip');
-questionMarkToolTip.addEventListener("mouseover", () => {
-    document.querySelector(".toolTipClass").style.display = "block";
-});
-questionMarkToolTip.addEventListener("mouseleave", () => {
-    document.querySelector(".toolTipClass").style.display = "none";
-});
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
     const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
     localStorage.setItem("attrArray", jsonArr);
@@ -151,7 +144,6 @@ function setAttrNickNames() {
         nickTxtArea.style.resize = "none";
         nickTxtArea.innerText = `${element._attrNickName}`;
         nickTxtArea.addEventListener("keyup", () => { updateAttrNickname(index) })
-        nickTxtArea.addEventListener("mouseup", (e) => { e.target.select() })
         nickNameCol.appendChild(nickTxtArea);
         row.appendChild(nameCol);
         row.appendChild(nickNameCol);
@@ -302,9 +294,10 @@ function populateItemBtn() {
     })
 }
 
+//uniques only atm????????///////////////////////////////////////
 function setEditFields() {
     //if unique
-    ethSockRadRow.hidden = false;
+
     if (chosenMagicClass == 'Unique') {
         const uniqListArr = exports.Unique.uniqueArr.map(element => {
             if (element._name == chosenName) return element;
@@ -313,12 +306,12 @@ function setEditFields() {
         attributeArea.innerHTML = ``;
         let grabInScope = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
         currentItem = grabInScope;
+
+        if(currentItem._base._type == `Weapon` || currentItem._base._type == `Armor`){    ethSockRadRow.hidden = false;}
+
         updateCurrentItemInfoWindow(currentItem);
         //add special row if no ed and no extra defense
         if (grabInScope._base._ed == null && grabInScope._base._addedDef == 0 && grabInScope._base._actDef != undefined) {
-
-
-
             let newRow = generateRowForDefOnly(currentItem)
 
             attributeArea.appendChild(newRow);
@@ -372,6 +365,7 @@ function generateRowForField(attr) {
     const thisRow = document.createElement("div");
     thisRow.classList.add("row");
     thisRow.classList.add("removableAttrRowClass");
+
 
     //1.1F 0
     if (attr._attributeName._attrName != ``) {
@@ -529,6 +523,7 @@ function setDayMode() {
     let g = document.getElementsByTagName('textarea');
     tradeThreadTextArea.classList.remove('bg-dark');
     tradeThreadTextArea.classList.remove('text-warning');
+    let q = document.getElementsByClassName('attrTextAreaClass');
     isDay = true;
     const jsonArr = JSON.stringify(isDay);
     localStorage.setItem('dayMode', isDay);
@@ -541,6 +536,7 @@ function setNightMode() {
     let g = document.getElementsByTagName('textarea');
     tradeThreadTextArea.classList.add('bg-dark');
     tradeThreadTextArea.classList.add('text-warning');
+
     isDay = false;
     const jsonArr = JSON.stringify(isDay);
     localStorage.setItem('dayMode', isDay);

@@ -3,11 +3,14 @@ export class AttributeName {
     constructor(attrName) {
         this._attrName = attrName;
         this._attrNickName = attrName;
+        //Use this for creating custom empty attribute fields-
+        this._editable = true;
         AttributeName.attrArray.push(this);
     }
     static resetNickNames() {
         this.attrArray.forEach(element => {
-            element._attrNickName = element._attrName;
+            if(element._editable){
+            element._attrNickName = element._attrName;}
         });
     }
     static setAttrNickName(index, string) {
@@ -235,7 +238,6 @@ const Str = new AttributeName('Strength');
 const Vit = new AttributeName('Vitality')
 const HitFlee = new AttributeName('Hit causes Monster to Flee');
 const MaxStam = new AttributeName('Maximum Stamina');
-const empty = new AttributeName('');
 const IgnoreTgtDef = new AttributeName('Ignore Target Defense');
 const Knockback = new AttributeName('Knockback');
 const PrevMnstHeal = new AttributeName('Prevent Monster Heal');
@@ -246,7 +248,21 @@ const LevelRequirement = new AttributeName('Level Requirement');
 const Durability = new AttributeName('Durability');
 const AllAttributes = new AttributeName('All attributes +');
 const ExperGained = new AttributeName('Experience Gained %')
-
+const empty = new AttributeName('');
+empty._editable = false;
+empty._attrName = 'Empty val1'
+const emptyTwo = new AttributeName('');
+emptyTwo._editable = false;
+emptyTwo._attrName = 'Empty val2'
+const emptyThree = new AttributeName('');
+emptyThree._editable = false;
+emptyThree._attrName = 'Empty val3'
+const emptyFour = new AttributeName('');
+emptyFour._editable = false;
+emptyFour._attrName = 'Empty val4'
+const emptyFive = new AttributeName('');
+emptyFive._editable = false;
+emptyFive._attrName = 'Empty val5'
 
 const SlayerGuard = new Armor('Slayer Guard', 'Barbarian Helm', 'Exceptional', 93, 120);
 const ArreatsFace = new Unique(SlayerGuard, 'Arreat\s Face', null);
@@ -818,9 +834,9 @@ Annihilus.addAttr(new Attribute(AllRes, 10, 20));
 Annihilus.addAttr(new Attribute(ExperGained, 5, 10));
 const LargeCharm = new Base('Large Charm', 'Charm', 'Elite');
 const HellfireTorch = new Unique(LargeCharm, 'Hellfire Torch', null, 0);
+HellfireTorch.addAttr(new Attribute(empty, '', 'Type in class name-'))
 HellfireTorch.addAttr(new Attribute(AllAttributes, 10, 20));
 HellfireTorch.addAttr(new Attribute(AllRes, 10, 20));
-HellfireTorch.addAttr(new SkillAttribute(empty, 'EDItTHISSSSSSSSSSSS Skills +', 3, 3))
 const GrandCharm = new Base('Grand Charm', 'Charm', 'Elite');
 const GheedsFortune = new Unique(GrandCharm, 'Gheed\'s Fortune', null, 0);
 GheedsFortune.addAttr(new Attribute(GoldFind, 80, 160));

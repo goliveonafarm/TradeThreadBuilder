@@ -16,22 +16,8 @@
 <body class="bg-dark text-warning">
 
     <div class="container-xl pt-1 pb-1">
-        <div class="row">
-            <div class="col-1">
-                <img src="FontIcons/infoCircleIcon.svg" class="img-fluid w-50 rounded-circle" id="questionMarkToolTip">
-            </div>
-            <div class="col toolTipClass" style="display:none;">
-                Customizing attribute names will not change what is already in your trade list. Most buttons
-                have a mouse-over tooltip.
-            </div>
-            <div class="col-10"></div>
-            <div class="col-1">
-                <img id="moonIconID" src="FontIcons/moonIcon.svg">
-                <img id="sunIconID" src="FontIcons/sunIcon.svg">
-            </div>
-        </div>
         <div class="row p-1">
-            <div class="col">
+            <div class="col-11">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
                     data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
                     data-toggle="tooltip"
@@ -39,6 +25,10 @@
                     names
                     <img src="FontIcons/caretDown.svg">
                 </button>
+            </div>
+            <div class="col-1">
+                <img id="moonIconID" src="FontIcons/moonIcon.svg">
+                <img id="sunIconID" src="FontIcons/sunIcon.svg">
             </div>
         </div>
         <div class="row collapse text-end" id="attrCollapseID">
@@ -79,8 +69,8 @@
             <div class="col">
                 <div class="dropdown">
                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
-                        data-toggle="tooltip" title="Currently only uniques are supported"
-                        id="btnPushClassListID">Pick class first</button>
+                        data-toggle="tooltip" title="Currently only uniques are supported" id="btnPushClassListID">Pick
+                        class first</button>
                     <ul class="dropdown-menu" id="ulPushClassListID" aria-labelledby="dropdownMenuButton">
                     </ul>
                 </div>
@@ -99,55 +89,57 @@
     <div class="container-xl  pb-1" id="attrAreaID"></div>
     <div class="container-xl  pb-1">
         <div hidden class="row" id="ethSockRadID">
-            <div class="col-auto"><label>Sockets</label>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="0"
-                        checked>
-                    <label class="form-check-label" for="flexRadioDefault20">
-                        0
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="1">
-                    <label class="form-check-label" for="flexRadioDefault21">
-                        1
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="2">
-                    <label class="form-check-label" for="flexRadioDefault22">
-                        2
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="3">
-                    <label class="form-check-label" for="flexRadioDefault23">
-                        3
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="4">
-                    <label class="form-check-label" for="flexRadioDefault24">
-                        4
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="5">
-                    <label class="form-check-label" for="flexRadioDefault25">
-                        5
-                    </label>
-                </div>
-                <div class="form-check form-check-inline ">
-                    <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="6">
-                    <label class="form-check-label" for="flexRadioDefault26">
-                        6
-                    </label>
+            <div class="row text-end">
+                <div class="col"><label>Sockets</label>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="0"
+                            checked>
+                        <label class="form-check-label" for="flexRadioDefault20">
+                            0
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="1">
+                        <label class="form-check-label" for="flexRadioDefault21">
+                            1
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="2">
+                        <label class="form-check-label" for="flexRadioDefault22">
+                            2
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="3">
+                        <label class="form-check-label" for="flexRadioDefault23">
+                            3
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="4">
+                        <label class="form-check-label" for="flexRadioDefault24">
+                            4
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="5">
+                        <label class="form-check-label" for="flexRadioDefault25">
+                            5
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input classSocketQuery" type="radio" name="socketsRadGroup" value="6">
+                        <label class="form-check-label" for="flexRadioDefault26">
+                            6
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-auto">
-                    <div class="form-check form-check-inline ">
-                        <input class="form-check-input classEthQuery" type="radio" name="socketsEthGroup" value="False"
+            <div class="row text-end">
+                <div class="col">
+                    <div class=" form-check form-check-inline ">
+                        <input class=" form-check-input classEthQuery" type="radio" name="socketsEthGroup" value="False"
                             checked>
                         <label class="form-check-label" for="flexRadioDefault11">
                             Non Ethereal
@@ -163,11 +155,10 @@
             </div>
         </div>
         <div class="row p-1">
-            <div class="col-10 text-end">
-                <label id="lblCurrentItemID"> -- This is the console section and provides information about your
-                    selection -- </label>
-            </div>
             <div class="col text-end">
+                <label id="lblCurrentItemID">To get started pick a clas. Most buttons have mouse over tool tip. Double check this area to confirm your item before adding!</label>
+            </div>
+            <div class="col-2 text-end">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="btnAddItemID"
                     data-toggle="tooltip" title="Adds the current item to your trade thread">Add item
                     <img src="FontIcons/earmarkIcon.svg">
@@ -195,7 +186,7 @@
             </div>
             <div class="col">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
-                    title="This will add category names for your trade list (also sorts it)">Categorize
+                    title="This will add category names for your trade list">Categorize
                 </button>
             </div>
             <div class="col">
@@ -220,7 +211,8 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap bg-dark text-warning" rows="17" id="tradeThreadTextAreaID"></textarea>
+                <textarea class="w-100 text-nowrap bg-dark text-warning" rows="25"
+                    id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
         <row>
@@ -235,8 +227,7 @@
     </div>
     </div>
     <div class="container-xl">
-        <div id="revealCounterID" >
-
+        <div id="revealCounterID">
         </div>
         <row>
             <div hidden class="col">
