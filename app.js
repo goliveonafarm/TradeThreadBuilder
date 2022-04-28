@@ -101,7 +101,7 @@ function loadAttrNickNames() {
             if (parsedAttrArr.length != exports.AttributeName.attrArray.length) {
                 exports.AttributeName.resetNickNames();
                 localStorage.removeItem("attrArray");
-                alert('An update or error has caused your attribute nick names to reset, sorry!')
+                alert('An update or error has caused your attribute nick names to reset!')
             } else {
                 exports.AttributeName.updateValues(parsedAttrArr)
             }
@@ -165,7 +165,7 @@ document.getElementById('btnAddItemID').addEventListener("click", () => {
         addUnique(currentItem._name);
         sortTradeList();
         infoWindow.innerText = `Current item was added`;
-    } catch (error) {infoWindow.innerText = `You do not currently have an item to add`;}
+    } catch (error) { infoWindow.innerText = `You do not currently have an item to add`; }
 })
 
 function addUnique(uniqName) {
@@ -182,7 +182,7 @@ function addUnique(uniqName) {
         Object.assign(G, B, { _base: Z });
         myTradeItems.push(G)
     }
-    catch (error) { infoWindow.innerText=`There was some kind of error I dont know about`}
+    catch (error) { infoWindow.innerText = `There was some kind of error I dont know about` }
 }
 
 function removeItem(myListIndex) {
