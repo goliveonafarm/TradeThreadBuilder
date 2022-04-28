@@ -105,17 +105,14 @@ function loadAttrNickNames() {
         const attrJSONStr = localStorage.getItem("attrArray");
         if (attrJSONStr != null) {
             const parsedAttrArr = JSON.parse(attrJSONStr);
-            
-            
-            if(parsedAttrArr.length != exports.AttributeName.attrArray.length){
+            if (parsedAttrArr.length != exports.AttributeName.attrArray.length) {
                 exports.AttributeName.resetNickNames();
                 localStorage.removeItem("attrArray");
                 alert('An update or error has caused your attribute nick names to reset, sorry!')
-            }else{
+            } else {
                 exports.AttributeName.updateValues(parsedAttrArr)
             }
         };
-
     } catch (error) {
     }
     setAttrNickNames();
@@ -225,7 +222,6 @@ function updateTradeList() {
         }
         let myString = updateCurrentItemInfoWindow(element);
         tradeThreadTextArea.value += `${myString}\n`;
-
     });
 }
 
@@ -265,6 +261,8 @@ classList.forEach(item => {
         infoWindow.innerText = ``;
         ethSockRadRow.hidden = true;
         populateItemBtn();
+        document.getElementById('btnPickItemListID').textContent='Pick item'
+
     })
     document.getElementById("ulPushClassListID").appendChild(liItem);
 })
@@ -273,7 +271,6 @@ function populateItemBtn() {
     const result = exports.Unique.uniqueArr.filter(function (e) {
         return e._magicClass == chosenMagicClass;
     })
-
     const secondResult = result.filter(function (e) {
         return e._base._itemClass == chosenClass;
     })
@@ -375,6 +372,7 @@ function generateRowForField(attr) {
     const thisRow = document.createElement("div");
     thisRow.classList.add("row");
     thisRow.classList.add("removableAttrRowClass");
+
     //1.1F 0
     if (attr._attributeName._attrName != ``) {
         const attrNickCol = document.createElement("div");
@@ -389,16 +387,18 @@ function generateRowForField(attr) {
         const classOrTreeNameTextNode = document.createTextNode(`${attr._classOrTreeName}`);
         attrClassOrTreeNameCol.appendChild(classOrTreeNameTextNode);
         thisRow.appendChild(attrClassOrTreeNameCol);
+    } else {
+
     }
     //1.2 aFinV 2
     const attrFloorMinCol = document.createElement("div");
-    attrFloorMinCol.classList.add("col");
+    attrFloorMinCol.classList.add("col-1");
     const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
     attrFloorMinCol.appendChild(attrFloorMinText);
     thisRow.appendChild(attrFloorMinCol)
     //1.3 aFMaxV 3
     const attrFloorMaxCol = document.createElement("div");
-    attrFloorMaxCol.classList.add("col");
+    attrFloorMaxCol.classList.add("col-1");
     const attrFloormaxText = document.createTextNode(`${attr._attrFloorMaxVal}`);
     attrFloorMaxCol.appendChild(attrFloormaxText);
     thisRow.appendChild(attrFloorMaxCol)
