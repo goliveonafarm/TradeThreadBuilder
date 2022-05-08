@@ -14,7 +14,6 @@
 </head>
 
 <body class="bg-dark text-warning">
-
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
             <div class="col-11">
@@ -52,7 +51,8 @@
             </div>
         </div>
         <div class="row p-1 text-end">
-            <div class="col" hidden>
+            <div class="col-5"></div>
+            <div class="col">
                 <div class="dropdown">
                     <button data-toggle="tooltip"
                         title="You have to select a type and class to generate a list. Currently only uniques available"
@@ -60,17 +60,15 @@
                         id="returnTypeBtnID">Type</button>
                     <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
                         <li class="dropdown-item returnTypeClass" href="#" id=467>Unique</li>
-                        <li class="dropdown-item returnTypeClass" href="#" id=470></li>
-                        <li class="dropdown-item returnTypeClass" href="#" id=474></li>
+                        <li class="dropdown-item returnTypeClass" href="#" id=470>Base</li>
+                        <li class="dropdown-item returnTypeClass" href="#" id=474>Misc</li>
                     </ul>
                 </div>
             </div>
-            <div class="col-6"></div>
             <div class="col">
                 <div class="dropdown">
                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
-                        data-toggle="tooltip" title="Currently only uniques are supported" id="btnPushClassListID">Pick
-                        class first</button>
+                        data-toggle="tooltip" title="Currently only uniques are supported" id="btnPushClassListID">Pick type first</button>
                     <ul class="dropdown-menu" id="ulPushClassListID" aria-labelledby="dropdownMenuButton">
                     </ul>
                 </div>
@@ -79,7 +77,7 @@
                 <div class="dropdown">
                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
                         data-toggle="tooltip" title="You must pick both an item class before generating a list"
-                        id="btnPickItemListID">Pick item</button>
+                        id="btnPickItemListID">Pick type first</button>
                     <ul class="dropdown-menu" id="ulPushPickItemListID" aria-labelledby="dropdownMenuButton">
                     </ul>
                 </div>
@@ -156,7 +154,8 @@
         </div>
         <div class="row p-1">
             <div class="col text-end">
-                <label id="lblCurrentItemID">To get started, pick a class, then your item. Most buttons have mouse over tool tip. Double check this area to confirm your item before adding!</label>
+                <label id="lblCurrentItemID">To get started, pick a type, class, then your item. Most buttons have mouse over
+                    tool tip. Double check this area to confirm your item before adding!</label>
             </div>
             <div class="col-2 text-end">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="btnAddItemID"
@@ -215,7 +214,7 @@
                     id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
-        <row>
+        <div class="row">
             <div class="col">
                 <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                     id="clearAllBtnID"
@@ -223,19 +222,12 @@
                     <img src="FontIcons/warningIcon2.svg">Clear local storage
                 </button>
             </div>
-        </row>
-    </div>
-    </div>
-    <div class="container-xl">
-        <div id="revealCounterID">
-        </div>
-        <row>
-            <div hidden class="col">
-                <button class="btn btn-sm btn-dark bg-gradient text-nowrap" type="button" aria-expanded="false"
-                    id="openUpID" title="Test button">'
-                </button>
+            <div class="col">
+                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                    id="testBtnID" title="This button is for testing purposes only and should not do anything :P">
+                    Test </button>
             </div>
-        </row>
+        </div>
     </div>
 </body>
 

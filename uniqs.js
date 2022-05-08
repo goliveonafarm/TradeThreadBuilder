@@ -87,9 +87,9 @@ export class Base {
         this._tier = tier;
         this._isEth = false;
         this._ed = null;
-        this._addedthisRowField = 0;
         this._sockets = 0;
         this._type = 'Jewelry';
+        this._price = 0;
         Base.baseArray.push(this);
     }
     get baseName() { return this._baseName; }
@@ -141,10 +141,6 @@ export class Item {
         this._arr = [];
         this._name = base._baseName;
         this._magicClass = 'Base';
-
-    }
-    setEd(newEd) {
-        this._base._ed = newEd;
     }
     addAttr(attr) {
         let g = attr._attributeName._attrName;
@@ -165,11 +161,21 @@ export class Unique extends Item {
         Unique.uniqueArr.push(this);
     }
 }
+let QuantizedItemIndexer = 0;
+export class QuantizedItem extends Unique{
+    constructor(base, name, ed, addedDef){
+        super(base, name, ed, addedDef)
+        this.addAttr(new Attribute(ItemQuantity, 0, 99, 1))
+        this._quantizedIndex = QuantizedItemIndexer++;
+        this._magicClass='Misc'
+    }
+}
 
 //#region attributes
 const EnhancedDef = new AttributeName('% Enhanced Defense');
 const EnhancedDmg = new AttributeName('% Enhanced Damage');
 const Def = new AttributeName('Defense');
+const Currency = new AttributeName('Forum Gold');
 const Ar = new AttributeName('Attack Rating');
 const ArPerc = new AttributeName('Attacking Rating %')
 const ArUndead = new AttributeName('Attack Rating vs Undead +')
@@ -247,8 +253,11 @@ const Repair = new AttributeName('Repairs 1 duarbility in seconds x');
 const PsnLength = new AttributeName('Poison Length Reduced by %');
 const LevelRequirement = new AttributeName('Level Requirement');
 const Durability = new AttributeName('Durability');
-const AllAttributes = new AttributeName('All attributes +');
+const AllAttributes = new AttributeName('All Attributes +');
 const ExperGained = new AttributeName('Experience Gained %')
+const ItemQuantity = new AttributeName('x');
+ItemQuantity._editable = false;
+ItemQuantity._attrName = 'Quantity'
 const empty = new AttributeName('');
 empty._editable = false;
 empty._attrName = 'Empty Value'
@@ -436,7 +445,9 @@ const Greaves = new Armor('Greaves', 'Boots', 'Normal', 12, 15);
 const Tearhaunch = new Unique(Greaves, 'Tearhaunch', 60, 80, 35);
 Tearhaunch.addAttr(new Attribute(EnhancedDef, 60, 80));
 const DemonhideBoots = new Armor('Demonhide Boots', 'Boots', 'Exceptional', 28, 35);
-const Infernostride = new Unique(DemonhideBoots, 'Infernostride', 146, 15);
+const Infernostride = new Unique(DemonhideBoots, 'Infernostride', 0, 15);
+Infernostride.addAttr(new Attribute(EnhancedDef, 120, 150));
+Infernostride.addAttr(new Attribute(GoldFind, 40, 70));
 const SharkskinBoots = new Armor('Sharkskin Boots', 'Boots', 'Exceptional', 33, 39);
 const Waterwalk = new Unique(SharkskinBoots, 'Waterwalk', null, 0);
 Waterwalk.addAttr(new Attribute(EnhancedDef, 180, 210));
@@ -504,7 +515,7 @@ SpiritKeeper.addAttr(new Attribute(LightAsbInt, 9, 14));
 SpiritKeeper.addAttr(new Attribute(ColdAbsorbPerc, 15, 25));
 
 const LeatherGloves = new Armor('Leather Gloves', 'Gloves', 'Normal', 2, 3);
-const HandOfBroc = new Unique(LeatherGloves, 'HandOfBroc', 14, 10);
+const HandOfBroc = new Unique(LeatherGloves, 'HandOfBroc', 0, 10);
 const HeavyGloves = new Armor('Heavy Gloves', 'Gloves', 'Normal', 5, 6);
 const Bloodfist = new Unique(HeavyGloves, 'Bloodfist', null, 10);
 Bloodfist.addAttr(new Attribute(EnhancedDef, 10, 20));
@@ -951,6 +962,75 @@ const GheedsFortune = new Unique(GrandCharm, 'Gheed\'s Fortune', null, 0);
 GheedsFortune.addAttr(new Attribute(GoldFind, 80, 160));
 GheedsFortune.addAttr(new Attribute(RedcVendPrices, 10, 15));
 GheedsFortune.addAttr(new Attribute(MagicFind, 20, 40));
+
+const Rune = new Base('Rune', 'Rune', 'Elite');
+const ElRune = new QuantizedItem(Rune, 'El', 0, null);
+const EldRune = new QuantizedItem(Rune, 'Eld', 0, null);
+const TirRune = new QuantizedItem(Rune, 'Tir', 0, null);
+const NefRune = new QuantizedItem(Rune, 'Nef', 0, null);
+const EthRune = new QuantizedItem(Rune, 'Eth', 0, null);
+const IthRune = new QuantizedItem(Rune, 'Ith', 0, null);
+const TalRune = new QuantizedItem(Rune, 'Tal', 0, null);
+const RalRune = new QuantizedItem(Rune, 'Ral', 0, null);
+const OrtRune = new QuantizedItem(Rune, 'Ort', 0, null);
+const ThulRune = new QuantizedItem(Rune, 'Thul', 0, null);
+const AmnRune = new QuantizedItem(Rune, 'Amn', 0, null);
+const SolRune = new QuantizedItem(Rune, 'Sol', 0, null);
+const ShaelRune = new QuantizedItem(Rune, 'Shael', 0, null);
+const DolRune = new QuantizedItem(Rune, 'Dol', 0, null);
+const HelRune = new QuantizedItem(Rune, 'Hel', 0, null);
+const IoRune = new QuantizedItem(Rune, 'Io', 0, null);
+const LumRune = new QuantizedItem(Rune, 'Lum', 0, null);
+const KoRune = new QuantizedItem(Rune, 'Ko', 0, null);
+const FalRune = new QuantizedItem(Rune, 'Fal', 0, null);
+const LemRune = new QuantizedItem(Rune, 'Lem', 0, null);
+const PulRune = new QuantizedItem(Rune, 'Pul', 0, null);
+const UmRune = new QuantizedItem(Rune, 'Um', 0, null);
+const MalRune = new QuantizedItem(Rune, 'Mal', 0, null);
+const IstRune = new QuantizedItem(Rune, 'Ist', 0, null);
+const GulRune = new QuantizedItem(Rune, 'Gul', 0, null);
+const VexRune = new QuantizedItem(Rune, 'Vex', 0, null);
+const OhmRune = new QuantizedItem(Rune, 'Ohm', 0, null);
+const LoRune = new QuantizedItem(Rune, 'Lo', 0, null);
+const SurRune = new QuantizedItem(Rune, 'Sur', 0, null);
+const BerRune = new QuantizedItem(Rune, 'Ber', 0, null);
+const JahRune = new QuantizedItem(Rune, 'Jah', 0, null);
+const ChamRune = new QuantizedItem(Rune, 'Cham', 0, null);
+const ZodRune = new QuantizedItem(Rune, 'Zod', 0, null);
+
+const Key = new Base('Key', 'Key', 'Elite');
+const KeyOfTerror = new QuantizedItem(Key, 'Key of Terror', 0, null);
+const KeyOfHate = new QuantizedItem(Key, 'Key of Hate', 0, null);
+const KeyOfDestruction = new QuantizedItem(Key, 'Key of Desctruction', 0, null);
+
+const Essence = new Base('Essence', 'Essence', 'Elite');
+const TwistedEssenceOfSuffering = new QuantizedItem(Essence, 'Twisted Essence of Suffering', 0, null);
+const ChargedEssenceOfHatred = new QuantizedItem(Essence, 'Charged Essence of Hatred', 0, null);
+const BurningEssenceOfTerror = new QuantizedItem(Essence, 'Burning Essence of Terror', 0, null);
+const FesteringEssenceOfDestruction = new QuantizedItem(Essence, 'Festering Essence of Destruction', 0, null);
+const TokenOfAbsolution = new QuantizedItem(Essence, 'Token of Absolution', 0, null)
+
+const Potion = new Base('Potion', 'Potion', 'Elite');
+const FullRejuvenationPotion = new QuantizedItem(Potion, 'Full Rejuvenation Potion', 0, null)
+
+const Gem = new Base('Gem', 'Gem', 'Elite');
+const FlawlessRuby = new QuantizedItem(Gem, 'Flawless Ruby', 0, null);
+const PerfectRuby = new QuantizedItem(Gem, 'Perfect Ruby', 0, null);
+const FlawlessSapphire = new QuantizedItem(Gem, 'Flawless Sapphire', 0, null);
+const PerfectSapphire = new QuantizedItem(Gem, 'Perfect Sapphire', 0, null);
+const FlawlessTopaz = new QuantizedItem(Gem, 'Flawless Topaz', 0, null);
+const PerfectTopaz = new QuantizedItem(Gem, 'Perfect Topaz', 0, null);
+const FlawlessEmerald = new QuantizedItem(Gem, 'Flawless Emerald', 0, null);
+const PerfectEmerald = new QuantizedItem(Gem, 'Perfect Emerald', 0, null);
+const FlawlessDiamond = new QuantizedItem(Gem, 'Flawless Diamond', 0, null);
+const PerfectDiamond = new QuantizedItem(Gem, 'Perfect Diamond', 0, null);
+const FlawlessAmethyst = new QuantizedItem(Gem, 'Flawless Amethyst', 0, null);
+const PerfectAmethyst = new QuantizedItem(Gem, 'Perfect Amethyst', 0, null);
+const FlawlessSkull = new QuantizedItem(Gem, 'Flawless Skull', 0, null);
+const PerfectSkull = new QuantizedItem(Gem, 'Perfect Skull', 0, null);
+
+const Socket = new Base('Socket', 'Socket', 'Elite');
+const SocketQuest = new QuantizedItem(Socket, 'Socket quest', 0, null)
 
 const Amulet = new Base('Amulet', 'Amulet', 'Elite');
 const NokozanRelic = new Unique(Amulet, 'Nokozan Relic', null, 0);
