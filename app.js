@@ -20,11 +20,29 @@ let openUp = 0;
 
 document.getElementById("testBtnID").addEventListener("click", addNewItemCopy);
 function addNewItemCopy() {
-    let copyItem = exports.Unique.uniqueArr[0];
-    let copyBase = exports.Base.baseArray[0];
-    let pushedBase = new exports.Armor(copyBase._baseName, copyBase._itemClass, copyBase._tier, copyBase._minDef, copyBase._maxDef)
+    let copyItem = currentItem;
+    let copyBase = currentItem._base;
+    let pushedBase = null;
+    if(copyBase._type == 'Armor') pushedBase = new exports.Armor(copyBase._baseName, copyBase._itemClass, copyBase._tier, copyBase._minDef, copyBase._maxDef);
+    if(copyBase._type == 'Weapon') pushedBase = new exports.Weapon(copyBase._baseName, copyBase._itemClass, copyBase._tier, copyBase._minDamage, copyBase._maxDamage);
+    if(copyBase._type == 'Jewelry') pushedBase = new exports.Base(copyBase._baseName, copyBase._itemClass, copyBase._tier);
+    //this is all new code we are trying to figure out wwwwwwwwww
     let pushedItem = new exports.Unique(pushedBase, copyItem._name, copyItem._base._ed, copyItem._base._addedDef);
-    pushedItem._arr = copyItem._arr;
+    //pushedItem._arr = copyItem._arr;
+    copyItem._arr.forEach(element => {
+        console.log(element)
+        let attrCopy = null;
+        if(element._attrType == 'attribute') attrCopy = new exports.Attribute(element._attributeName, element._attrFloorMinVal, element._attrFloorMaxVal);
+        if(element._attrType == 'skillAttribute') attrCopy = new exports.SkillAttribute(element._attributeName, element._classOrTreeName, element._attrFloorMinVal, element._attrFloorMaxVal)
+        if(element._attrType == 'twoFieldAttribute'){
+            attrCopy = new exports.TwoFieldAttribute(element._attributeName, element._attrFloorMinVal, element._attrFloorMaxVal, element._attrCeilMinVal, element._attrCeilMaxVal);
+            attrCopy._attrCeilActVal = element._attrCeilActVal;
+        }
+        attrCopy._attrFloorActVal = element._attrFloorActVal;
+        pushedItem.addAttr(attrCopy)
+    })
+    pushedItem._price = copyItem._price;
+    copyItem._price = 0;
     myTradeItems.push(pushedItem);
     sortTradeList();
 }
@@ -63,6 +81,7 @@ document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
 document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
     loadAttrNickNames();
     infoWindow.innerText = "Loaded custom attribute names";
+    updateTradeList();
 });
 
 document.getElementById('saveBtnID').addEventListener('click', () => {
@@ -132,6 +151,7 @@ document.getElementById('btnResetAttrNickID').addEventListener('click', resetAtt
 function resetAttrNickNames() {
     exports.AttributeName.resetNickNames();
     setAttrNickNames();
+    updateTradeList();
 }
 function setAttrNickNames() {
     let attrHTMLRows = document.querySelectorAll('.attrColID');
@@ -154,7 +174,10 @@ function setAttrNickNames() {
         nickTxtArea.style.overflow = "hidden";
         nickTxtArea.style.resize = "none";
         nickTxtArea.innerText = `${element._attrNickName}`;
-        nickTxtArea.addEventListener("keyup", () => { updateAttrNickname(index) })
+        nickTxtArea.addEventListener("keyup", () => {
+            updateAttrNickname(index);
+            updateTradeList();
+         })
         nickTxtArea.addEventListener('focus', () => {
             nickTxtArea.select();
         })
@@ -175,8 +198,8 @@ function createItem(baseName) {
 }
 
 document.getElementById('btnAddItemID').addEventListener("click", () => {
-    try {
-        addUnique(currentItem._name);
+    try {//ttttttttttttttt
+        addNewItemCopy();
         sortTradeList();
         clearWindows();
         infoWindow.innerText = `Added ${currentItem._name} to trade list`;
@@ -184,6 +207,7 @@ document.getElementById('btnAddItemID').addEventListener("click", () => {
     } catch (error) { infoWindow.innerText = `You do not currently have an item to add`; }
 })
 
+/*  ///Deprecated no longer useful
 function addUnique(uniqName) {
     let unique = exports.Unique.uniqueArr.filter(function (e) {
         return e._name == `${uniqName}`
@@ -201,7 +225,7 @@ function addUnique(uniqName) {
     catch (error) { infoWindow.innerText = `There was some kind of error I dont know about` }
     document.getElementById('btnPickItemListID').textContent = 'Pick item'
 
-}
+}*/
 
 function removeItem(myListIndex) {
     console.log("Removed item:", myTradeItems[myListIndex]);
@@ -358,7 +382,6 @@ function setEditFields() {
 }
 
 function generateRowForPrice(itemToGen) {
-    let base = itemToGen._base;
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
     thisRow.classList.add("row");
@@ -374,11 +397,11 @@ function generateRowForPrice(itemToGen) {
     priceTextArea.classList.add("col-2");
     priceTextArea.setAttribute("type", "number");
     priceTextArea.setAttribute("rows", 1);
-    priceTextArea.innerHTML = `${base._price}`;
+    priceTextArea.innerHTML = `${itemToGen._price}`;
     priceTextArea.style.resize = "none";
     priceTextArea.style.overflow = "hidden";
     priceTextArea.addEventListener("keyup", (e) => {
-        base._price = (e.target.value)
+        itemToGen._price = (e.target.value)
         updateCurrentItemInfoWindow(currentItem);
     });
     priceTextArea.addEventListener('focus', () => {
@@ -580,8 +603,8 @@ function updateCurrentItemInfoWindow(element) {
             eachString = ` / each`
         }
     })
-    if (element._base._price != 0) {
-        tempString += ` - ${element._base._price} ${exports.AttributeName.attrArray[3]._attrNickName} ${eachString}`
+    if (element._price != 0) {
+        tempString += ` - ${element._price} ${exports.AttributeName.attrArray[3]._attrNickName} ${eachString}`
     }
     infoWindow.innerText = tempString;
     return (tempString);//tttttttttttttttttt

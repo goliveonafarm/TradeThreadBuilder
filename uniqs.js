@@ -3,7 +3,7 @@ export class AttributeName {
     constructor(attrName) {
         this._attrName = attrName;
         this._attrNickName = attrName;
-        //Use this for creating custom empty attribute fields-
+        //Use _editable for creating custom empty attribute fields-
         this._editable = true;
         AttributeName.attrArray.push(this);
     }
@@ -89,7 +89,6 @@ export class Base {
         this._ed = null;
         this._sockets = 0;
         this._type = 'Jewelry';
-        this._price = 0;
         Base.baseArray.push(this);
     }
     get baseName() { return this._baseName; }
@@ -141,6 +140,7 @@ export class Item {
         this._arr = [];
         this._name = base._baseName;
         this._magicClass = 'Base';
+        this._price = 0;
     }
     addAttr(attr) {
         let g = attr._attributeName._attrName;
