@@ -13,7 +13,7 @@
     <title>Trade thread builder</title>
 </head>
 
-<body class="bg-dark text-warning">
+<body class="bg-dark text-light">
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
             <div class="col-11">
@@ -26,8 +26,8 @@
                 </button>
             </div>
             <div class="col-1">
-                <img id="moonIconID" src="FontIcons/moonIcon.svg">
-                <img id="sunIconID" src="FontIcons/sunIcon.svg">
+                <img title="Turn on night mode" id="moonIconID" src="FontIcons/moonIcon.svg">
+                <img title="Turn on day mode" style="-webkit-filter: invert(100%);" id="sunIconID" src="FontIcons/sunIcon.svg">
             </div>
         </div>
         <div class="row collapse text-end" id="attrCollapseID">
@@ -50,37 +50,20 @@
                 </div>
             </div>
         </div>
-        <div class="row p-1 text-end">
-            <div class="col-5"></div>
-            <div class="col">
-                <div class="dropdown">
-                    <button data-toggle="tooltip"
-                        title="You have to select a type and class to generate a list. Currently only uniques available"
-                        type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
-                        id="returnTypeBtnID">Type</button>
-                    <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
-                        <li class="dropdown-item returnTypeClass" href="#" id=467>Unique</li>
-                        <li class="dropdown-item returnTypeClass" href="#" id=470>Base</li>
-                        <li class="dropdown-item returnTypeClass" href="#" id=474>Misc</li>
-                    </ul>
-                </div>
+
+    </div>
+    <div class="container-xl pb-1">
+        <div class="row">
+            <div class="col-12">
+                <textarea class="w-100 text-nowrap" rows="1"
+                    id="testTextAreaID" placeholder="Search"></textarea>
             </div>
-            <div class="col">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
-                        data-toggle="tooltip" title="Currently only uniques are supported" id="btnPushClassListID">Pick type first</button>
-                    <ul class="dropdown-menu" id="ulPushClassListID" aria-labelledby="dropdownMenuButton">
-                    </ul>
-                </div>
-            </div>
-            <div class="col">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle " data-bs-toggle="dropdown"
-                        data-toggle="tooltip" title="You must pick both an item class before generating a list"
-                        id="btnPickItemListID">Pick type first</button>
-                    <ul class="dropdown-menu" id="ulPushPickItemListID" aria-labelledby="dropdownMenuButton">
-                    </ul>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <ul class="list-group">
+
+                </ul>
             </div>
         </div>
     </div>
@@ -153,54 +136,43 @@
             </div>
         </div>
         <div class="row p-1">
-            <div class="col text-end">
-                <label id="lblCurrentItemID">To get started, pick a type, class, then your item. Most buttons have mouse over
-                    tool tip. Double check this area to confirm your item before adding!</label>
+            <div class="col ">
+                <label id="lblCurrentItemID">Start by typing your item. Tab/enter will select the first item from the list. Or you can click on any of the items. Most buttons have mouse over tool tips.</label>
             </div>
             <div class="col-2 text-end">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="btnAddItemID"
+                <button style="display:none" class="btn btn-sm btn-success text-nowrap text-dark" type="button" aria-expanded="false" id="btnAddItemID"
                     data-toggle="tooltip" title="Adds the current item to your trade thread">Add item
                     <img src="FontIcons/earmarkIcon.svg">
                 </button>
             </div>
         </div>
-        <div class="row p-1 text-end">
-            <div class="col">
-                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
-                    id="clearBtnID"
-                    title="This will clear your entire trade list and you will have to load or start over">
-                    Clear Trade List
-                </button>
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
+        <div class="row p-1">
+
+            <div class="col-2">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
                     id="clipboardBtnID" data-toggle="tooltip"
                     title="Copies your entire trade list. You can paste directly it into your trading thread">Clipboard
                     <img src="FontIcons/clipboardIcon.svg">
                 </button>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
                     title="This will add category names for your trade list">Categorize
                 </button>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="saveBtnID"
                     title="Save your trade list to local storage and retrieve it later">Save
                     <img src="FontIcons/save2.svg">
                 </button>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="loadBtnID"
                     data-toggle="tooltip" title="Load your trade list from local storage">Load
                     <img src="FontIcons/downloadIcon.svg">
                 </button>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <button class="btn btn-sm btn-warning text-nowrap" type="button" aria-expanded="false" id="removeBtnID"
                     data-toggle="tooltip" title="Click this button then an item on your trade list to remove it">Remove
                     item
@@ -210,25 +182,43 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap bg-dark text-warning" rows="25"
+                <textarea class="w-100 text-nowrap bg-dark text-light" rows="25"
                     id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
+
+  
+
+<div class="row p-1">
+    <div class="col">
+        <div class="float-start">
+            <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+            id="clearBtnID"
+            title="This will clear your entire trade list and you will have to load or start over">
+            Delete Trade List
+        </button>
+        </div>
+            <div class="float-end">
                 <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                     id="clearAllBtnID"
-                    title="This will only delete the local data used on this page. You can use a program like CCleaner to clear all of it. After clearing storage you can still save your current trade in the trade window and not lose anything">
-                    <img src="FontIcons/warningIcon2.svg">Clear local storage
+                    title="This will only delete the local data used for this webpage only. You can use a program like CCleaner to clear all your local storage. After clearing storage you can still save your current trade in the trade window and not lose anything">
+                    <img src="FontIcons/warningIcon2.svg">Delete local storage
                 </button>
             </div>
-            <div class="col">
-                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+
+        </div>
+    
+        </div>
+
+            <div class=" p-2 float-end">
+                <button style="display: none;" class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                     id="testBtnID" title="This button is for testing purposes only and should not do anything :P">
                     Test </button>
             </div>
-        </div>
+
     </div>
+
+    
 </body>
 
 </html>
