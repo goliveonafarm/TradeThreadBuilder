@@ -1221,10 +1221,10 @@ ShadowDancer.addAttr(new Attribute(ManaOnKill, 10, 15));
 const FeralClaws = new Weapon("Feral Claws", "Katar", "Elite", 22, 53);
 const FirelizardsTalons = new Unique(FeralClaws, "Firelizard's Talons", 0, 0);
 FirelizardsTalons.addAttr(new Attribute(EnhancedDmg, 200, 270));
-JadeTalon.addAttr(new SkillAttribute(empty, "Martial Arts", 1, 3));
-JadeTalon.addAttr(new SkillAttribute(empty, "Wake of Inferno", 1, 2));
-JadeTalon.addAttr(new SkillAttribute(empty, "Wake of Fire", 1, 2));
-JadeTalon.addAttr(new Attribute(FireRes, 40, 70));
+FirelizardsTalons.addAttr(new SkillAttribute(empty, "Martial Arts", 1, 3));
+FirelizardsTalons.addAttr(new SkillAttribute(empty, "Wake of Inferno", 1, 2));
+FirelizardsTalons.addAttr(new SkillAttribute(empty, "Wake of Fire", 1, 2));
+FirelizardsTalons.addAttr(new Attribute(FireRes, 40, 70));
 
 const SwirlingCrystal = new Weapon(
   "Swirling Crystal",

@@ -212,7 +212,6 @@ function updateTradeList() {
             }
         }
         let myString = updateCurrentItemInfoWindow(element);
-        console.log(`updateTradeList() element: ${myString}`)
         tradeThreadTextArea.value += `${myString}\n`;
     });
 }
@@ -222,7 +221,6 @@ function calcDefHere(element) {
     let ed = parseFloat(element._base._ed);
     let def = parseFloat(element._base._defActVal);
     let addedDef = parseFloat(element._base._addedDef);
-    console.log(`ethMultiplier:${ethMultiplier} ed:${ed} def:${def} addedDef:${addedDef}`)
     if (ed === null || isNaN(ed)) return ((def * ethMultiplier) + addedDef);
     if (ed != 0 && ed != null) { def += 1 }
     return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
@@ -237,8 +235,8 @@ function sortTradeList() {
 }
 
 const testAreaID = document.getElementById('testTextAreaID');
-testAreaID.addEventListener("keyup", (e) => {testFunction(e)});
-testAreaID.addEventListener("keydown", (e) => {runThis(e)});
+testAreaID.addEventListener("keyup", (e) => {listGroupNamesGen(e)});
+testAreaID.addEventListener("keydown", (e) => {stopDefault(e)});
 
 testAreaID.style.resize = "none";
 let fullNameListArray = exports.Unique.uniqueArr.concat(exports.Base.baseArray)
@@ -249,13 +247,12 @@ mappedNameArray.sort();
 let listGroup = document.getElementsByClassName('list-group')[0];
 listGroup.style.position = "absolute";
 
-function runThis(e){
+function stopDefault(e){
     if(e.key == 'Tab' || e.key == 'Enter'){
     e.preventDefault()}
 }
 
-function testFunction(e) {
-    console.log(e.keyCode)
+function listGroupNamesGen(e) {
     let outPut = mappedNameArray;
     listGroup.innerHTML = ``;
     const userInput = (testAreaID.value.toLowerCase());
@@ -272,7 +269,7 @@ function testFunction(e) {
 
           listGroup.appendChild(g);
         } else {
-          for (let i = 0;i < 5 && i < outPut.length && userInput.length > 0;i++) {
+          for (let i = 0;i < 10 && i < outPut.length && userInput.length > 0;i++) {
             let g = listItemGen(outPut[i]);
             g.addEventListener('click', e => setChosenItem(e.target.outerText));
             listGroup.appendChild(g);
@@ -307,9 +304,10 @@ function setChosenItem (itemName){
         clearWindows();
         setEditFields();
     }else{
-    //if (base){
-    //  generateOptions
-    //}
+        clearWindows();
+        infoWindow.innerText = 'ERROR: \nSupport for (customized) bases coming soon..';
+        listGroup.innerHTML = ``;
+        testAreaID.value = ``;
     }
 }
 
@@ -381,7 +379,7 @@ function generateRowForPrice(itemToGen) {
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
     priceHeaderCol.classList.add("col");
-    const attrNickText = document.createTextNode(`Price - optional (edit the Forum Gold attribute name through the top left button) : `);
+    const attrNickText = document.createTextNode(`Price - optional. Edit Forum Gold attribute name through attribute names button)`);
     priceHeaderCol.appendChild(attrNickText);
     thisRow.appendChild(priceHeaderCol)
     //2.1 create price col
@@ -454,7 +452,8 @@ function generateRowForField(attr) {
     if (attr._attributeName._attrName != ``) {
         const attrNickCol = document.createElement("div");
         attrNickCol.classList.add("col");
-        const attrNickText = document.createTextNode(`${attr._attributeName._attrNickName}`);
+
+        const attrNickText = document.createTextNode(attr._attributeName._attrName == 'Quantity' ? `Amount -` : `${attr._attributeName._attrNickName}`);
         attrNickCol.appendChild(attrNickText);
         thisRow.appendChild(attrNickCol)
     }
@@ -527,7 +526,6 @@ function generateRowForField(attr) {
         })
         thisRow.classList.add("justify-content-center")
         thisRow.appendChild(attrCeilActTextArea);
-
     }
     floorActIndexer++;
     return thisRow;
