@@ -221,7 +221,6 @@ let mappedNameArray = fullNameListArray.map(element => {
 });
 mappedNameArray.sort();
 let listGroup = document.getElementById("listGroupItemID");
-listGroup.style.position = "absolute";
 
 const searchBar = document.getElementById('searchBarID');
 searchBar.addEventListener("keyup", (e) => {
@@ -243,10 +242,9 @@ function stopDefault(e){
 }
 
 function listGroupNamesGen(e, searchedArray, modiListGroup) {
-    //1234
-
     let _searchBar = e.target;
     let _listGroup = modiListGroup;
+    _listGroup.style.zIndex = "2";
     let outPut = searchedArray;
     _listGroup.innerHTML = ``;
     const userInput = (_searchBar.value.toLowerCase());
@@ -297,7 +295,6 @@ function listItemGen(textString){
 }
 
 function setChosenItem (itemName){
-    console.log('item name: ' + itemName + '\n')
     let searchedItem = exports.Unique.uniqueArr.filter((item) => {
         return item._name.toLowerCase() == itemName;
     });
@@ -428,7 +425,6 @@ function setEditFields() {
         //1234
 
         //currentItem.addAttr(new exports.BasicAttribute(exports.AttributeName.attrArray[79], 84));
-        console.log(currentItem)
         attrSubmitValBtn.addEventListener("click", addAttribute)
         function addAttribute(){
             let attrResult = document.getElementById("lblAttrResultID").innerText;
@@ -446,33 +442,30 @@ function setEditFields() {
         
         //2.a searchbar 
 
-      //2.a textfield for custom name
-      //2.b submit button for change name
-      //2.c set Item._customName = textfield
+        //2.a textfield for custom name
+        //2.b submit button for change name
+        //2.c set Item._customName = textfield
 
-      //3. add row for list-group
-      let listGroupRow = document.createElement("div");
-      listGroupRow.classList.add('row');
+        //3. add row for list-group
+        let listGroupRow = document.createElement("div");
+        listGroupRow.classList.add('row');
 
-      let listGroupCol = document.createElement("div");
-      listGroupCol.classList.add("col-12");
+        let listGroupCol = document.createElement("div");
+        listGroupCol.classList.add("col-12");
 
-      let listGroupUl = document.createElement("ul");
-      listGroupUl.classList.add("list-group");
-      listGroupUl.id = "listGroupAttrID"
-
+        let listGroupUl = document.createElement("ul");
+        listGroupUl.classList.add("list-group","position-absolute");
+        listGroupUl.id = "listGroupAttrID"
 
         listGroupCol.appendChild(listGroupUl);
         listGroupRow.appendChild(listGroupCol);
         attributeArea.appendChild(listGroupRow);
 
-
-      let listGroupAttr = document.getElementById("listGroupAttrID");
-      listGroupAttr.style.position = "absolute";
-      searchAttrBar.addEventListener("keyup", (e) => {
-        searchBar.value = ``;
-        listGroup.innerHTML = ``;
-        listGroupNamesGen(e, mappedNickArray, listGroupAttr);
+        let listGroupAttr = document.getElementById("listGroupAttrID");
+        searchAttrBar.addEventListener("keyup", (e) => {
+            searchBar.value = ``;
+            listGroup.innerHTML = ``;
+            listGroupNamesGen(e, mappedNickArray, listGroupAttr);
     });
       searchAttrBar.addEventListener("keydown", (e) => {stopDefault(e)});
 
@@ -563,7 +556,6 @@ function setEditFields() {
 function generateRadioButton(lblText){
     let colDiv = document.createElement("div");
     colDiv.classList.add("col-2")
-
     let genBtn = document.createElement("button");
     genBtn.classList.add("btn", "btn-sm", "btn-outline-primary","text-light");
 
@@ -611,7 +603,7 @@ function generateRowForPrice(itemToGen) {
     thisRow.appendChild(priceTextArea);
     return thisRow;
 }
-
+//Superior?
 function generateRowForDefOnly(itemToGen, ethMult) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
@@ -656,10 +648,20 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
     thisRow.classList.add("row","removableAttrRowClass");
-    console.log(attr)
-    console.log('line 623')
-
     //1.1F 0
+    if(attr._attributeName._attrName === `Enhanced Defense %`){
+        //wwwwwwwwwwwwwwwwwwwwww
+        let ethMult = (currentItem._base._isEth) ? 1.5 : 1;
+        console.log("Test script:\n")
+        console.log(attr)
+        console.log(currentItem)
+        if(attr._attrFloorActVal === 100){
+            let defRow = generateRowForDefOnly(currentItem, ethMult)
+            attributeArea.appendChild(defRow)
+            console.log('finished')
+            console.log(defRow)
+        };
+    }
     if (attr._attributeName._attrName != ``) {
         const attrNickCol = document.createElement("div");
         attrNickCol.classList.add("col");
@@ -707,6 +709,20 @@ function generateRowForField(attr) {
         if(attr._attributeName._attrName === "Level Requirement"){
             currentItem._levelReq = attr._attrFloorActVal
         };
+        if(attr._attributeName._attrName === "Enhanced Defense %"){
+            clearWindows();
+            setEditFields();
+        }
+        if(attr._attributeName._attrName === "Defense"){
+            currentItem._base._addedDef = attr._attrFloorActVal;
+            console.log('yeppers')
+        }
+        if(attr._attrFloorActVal === '0' && !(currentItem instanceof exports.Unique)){
+            let removeIndexer = currentItem._arr.indexOf(attr);
+            currentItem._arr.splice(removeIndexer, 1)
+            clearWindows();
+            setEditFields();
+        }
         updateCurrentItemInfoWindow(currentItem);
     })
     attrFloorActTextArea.addEventListener('focus', () => {
@@ -768,7 +784,7 @@ for (const radio of ethRads) {
 function updateCurrentItemInfoWindow(element) {
     infoWindow.innerText = ``;
     element._arr.forEach(elementOne => {
-        if (elementOne._attributeName._attrName == "% Enhanced Defense" || elementOne._attributeName._attrName == "% Enhanced Damage") { element._base._ed = elementOne._attrFloorActVal; }
+        if (elementOne._attributeName._attrName == "Enhanced Defense %" /*|| elementOne._attributeName._attrName == "Enhanced Damage %"*/) { element._base._ed = elementOne._attrFloorActVal; }
         if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
     })
     let tempString = ``;
@@ -777,7 +793,7 @@ function updateCurrentItemInfoWindow(element) {
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
     let lvlReq = (currentItem._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${currentItem._levelReq}` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
-    let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
+    let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${element._base._ed}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
     if (currentItem._base._ed > 0 && currentItem._magicClass === "Base") {
@@ -791,7 +807,7 @@ function updateCurrentItemInfoWindow(element) {
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (shrtAttrName != '% Enhanced Defense' && shrtAttrName != '% Enhanced Damage' && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
+        if (shrtAttrName != 'Enhanced Defense %' /*&& shrtAttrName != 'Enhanced Damage %' */&& shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
             tempString += ` / ${elementTwo._attributeName._attrNickName}`;
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` ${elementTwo._classOrTreeName}`;

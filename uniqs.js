@@ -232,6 +232,9 @@ export class Item {
     this._arr.push(attr);
     if(this._magicClass === "Base"){this.magicClass = "Magic"};
   }
+  removeAttr(index){
+
+  }
 }
 
 export class Unique extends Item {
@@ -257,8 +260,8 @@ export class QuantizedItem extends Unique {
 }
 
 //#region attributes
-const EnhancedDef = new AttributeName("% Enhanced Defense");
-const EnhancedDmg = new AttributeName("% Enhanced Damage");
+const EnhancedDef = new AttributeName("Enhanced Defense %");
+const EnhancedDmg = new AttributeName("Enhanced Damage %");
 const Def = new AttributeName("Defense");
 const Currency = new AttributeName("Forum Gold");
 const Ar = new AttributeName("Attack Rating");
@@ -1163,5 +1166,3 @@ NaturesPeace.addAttr(new Attribute(DmgReduce, 7, 11));
 const WispProjector = new Unique(Ring, "Wisp Projector", 0, 0);
 WispProjector.addAttr(new Attribute(LightAbsorbPerc, 10, 20));
 WispProjector.addAttr(new Attribute(MagicFind, 10, 20));
-
-//console.log(AttributeName.attrArray);
