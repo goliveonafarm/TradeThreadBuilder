@@ -1,14 +1,18 @@
 export class AttributeName {
   static attrArray = [];
-  constructor(attrName) {
+  constructor(attrName, userAdded = false) {
     this._attrName = attrName;
     this._attrNickName = attrName;
+    this._userAdded = userAdded;
     //false prevents custom fields from being changed
     this._editable = true;
     AttributeName.attrArray.push(this);
   }
   static resetNickNames() {
-    this.attrArray.forEach((element) => {
+    this.attrArray = this.attrArray.filter(att =>{
+        return att._userAdded == false;
+    })
+    this.attrArray.forEach((element, index) => {
       if (element._editable) {
         element._attrNickName = element._attrName;
       }
@@ -18,8 +22,7 @@ export class AttributeName {
     this.attrArray[index]._attrNickName = string;
   }
   static updateValues(newAttributeArray) {
-    AttributeName.attrArray.forEach((element) => {
-      let index = AttributeName.attrArray.indexOf(element);
+    AttributeName.attrArray.forEach((element, index) => {
       element._attrNickName = newAttributeArray[index]._attrNickName;
     });
     console.log("updateValues() successful");
@@ -208,19 +211,26 @@ export class Item {
   constructor(base) {
     this._base = JSON.parse(JSON.stringify(base));
     this._arr = [];
-    this._name = base._baseName;
+    this._name = base._name;
     this._magicClass = "Base";
     this._price = 0;
+    this._customName = null;
+    this._levelReq = 0;
   }
   addAttr(attr) {
     let g = attr._attributeName._attrName;
     if (g == "% Enhanced Defense") {
       this._base._ed = attr._attrFloorActVal;
+      this._base._defActVal = this._base._maxDef;
     }
     if (g == "Defense") {
       this._base._addedDef = attr._attrFloorActVal;
     }
+    if (g == "Level Requirement") {
+        this._levelReq = attr._attrFloorActVal;
+    }
     this._arr.push(attr);
+    if(this._magicClass === "Base"){this.magicClass = "Magic"};
   }
 }
 
@@ -240,7 +250,7 @@ let QuantizedItemIndexer = 0;
 export class QuantizedItem extends Unique {
   constructor(base, name, ed, addedDef) {
     super(base, name, ed, addedDef);
-    this.addAttr(new Attribute(ItemQuantity, 0, 1));
+    this.addAttr(new Attribute(ItemQuantity, 0, 99));
     this._quantizedIndex = QuantizedItemIndexer++;
     this._magicClass = "Misc";
   }
@@ -299,9 +309,7 @@ const Skills = new AttributeName("Skills");
 const ClassSkills = new AttributeName("Class Skills");
 const ClassSkillTree = new AttributeName("Class Skill Tree");
 const FCR = new AttributeName("Faster Cast Rate");
-const BlockAndFasterBlock = new AttributeName(
-  "Chance of Blocking - Faster Block Rate"
-);
+const BlockAndFasterBlock = new AttributeName("Chance of Blocking - Faster Block Rate");
 const IncrChanceBlockPerc = new AttributeName("Increase Chance to Block %");
 const FHR = new AttributeName("Faster Hit Recovery");
 const IAS = new AttributeName("Increased Attack Speed");
@@ -338,26 +346,10 @@ ItemQuantity._attrName = "Quantity";
 const empty = new AttributeName("");
 empty._editable = false;
 empty._attrName = "Empty Value";
-const emptyTwo = new AttributeName("");
-emptyTwo._editable = false;
-emptyTwo._attrName = "Custom val1";
-const emptyThree = new AttributeName("");
-emptyThree._editable = false;
-emptyThree._attrName = "Custom val2";
-const emptyFour = new AttributeName("");
-emptyFour._editable = false;
-emptyFour._attrName = "Custom val3";
-const emptyFive = new AttributeName("");
-emptyFive._editable = false;
-emptyFive._attrName = "Custom val4";
+const superior = new AttributeName("Superior");
 
-const SlayerGuard = new Armor(
-  "Slayer Guard",
-  "Barbarian Helm",
-  "Exceptional",
-  93,
-  120
-);
+
+const SlayerGuard = new Armor("Slayer Guard", "Barbarian Helm", "Exceptional", 93, 120);
 const ArreatsFace = new Unique(SlayerGuard, "Arreats Face", 0);
 ArreatsFace.addAttr(new Attribute(EnhancedDef, 150, 200));
 ArreatsFace.addAttr(new Attribute(LifeSteal, 3, 6));
@@ -368,13 +360,7 @@ Wolfhowl.addAttr(new SkillAttribute(empty, "Warcries", 2, 3));
 Wolfhowl.addAttr(new SkillAttribute(empty, "Feral Rage", 3, 6));
 Wolfhowl.addAttr(new SkillAttribute(empty, "Lycanthropy", 3, 6));
 Wolfhowl.addAttr(new SkillAttribute(empty, "Werewolf", 3, 6));
-const DestroyerHelm = new Armor(
-  "Destroyer Helm",
-  "Barbarian Helm",
-  "Elite",
-  111,
-  156
-);
+const DestroyerHelm = new Armor("Destroyer Helm","Barbarian Helm","Elite",111,156);
 const DemonhornsEdge = new Unique(DestroyerHelm, "Demonhorn's Edge", 0);
 DemonhornsEdge.addAttr(new Attribute(EnhancedDef, 120, 150));
 DemonhornsEdge.addAttr(new Attribute(LifeSteal, 3, 6));
@@ -382,13 +368,7 @@ DemonhornsEdge.addAttr(new Attribute(AttackerTakesDmg, 55, 77));
 DemonhornsEdge.addAttr(new SkillAttribute(empty, "Warcries", 1, 3));
 DemonhornsEdge.addAttr(new SkillAttribute(empty, "Combat Masteries", 1, 3));
 DemonhornsEdge.addAttr(new SkillAttribute(empty, "Combat Skills", 1, 3));
-const ConquerorCrown = new Armor(
-  "Conqueror Crown",
-  "Barbarian Helm",
-  "Elite",
-  114,
-  159
-);
+const ConquerorCrown = new Armor("Conqueror Crown","Barbarian Helm","Elite",114,159);
 const HalaberdsReign = new Unique(ConquerorCrown, "Halaberd's Reign", 0);
 HalaberdsReign.addAttr(new Attribute(ReplLife, 15, 23));
 HalaberdsReign.addAttr(new SkillAttribute(empty, "Battle Command", 1, 2));
@@ -402,25 +382,13 @@ const GoldWrap = new Unique(HeavyBelt, "Gold Wrap", 0, 25);
 GoldWrap.addAttr(new Attribute(EnhancedDef, 40, 60));
 GoldWrap.addAttr(new Attribute(GoldFind, 50, 80));
 const PlatedBelt = new Armor("Plated Belt", "Belt", "Normal", 8, 11);
-const DemonhideSash = new Armor(
-  "Demonhide Sash",
-  "Belt",
-  "Exceptional",
-  29,
-  34
-);
+const DemonhideSash = new Armor("Demonhide Sash","Belt","Exceptional",29,34);
 const StringOfEars = new Unique(DemonhideSash, "String of Ears", 0, 15);
 StringOfEars.addAttr(new Attribute(EnhancedDef, 150, 180));
 StringOfEars.addAttr(new Attribute(LifeSteal, 6, 8));
 StringOfEars.addAttr(new Attribute(DmgReducePercent, 10, 15));
 StringOfEars.addAttr(new Attribute(MageDmgReduce, 10, 15));
-const SharkskinBelt = new Armor(
-  "Sharkskin Belt",
-  "Belt",
-  "Exceptional",
-  31,
-  36
-);
+const SharkskinBelt = new Armor("Sharkskin Belt","Belt","Exceptional",31,36);
 const Razortail = new Unique(SharkskinBelt, "Razortail", 0, 15);
 Razortail.addAttr(new Attribute(EnhancedDef, 120, 150));
 const MeshBelt = new Armor("Mesh Belt", "Belt", "Exceptional", 35, 40);
@@ -438,12 +406,7 @@ ArachnidMesh.addAttr(new Attribute(EnhancedDef, 90, 120));
 const VampirefangBelt = new Armor("Vampirefang Belt", "Belt", "Elite", 56, 63);
 const NosferatusCoil = new Unique(VampirefangBelt, "Nosferatu's Coil", 0, 0);
 const MithrilCoil = new Armor("Mithril Coil", "Belt", "Elite", 58, 65);
-const VerdungosHeartyCord = new Unique(
-  MithrilCoil,
-  "Verdungos Heraty Cord",
-  0,
-  0
-);
+const VerdungosHeartyCord = new Unique( MithrilCoil, "Verdungos Heraty Cord", 0, 0);
 VerdungosHeartyCord.addAttr(new Attribute(EnhancedDef, 90, 140));
 VerdungosHeartyCord.addAttr(new Attribute(Vit, 30, 40));
 VerdungosHeartyCord.addAttr(new Attribute(ReplLife, 10, 13));
@@ -453,54 +416,20 @@ VerdungosHeartyCord.addAttr(new Attribute(DmgReducePercent, 10, 15));
 const AncientArmor = new Armor("Ancient Armor", "Armor", "Normal", 208, 233);
 const SilksOfTheVictor = new Unique(AncientArmor, "Silks of the Victor", 0, 0);
 SilksOfTheVictor.addAttr(new Attribute(EnhancedDef, 100, 120));
-const Serpentskin = new Armor(
-  "Serpentskin Armor",
-  "Armor",
-  "Exceptional",
-  111,
-  126
-);
-const SkinOfTheViperMagi = new Unique(
-  Serpentskin,
-  "Skin of the Vipermagi",
-  120,
-  0
-);
+const Serpentskin = new Armor( "Serpentskin Armor", "Armor", "Exceptional", 111, 126);
+const SkinOfTheViperMagi = new Unique( Serpentskin, "Skin of the Vipermagi", 120, 0);
 SkinOfTheViperMagi.addAttr(new Attribute(MageDmgReduce, 9, 13));
-const DemonhideArmor = new Armor(
-  "Demonhide Armor",
-  "Armor",
-  "Exceptional",
-  122,
-  136
-);
-const SkinOfTheFlayedOne = new Unique(
-  DemonhideArmor,
-  "Skin of the Flayed One",
-  0,
-  0
-);
+const DemonhideArmor = new Armor( "Demonhide Armor", "Armor", "Exceptional", 122, 136);
+const SkinOfTheFlayedOne = new Unique( DemonhideArmor, "Skin of the Flayed One", 0, 0);
 SkinOfTheFlayedOne.addAttr(new Attribute(EnhancedDef, 150, 190));
 SkinOfTheFlayedOne.addAttr(new Attribute(LifeSteal, 5, 7));
 SkinOfTheFlayedOne.addAttr(new Attribute(ReplLife, 15, 25));
-const TrellisedArmor = new Armor(
-  "Trellised Armor",
-  "Armor",
-  "Exceptional",
-  138,
-  153
-);
+const TrellisedArmor = new Armor("Trellised Armor", "Armor", "Exceptional", 138, 15 );
 const IronPelt = new Unique(TrellisedArmor, "Iron Pelt", 0, 0);
 IronPelt.addAttr(new Attribute(EnhancedDef, 50, 100));
 IronPelt.addAttr(new Attribute(DmgReduce, 15, 20));
 IronPelt.addAttr(new Attribute(MageDmgReduce, 15, 20));
-const TigulatedMail = new Armor(
-  "Tigulated Mail",
-  "Armor",
-  "Exceptional",
-  176,
-  190
-);
+const TigulatedMail = new Armor("Tigulated Mail","Armor","Exceptional",176,190);
 const CrowCaw = new Unique(TigulatedMail, "Crow Caw", 0, 0);
 CrowCaw.addAttr(new Attribute(EnhancedDef, 150, 180));
 const LinkedMail = new Armor("Linked Mail", "Armor", "Exceptional", 158, 172);
@@ -522,24 +451,12 @@ QueHegans.addAttr(new Attribute(MageDmgReduce, 6, 10));
 const TemplarCoat = new Armor("Templar Coat", "Armor", "Exceptional", 252, 274);
 const GuardianAngel = new Unique(TemplarCoat, "Guardian Angel", 0, 0);
 GuardianAngel.addAttr(new Attribute(EnhancedDef, 180, 200));
-const SharktoothArmor = new Armor(
-  "Sharktooth Armor",
-  "Armor",
-  "Exceptional",
-  242,
-  258
-);
+const SharktoothArmor = new Armor("Sharktooth Armor","Armor","Exceptional",242,258);
 const Toothrow = new Unique(SharktoothArmor, "Toothrow", 0, 0);
 Toothrow.addAttr(new Attribute(EnhancedDef, 160, 220));
 Toothrow.addAttr(new Attribute(Def, 40, 60));
 Toothrow.addAttr(new Attribute(AttackerTakesDmg, 20, 40));
-const EmbossedPlate = new Armor(
-  "Embossed Plate",
-  "Armor",
-  "Exceptional",
-  282,
-  303
-);
+const EmbossedPlate = new Armor("Embossed Plate","Armor","Exceptional",282,303);
 const AtmasWail = new Unique(EmbossedPlate, "Atma's Wail", 0, 0);
 AtmasWail.addAttr(new Attribute(EnhancedDef, 120, 160));
 const ChaosArmor = new Armor("Chaos Armor", "Armor", "Exceptional", 315, 342);
@@ -580,9 +497,7 @@ TemplarsMight.addAttr(new Attribute(DefVsMisl, 250, 300));
 TemplarsMight.addAttr(new Attribute(Str, 10, 15));
 TemplarsMight.addAttr(new Attribute(Vit, 10, 15));
 TemplarsMight.addAttr(new Attribute(MaxStam, 40, 50));
-TemplarsMight.addAttr(
-  new SkillAttribute(ClassSkillTree, "Offensive Auras", 1, 2)
-);
+TemplarsMight.addAttr(new SkillAttribute(ClassSkillTree, "Offensive Auras", 1, 2));
 const TyraelsMight = new Unique(SacredArmor, "Tyrael's Might", 0);
 TyraelsMight.addAttr(new Attribute(EnhancedDef, 120, 150));
 TyraelsMight.addAttr(new Attribute(DmgDemon, 50, 100));
@@ -598,35 +513,17 @@ Gorefoot.addAttr(new Attribute(EnhancedDef, 20, 30));
 const ChainBoots = new Armor("Chain Boots", "Boots", "Normal", 8, 9);
 const TreadsOfCthon = new Unique(ChainBoots, "Treads of Cthon", 0, 12);
 TreadsOfCthon.addAttr(new Attribute(EnhancedDef, 30, 40));
-const LightPlatedBoots = new Armor(
-  "Light Plated Boots",
-  "Boots",
-  "Normal",
-  9,
-  11
-);
+const LightPlatedBoots = new Armor("Light Plated Boots","Boots","Normal",9,11);
 const GoblinToe = new Unique(LightPlatedBoots, "Goblin Toe", 0, 15);
 GoblinToe.addAttr(new Attribute(EnhancedDef, 60, 80));
 const Greaves = new Armor("Greaves", "Boots", "Normal", 12, 15);
 const Tearhaunch = new Unique(Greaves, "Tearhaunch", 60, 80, 35);
 Tearhaunch.addAttr(new Attribute(EnhancedDef, 60, 80));
-const DemonhideBoots = new Armor(
-  "Demonhide Boots",
-  "Boots",
-  "Exceptional",
-  28,
-  35
-);
+const DemonhideBoots = new Armor("Demonhide Boots","Boots","Exceptional",28,35);
 const Infernostride = new Unique(DemonhideBoots, "Infernostride", 0, 15);
 Infernostride.addAttr(new Attribute(EnhancedDef, 120, 150));
 Infernostride.addAttr(new Attribute(GoldFind, 40, 70));
-const SharkskinBoots = new Armor(
-  "Sharkskin Boots",
-  "Boots",
-  "Exceptional",
-  33,
-  39
-);
+const SharkskinBoots = new Armor("Sharkskin Boots","Boots","Exceptional",33,39);
 const Waterwalk = new Unique(SharkskinBoots, "Waterwalk", 0, 0);
 Waterwalk.addAttr(new Attribute(EnhancedDef, 180, 210));
 Waterwalk.addAttr(new Attribute(Life, 45, 65));
@@ -641,13 +538,7 @@ WarTraveler.addAttr(new Attribute(MagicFind, 30, 50));
 const WarBoots = new Armor("War Boots", "Boots", "Exceptional", 43, 53);
 const GoreRider = new Unique(WarBoots, "Gore Rider", 0, 0);
 GoreRider.addAttr(new Attribute(EnhancedDef, 160, 200));
-const ScarabshellBoots = new Armor(
-  "Scarabshell Boots",
-  "Boots",
-  "Elite",
-  56,
-  65
-);
+const ScarabshellBoots = new Armor("Scarabshell Boots","Boots","Elite",56,65);
 const SandstormTrek = new Unique(ScarabshellBoots, "Sandstorm Trek", 0, 0);
 SandstormTrek.addAttr(new Attribute(EnhancedDef, 140, 170));
 SandstormTrek.addAttr(new Attribute(Str, 10, 15));
@@ -674,13 +565,7 @@ GriffonsEye.addAttr(new Attribute(Def, 50, 120));
 GriffonsEye.addAttr(new Attribute(EnemyLightResist, 15, 20));
 GriffonsEye.addAttr(new Attribute(LightDmg, 10, 15));
 
-const TotemicMask = new Armor(
-  "Totemic Mask",
-  "Druid Pelt",
-  "Exceptional",
-  73,
-  98
-);
+const TotemicMask = new Armor("Totemic Mask","Druid Pelt","Exceptional",73,9);
 const JalalsMane = new Unique(TotemicMask, "Jalal's Mane", 0, 0);
 JalalsMane.addAttr(new Attribute(EnhancedDef, 150, 200));
 const BloodSpirit = new Armor("Blood Spirit", "Druid Pelt", "Elite", 101, 145);
@@ -719,62 +604,26 @@ Magefist.addAttr(new Attribute(EnhancedDef, 20, 30));
 const Gauntlets = new Armor("Gauntlets", "Gloves", "Normal", 12, 15);
 const Frostburn = new Unique(Gauntlets, "Frostburn", 0, 30);
 Frostburn.addAttr(new Attribute(EnhancedDef, 10, 20));
-const DemonhideGloves = new Armor(
-  "Demonhide Gloves",
-  "Gloves",
-  "Exceptional",
-  28,
-  35
-);
+const DemonhideGloves = new Armor("Demonhide Gloves","Gloves","Exceptional",28,35);
 const VenomGrip = new Unique(DemonhideGloves, "Venom Grip", 0, 0);
 VenomGrip.addAttr(new Attribute(EnhancedDef, 130, 160));
 VenomGrip.addAttr(new Attribute(Def, 15, 25));
-const SharkskinGloves = new Armor(
-  "Sharkskin Gloves",
-  "Gloves",
-  "Exceptional",
-  33,
-  39
-);
+const SharkskinGloves = new Armor("Sharkskin Gloves","Gloves","Exceptional",33,39);
 const GravePalm = new Unique(SharkskinGloves, "Gravepalm", 0, 0);
 GravePalm.addAttr(new Attribute(EnhancedDef, 140, 180));
 GravePalm.addAttr(new Attribute(DmgUndead, 100, 200));
 GravePalm.addAttr(new Attribute(ArUndead, 100, 200));
-const HeavyBracers = new Armor(
-  "Heavy Bracers",
-  "Gloves",
-  "Exceptional",
-  37,
-  44
-);
+const HeavyBracers = new Armor("Heavy Bracers","Gloves","Exceptional",37,44);
 const Ghoulhide = new Unique(HeavyBracers, "Ghoulhide", 0, 0);
 Ghoulhide.addAttr(new Attribute(EnhancedDef, 150, 190));
 Ghoulhide.addAttr(new Attribute(ManaSteal, 4, 5));
-const BattleGauntlets = new Armor(
-  "Battle Gauntlets",
-  "Gloves",
-  "Exceptional",
-  39,
-  47
-);
+const BattleGauntlets = new Armor("Battle Gauntlets","Gloves","Exceptional",39,47);
 const LavaGout = new Unique(BattleGauntlets, "Lava Gout", 0, 0);
 LavaGout.addAttr(new Attribute(EnhancedDef, 150, 200));
-const WarGauntlets = new Armor(
-  "War Gauntlets",
-  "Gloves",
-  "Exceptional",
-  43,
-  53
-);
+const WarGauntlets = new Armor("War Gauntlets","Gloves","Exceptional",43,53);
 const Hellmouth = new Unique(WarGauntlets, "Hellmouth", 0, 0);
 Hellmouth.addAttr(new Attribute(EnhancedDef, 150, 200));
-const VampireboneGloves = new Armor(
-  "Vampirebone Gloves",
-  "Gloves",
-  "Elite",
-  56,
-  65
-);
+const VampireboneGloves = new Armor("Vampirebone Gloves","Gloves","Elite",56,65);
 const DraculsGrasp = new Unique(VampireboneGloves, "Draculs Grasp", 0, 0);
 DraculsGrasp.addAttr(new Attribute(EnhancedDef, 90, 120));
 DraculsGrasp.addAttr(new Attribute(Str, 10, 15));
@@ -876,35 +725,17 @@ const GiantSkull = new Unique(BoneVisage, "Giant Skull", 0, 0);
 GiantSkull.addAttr(new Attribute(Def, 250, 320));
 GiantSkull.addAttr(new Attribute(Str, 25, 35));
 
-const GildedShield = new Armor(
-  "Gilded Shield",
-  "Paladin Shield",
-  "Exceptional",
-  144,
-  168
-);
+const GildedShield = new Armor("Gilded Shield","Paladin Shield","Exceptional",144,168);
 const HeraldOfZakarum = new Unique(GildedShield, "Herald of Zakarum", 0, 0);
 HeraldOfZakarum.addAttr(new Attribute(EnhancedDef, 150, 200));
-const SacredRondache = new Armor(
-  "Sacred Rondache",
-  "Paladin Shield",
-  "Elite",
-  138,
-  164
-);
+const SacredRondache = new Armor("Sacred Rondache","Paladin Shield","Elite",138,164);
 const AlmaNegra = new Unique(SacredRondache, "Alma Negra", 0, 0);
 AlmaNegra.addAttr(new Attribute(EnhancedDef, 180, 210));
 AlmaNegra.addAttr(new SkillAttribute(empty, "Paladin Skills", 1, 2));
 AlmaNegra.addAttr(new Attribute(EnhancedDmg, 40, 75));
 AlmaNegra.addAttr(new Attribute(ArPerc, 40, 75));
 AlmaNegra.addAttr(new Attribute(MageDmgReduce, 5, 9));
-const ZakarumShield = new Armor(
-  "Zakarum Shield",
-  "Paladin Shield",
-  "Elite",
-  169,
-  193
-);
+const ZakarumShield = new Armor("Zakarum Shield","Paladin Shield","Elite",169,193);
 const Dragonscale = new Unique(ZakarumShield, "Dragonscale", 0, 0);
 Dragonscale.addAttr(new Attribute(EnhancedDef, 170, 200));
 Dragonscale.addAttr(new Attribute(Str, 15, 25));
@@ -944,22 +775,10 @@ MosersBlessed.addAttr(new Attribute(EnhancedDef, 180, 220));
 const Scutum = new Armor("Scutum", "Shield", "Exceptional", 53, 61);
 const Stormchaser = new Unique(Scutum, "Stormchaser", 0, 0);
 Stormchaser.addAttr(new Attribute(EnhancedDef, 160, 220));
-const BarbedShield = new Armor(
-  "Barbed Shield",
-  "Shield",
-  "Exceptional",
-  58,
-  78
-);
+const BarbedShield = new Armor("Barbed Shield","Shield","Exceptional",58,78);
 const LanceGuard = new Unique(BarbedShield, "Lance Guard", 0, 0);
 LanceGuard.addAttr(new Attribute(EnhancedDef, 70, 120));
-const DragonShield = new Armor(
-  "Dragon Shield",
-  "Shield",
-  "Exceptional",
-  59,
-  67
-);
+const DragonShield = new Armor("Dragon Shield","Shield","Exceptional",59,67);
 const TiamatsRebuke = new Unique(DragonShield, "Tiamats Rebuke", 0, 0);
 TiamatsRebuke.addAttr(new Attribute(EnhancedDef, 140, 200));
 TiamatsRebuke.addAttr(new Attribute(AllRes, 25, 35));
@@ -973,13 +792,7 @@ Gerkes.addAttr(new Attribute(EnhancedDef, 180, 240));
 Gerkes.addAttr(new Attribute(AllRes, 20, 30));
 Gerkes.addAttr(new Attribute(DmgReduce, 11, 16));
 Gerkes.addAttr(new Attribute(MageDmgReduce, 14, 18));
-const AncientShield = new Armor(
-  "Ancient Shield",
-  "Shield",
-  "Exceptional",
-  80,
-  93
-);
+const AncientShield = new Armor("Ancient Shield","Shield","Exceptional",80,93);
 const RadamentsSphere = new Unique(AncientShield, "Radament's Sphere", 0, 0);
 RadamentsSphere.addAttr(new Attribute(EnhancedDef, 160, 200));
 
@@ -1011,107 +824,48 @@ SpiritWard.addAttr(new Attribute(EnhancedDef, 130, 180));
 SpiritWard.addAttr(new Attribute(IncrChanceBlockPerc, 20, 30));
 SpiritWard.addAttr(new Attribute(ColdAsbInt, 6, 11));
 
-const HierophantTrophy = new Armor(
-  "Hierophant Trophy",
-  "Shrunken Head",
-  "Exceptional",
-  58,
-  70
-);
+const HierophantTrophy = new Armor("Hierophant Trophy","Shrunken Head","Exceptional",58,70);
 const Homunculus = new Unique(HierophantTrophy, "Homunculus", 0, 0);
 Homunculus.addAttr(new Attribute(EnhancedDef, 150, 200));
-const BloodlordSkull = new Armor(
-  "Bloodlord Skull",
-  "Shrunken Head",
-  "Elite",
-  103,
-  148
-);
+const BloodlordSkull = new Armor("Bloodlord Skull","Shrunken Head","Elite",103,148);
 const DarkforceSpawn = new Unique(BloodlordSkull, "Darkforce Spawn", 0, 0);
 DarkforceSpawn.addAttr(new Attribute(EnhancedDef, 140, 180));
 DarkforceSpawn.addAttr(new SkillAttribute(empty, "Summoning Skills", 1, 3));
-DarkforceSpawn.addAttr(
-  new SkillAttribute(empty, "Poison and Bone Spells", 1, 3)
-);
+DarkforceSpawn.addAttr(new SkillAttribute(empty, "Poison and Bone Spells", 1, 3));
 DarkforceSpawn.addAttr(new SkillAttribute(empty, "Cursses", 1, 3));
-const SuccubusSkull = new Armor(
-  "Succubus Skull",
-  "Shrunken Head",
-  "Elite",
-  100,
-  146
-);
+const SuccubusSkull = new Armor("Succubus Skull","Shrunken Head","Elite",100,146);
 const Boneflame = new Unique(SuccubusSkull, "Boneflame", 0, 0);
 Boneflame.addAttr(new Attribute(EnhancedDef, 120, 150));
 Boneflame.addAttr(new SkillAttribute(empty, "Necromancer Skill Levels", 2, 3));
 Boneflame.addAttr(new Attribute(AllRes, 20, 30));
 
-const CeremonialBow = new Weapon(
-  "Ceremonial Bow",
-  "Amazon",
-  "Exceptional",
-  19,
-  41
-);
+const CeremonialBow = new Weapon("Ceremonial Bow","Amazon","Exceptional",19,41);
 const LycandersAim = new Unique(CeremonialBow, "Lycander's Aim", 0, 0);
 LycandersAim.addAttr(new Attribute(EnhancedDmg, 150, 200));
 LycandersAim.addAttr(new Attribute(ManaSteal, 5, 8));
-const CeremonialPike = new Weapon(
-  "Ceremonial Pike",
-  "Amazon",
-  "Exceptional",
-  42,
-  101
-);
+const CeremonialPike = new Weapon("Ceremonial Pike","Amazon","Exceptional",42,101);
 const LycandersFlank = new Unique(CeremonialPike, "Lycander's Flank", 0, 0);
 LycandersFlank.addAttr(new Attribute(EnhancedDmg, 150, 200));
 LycandersFlank.addAttr(new Attribute(LifeSteal, 5, 9));
-const CeremonialJavelin = new Weapon(
-  "Ceremonial Javelin",
-  "Amazon",
-  "Exceptional",
-  18,
-  54
-);
+const CeremonialJavelin = new Weapon("Ceremonial Javelin","Amazon","Exceptional",18,54);
 const TitansRevenge = new Unique(CeremonialJavelin, "Titan's Revenge", 0, 0);
 TitansRevenge.addAttr(new Attribute(EnhancedDmg, 150, 200));
 TitansRevenge.addAttr(new Attribute(LifeSteal, 5, 9));
 const MatriarchalBow = new Weapon("Matriarchal Bow", "Amazon", "Elite", 20, 47);
-const BloodRavensCharge = new Unique(
-  MatriarchalBow,
-  "Blood Ravens Charge",
-  0,
-  0
-);
+const BloodRavensCharge = new Unique(MatriarchalBow,"Blood Ravens Charge",0,0);
 BloodRavensCharge.addAttr(new Attribute(EnhancedDmg, 180, 230));
 BloodRavensCharge.addAttr(new Attribute(ArPerc, 200, 300));
-BloodRavensCharge.addAttr(
-  new SkillAttribute(empty, "Bow and Crossbow Skills", 2, 4)
-);
-const MatriarchalSpear = new Weapon(
-  "Matriarchal Spear",
-  "Amazon",
-  "Elite",
-  65,
-  95
-);
+BloodRavensCharge.addAttr(new SkillAttribute(empty, "Bow and Crossbow Skills", 2, 4));
+const MatriarchalSpear = new Weapon("Matriarchal Spear","Amazon","Elite",65,95);
 const Stoneraven = new Unique(MatriarchalSpear, "Stoneraven", 0, 0);
 Stoneraven.addAttr(new Attribute(EnhancedDmg, 230, 280));
 Stoneraven.addAttr(new Attribute(Def, 400, 600));
 Stoneraven.addAttr(new Attribute(AllRes, 30, 50));
 Stoneraven.addAttr(new SkillAttribute(empty, "Javelin and Spear Skills", 1, 3));
-const MatriarchalJavelin = new Weapon(
-  "Matriarchal Javelin",
-  "Amazon",
-  "Elite",
-  30,
-  54
-);
+const MatriarchalJavelin = new Weapon("Matriarchal Javelin","Amazon","Elite",30,54);
 const Thunderstroke = new Unique(MatriarchalJavelin, "Thunderstroke", 0, 0);
 Thunderstroke.addAttr(new Attribute(EnhancedDmg, 150, 200));
-Thunderstroke.addAttr(
-  new SkillAttribute(empty, "Javelin and Spear Skills", 2, 3)
-);
+Thunderstroke.addAttr(new SkillAttribute(empty, "Javelin and Spear Skills", 2, 3));
 
 const Tomahawk = new Weapon("Tomahawk", "Axe", "Elite", 33, 58);
 const RazorsEdge = new Unique(Tomahawk, "Razor's Edge", 0, 0);
@@ -1136,23 +890,11 @@ EtherealEdge.addAttr(new Attribute(FireAsbInt, 10, 12));
 EtherealEdge.addAttr(new Attribute(LifeOnDemonKill, 5, 10));
 const Decapitator = new Weapon("Decapitator", "Axe", "Elite", 49, 137);
 const Hellslayer = new Unique(Decapitator, "Hellslayer", 100, 0);
-Hellslayer.addAttr(
-  new SkillAttribute(empty, "On attack fire ball level", 16, 20)
-);
+Hellslayer.addAttr(new SkillAttribute(empty, "On attack fire ball level", 16, 20));
 const ChampionAxe = new Weapon("Champion Axe", "Axe", "Elite", 59, 94);
-const MessersschmidtsReaver = new Unique(
-  ChampionAxe,
-  "Messerschmidt's Reaver",
-  200,
-  0
-);
+const MessersschmidtsReaver = new Unique(ChampionAxe,"Messerschmidt's Reaver",200,0);
 const GloriousAxe = new Weapon("Glorious Axe", "Axe", "Elite", 60, 124);
-const ExecutionersJustice = new Unique(
-  GloriousAxe,
-  "Exectuioner's Justice",
-  0,
-  0
-);
+const ExecutionersJustice = new Unique(GloriousAxe,"Exectuioner's Justice",0,0);
 ExecutionersJustice.addAttr(new Attribute(EnhancedDmg, 240, 290));
 
 const LongBow = new Weapon("Long Bow", "Bow", "Normal", 3, 10);
@@ -1170,13 +912,7 @@ const HydraBow = new Weapon("Hydra Bow", "Bow", "Elite", 10, 68);
 const Windoforce = new Unique(HydraBow, "Windforce", 250, 0);
 Windoforce.addAttr(new Attribute(ManaSteal, 6, 8));
 
-const CollossusCrossbow = new Weapon(
-  "Colossus Crossbow",
-  "Crossbow",
-  "Elite",
-  32,
-  91
-);
+const CollossusCrossbow = new Weapon("Colossus Crossbow","Crossbow","Elite",32,91);
 const Hellrack = new Unique(CollossusCrossbow, "Hellrack", 0, 0);
 Hellrack.addAttr(new Attribute(EnhancedDmg, 180, 230));
 Hellrack.addAttr(new Attribute(ArPerc, 100, 150));
@@ -1197,13 +933,7 @@ const GhostFlame = new Unique(LegendSpike, "Dagger", "Elite", 0);
 GhostFlame.addAttr(new Attribute(EnhancedDmg, 190, 240));
 GhostFlame.addAttr(new Attribute(ManaSteal, 10, 15));
 
-const GreaterTalons = new Weapon(
-  "Greater Talons",
-  "Katar",
-  "Exceptional",
-  21,
-  35
-);
+const GreaterTalons = new Weapon("Greater Talons","Katar","Exceptional",21,35);
 const BartucsCutThrout = new Unique(GreaterTalons, "Bartuc's Cut-Throat", 0, 0);
 BartucsCutThrout.addAttr(new Attribute(EnhancedDmg, 150, 200));
 BartucsCutThrout.addAttr(new Attribute(LifeSteal, 5, 9));
@@ -1226,13 +956,7 @@ FirelizardsTalons.addAttr(new SkillAttribute(empty, "Wake of Inferno", 1, 2));
 FirelizardsTalons.addAttr(new SkillAttribute(empty, "Wake of Fire", 1, 2));
 FirelizardsTalons.addAttr(new Attribute(FireRes, 40, 70));
 
-const SwirlingCrystal = new Weapon(
-  "Swirling Crystal",
-  "Sorceress Orb",
-  "",
-  18,
-  42
-);
+const SwirlingCrystal = new Weapon("Swirling Crystal","Sorceress Orb","",18,42);
 const Oculus = new Unique(SwirlingCrystal, "Oculus", 0, 0);
 const EldritchOrb = new Weapon("Eldritch Orb", "Sorceress Orb", "", 18, 50);
 const EschutasTemper = new Unique(EldritchOrb, "Eschuta's Temper", 0, 0);
@@ -1240,13 +964,7 @@ EschutasTemper.addAttr(new SkillAttribute(empty, "Sorceress Skills", 1, 3));
 EschutasTemper.addAttr(new Attribute(FireDmgPerc, 10, 20));
 EschutasTemper.addAttr(new Attribute(LightDmgPerc, 10, 20));
 EschutasTemper.addAttr(new Attribute(Energy, 20, 30));
-const DimensionalShard = new Weapon(
-  "Dimensional Shard",
-  "Sorceress Orb",
-  "",
-  30,
-  53
-);
+const DimensionalShard = new Weapon("Dimensional Shard","Sorceress Orb","",30,53);
 const DeathsFathom = new Unique(DimensionalShard, "Death's Fathom", 0, 0);
 DeathsFathom.addAttr(new Attribute(ColdDmgPerc, 15, 30));
 DeathsFathom.addAttr(new Attribute(LightRes, 25, 40));
@@ -1286,13 +1004,7 @@ const GrimWand = new Weapon("GrimWand", "Wand", "Normal", 5, 11);
 let UmesLament = new Unique(GrimWand, "Ume's Lament", "Wand", 5, 11);
 const BurntWand = new Weapon("Burnt Wand", "Wand", "Exceptional", 8, 18);
 const SuicideBranch = new Unique(BurntWand, "Suicide Branch", 0, 0);
-const PetrifiedWand = new Weapon(
-  "Petrified Wand",
-  "Wand",
-  "Exceptional",
-  8,
-  24
-);
+const PetrifiedWand = new Weapon("Petrified Wand","Wand","Exceptional",8,24);
 const CarinShard = new Unique(PetrifiedWand, "Carin Shard", 0, 0);
 const TombWand = new Weapon("Tomb Wand", "Wand", "Exceptional", 10, 22);
 const ArmOfKingLeoric = new Unique(TombWand, "Arm of King Leoric", 0, 0);
@@ -1369,44 +1081,14 @@ const KeyOfHate = new QuantizedItem(Key, "Key of Hate", 0, null);
 const KeyOfDestruction = new QuantizedItem(Key, "Key of Desctruction", 0, null);
 
 const Essence = new Base("Essence", "Essence", "Elite");
-const TwistedEssenceOfSuffering = new QuantizedItem(
-  Essence,
-  "Twisted Essence of Suffering",
-  0,
-  null
-);
-const ChargedEssenceOfHatred = new QuantizedItem(
-  Essence,
-  "Charged Essence of Hatred",
-  0,
-  null
-);
-const BurningEssenceOfTerror = new QuantizedItem(
-  Essence,
-  "Burning Essence of Terror",
-  0,
-  null
-);
-const FesteringEssenceOfDestruction = new QuantizedItem(
-  Essence,
-  "Festering Essence of Destruction",
-  0,
-  null
-);
-const TokenOfAbsolution = new QuantizedItem(
-  Essence,
-  "Token of Absolution",
-  0,
-  null
-);
+const TwistedEssenceOfSuffering = new QuantizedItem(Essence,"Twisted Essence of Suffering",0,null);
+const ChargedEssenceOfHatred = new QuantizedItem(Essence,"Charged Essence of Hatred",0,null);
+const BurningEssenceOfTerror = new QuantizedItem(Essence,"Burning Essence of Terror",0,null);
+const FesteringEssenceOfDestruction = new QuantizedItem(Essence,"Festering Essence of Destruction",0,null);
+const TokenOfAbsolution = new QuantizedItem(Essence,"Token of Absolution",0,null);
 
 const Potion = new Base("Potion", "Potion", "Elite");
-const FullRejuvenationPotion = new QuantizedItem(
-  Potion,
-  "Full Rejuvenation Potion",
-  0,
-  null
-);
+const FullRejuvenationPotion = new QuantizedItem(Potion,"Full Rejuvenation Potion",0,null);
 
 const Gem = new Base("Gem", "Gem", "Elite");
 const FlawlessRuby = new QuantizedItem(Gem, "Flawless Ruby", 0, null);
@@ -1470,12 +1152,7 @@ DwarfStar.addAttr(new Attribute(MageDmgReduce, 12, 15));
 const RavenFrost = new Unique(Ring, "RavenFrost", 0, 0);
 RavenFrost.addAttr(new Attribute(Ar, 150, 250));
 RavenFrost.addAttr(new Attribute(Dex, 15, 20));
-const BulKathosWeddingBand = new Unique(
-  Ring,
-  "BK Bul-Katho's Wedding Band",
-  0,
-  0
-);
+const BulKathosWeddingBand = new Unique(Ring, "BK Bul-Katho's Wedding Band", 0, 0);
 BulKathosWeddingBand.addAttr(new Attribute(LifeSteal, 3, 5));
 const CarrionWind = new Unique(Ring, "Carrion Wind", 0, 0);
 CarrionWind.addAttr(new Attribute(LifeSteal, 6, 9));
@@ -1486,3 +1163,5 @@ NaturesPeace.addAttr(new Attribute(DmgReduce, 7, 11));
 const WispProjector = new Unique(Ring, "Wisp Projector", 0, 0);
 WispProjector.addAttr(new Attribute(LightAbsorbPerc, 10, 20));
 WispProjector.addAttr(new Attribute(MagicFind, 10, 20));
+
+//console.log(AttributeName.attrArray);

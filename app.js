@@ -6,7 +6,6 @@ let sortWithCategory = false;
 let deleteFlag = false;
 let isDay = false;
 let chosenMagicClass = null;
-let chosenClass = null;
 let chosenName = null;
 let currentItem = null;
 let floorActIndexer = 0;
@@ -46,17 +45,6 @@ function addNewItemCopy() {
 
     sortTradeList();
 }
-
-document.querySelectorAll(".returnTypeClass").forEach(item => {
-    item.addEventListener("click", () => {
-        chosenMagicClass = item.innerText;
-        document.getElementById('returnTypeBtnID').textContent = chosenMagicClass;
-        populateClassBtn();
-        clearWindows();
-        document.getElementById('btnPickItemListID').textContent = 'Choose class first'
-        infoWindow.innerText = `Choose a type of item from the class list`
-    })
-});
 
 document.getElementById('categBtnID').addEventListener("click", () => {
     sortWithCategory = true;
@@ -102,7 +90,7 @@ document.getElementById('loadBtnID').addEventListener('click', () => {
 
 tradeThreadTextArea.addEventListener("mouseup", e => {
     let selectStart = e.target.selectionStart;
-    let myString = document.getElementById('tradeThreadTextAreaID').value.substring(0, selectStart);
+    let myString = tradeThreadTextArea.value.substring(0, selectStart);
     let mySplitArray = myString.split('\n');
     myListIndex = mySplitArray.length - 1;
     if (deleteFlag) {
@@ -128,16 +116,9 @@ function loadAttrNickNames() {
         const attrJSONStr = localStorage.getItem("attrArray");
         if (attrJSONStr != null) {
             const parsedAttrArr = JSON.parse(attrJSONStr);
-            if (parsedAttrArr.length != exports.AttributeName.attrArray.length) {
-                exports.AttributeName.resetNickNames();
-                localStorage.removeItem("attrArray");
-                alert('An update or error has caused your attribute nick names to reset!')
-            } else {
-                exports.AttributeName.updateValues(parsedAttrArr)
-            }
+            exports.AttributeName.updateValues(parsedAttrArr) 
         };
-    } catch (error) {
-    }
+    } catch (error) {console.log(error)}
     setAttrNickNames();
 }
 
@@ -168,8 +149,7 @@ function setAttrNickNames() {
         let nickNameCol = document.createElement("div");
         nickNameCol.classList.add("col-6");
         let nickTxtArea = document.createElement("textarea");
-        nickTxtArea.classList.add('w-100');
-        nickTxtArea.classList.add('text-nowrap');
+        nickTxtArea.classList.add('w-100','text-nowrap');
         nickTxtArea.setAttribute('id', 'attrTextAreaID' + index);
         nickTxtArea.setAttribute("rows", 1);
         nickTxtArea.style.overflow = "hidden";
@@ -234,28 +214,42 @@ function sortTradeList() {
     updateTradeList();
 }
 
-const testAreaID = document.getElementById('testTextAreaID');
-testAreaID.addEventListener("keyup", (e) => {listGroupNamesGen(e)});
-testAreaID.addEventListener("keydown", (e) => {stopDefault(e)});
 
-testAreaID.style.resize = "none";
 let fullNameListArray = exports.Unique.uniqueArr.concat(exports.Base.baseArray)
 let mappedNameArray = fullNameListArray.map(element => {
     return element._name.toLowerCase();
 });
 mappedNameArray.sort();
-let listGroup = document.getElementsByClassName('list-group')[0];
+let listGroup = document.getElementById("listGroupItemID");
 listGroup.style.position = "absolute";
+
+const searchBar = document.getElementById('searchBarID');
+searchBar.addEventListener("keyup", (e) => {
+    currentItem = null;
+    if(document.getElementById('listGroupAttrID')){
+        document.getElementById('searchAttrBarID').value = ``;
+        document.getElementById('listGroupAttrID').innerHTML = ``;
+    }
+    listGroupNamesGen(e, mappedNameArray, listGroup);
+});
+searchBar.addEventListener("keydown", (e) => {
+    stopDefault(e)
+});
+searchBar.style.resize = "none";
 
 function stopDefault(e){
     if(e.key == 'Tab' || e.key == 'Enter'){
     e.preventDefault()}
 }
 
-function listGroupNamesGen(e) {
-    let outPut = mappedNameArray;
-    listGroup.innerHTML = ``;
-    const userInput = (testAreaID.value.toLowerCase());
+function listGroupNamesGen(e, searchedArray, modiListGroup) {
+    //1234
+
+    let _searchBar = e.target;
+    let _listGroup = modiListGroup;
+    let outPut = searchedArray;
+    _listGroup.innerHTML = ``;
+    const userInput = (_searchBar.value.toLowerCase());
 
     outPut = outPut.filter((name) => {
       return name.includes(userInput);
@@ -263,31 +257,43 @@ function listGroupNamesGen(e) {
 
     if (e.key != 'Tab' && e.key != 'Enter'){
         if (!outPut.length) {
-          let g = listItemGen(
-            "no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter)."
-          );
+          let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
 
-          listGroup.appendChild(g);
+          _listGroup.appendChild(g);
         } else {
           for (let i = 0;i < 10 && i < outPut.length && userInput.length > 0;i++) {
             let g = listItemGen(outPut[i]);
-            g.addEventListener('click', e => setChosenItem(e.target.outerText));
-            listGroup.appendChild(g);
+            if(e.target.id == 'searchBarID'){
+            g.addEventListener('click', e => setChosenItem(e.target.outerText))
+            }else{//if generated search bar
+                g.addEventListener('click', e => {
+                    document.getElementById('lblAttrResultID').innerText = e.target.outerText
+                    _listGroup.innerHTML = ``;
+                    document.getElementById('searchAttrBarID').value = e.target.outerText;
+                })
+            }
+            _listGroup.appendChild(g);
           }
         }
     }else{
+        if(e.target.id == 'searchBarID'){
         setChosenItem(outPut[0])
+        }
+        else{
+            document.getElementById('lblAttrResultID').innerText = outPut[0];
+            _listGroup.innerHTML = ``;
+            document.getElementById('searchAttrBarID').value = outPut[0];
+        }
     }
+}
 
-    function listItemGen(textString){
-        const listGroupItem = document.createElement("li");
-        const listGroupItemTextNode = document.createTextNode(`${textString}`);
-        listGroupItem.appendChild(listGroupItemTextNode);
-        listGroupItem.classList.add("bg-white")
-        listGroupItem.classList.add('list-group-item')
+function listItemGen(textString){
+    const listGroupItem = document.createElement("li");
+    const listGroupItemTextNode = document.createTextNode(`${textString}`);
+    listGroupItem.appendChild(listGroupItemTextNode);
+    listGroupItem.classList.add("bg-white",'list-group-item')
 
-        return listGroupItem;
-    }
+    return listGroupItem;
 }
 
 function setChosenItem (itemName){
@@ -297,25 +303,25 @@ function setChosenItem (itemName){
     });
 
     if (searchedItem.length > 0){
-        listGroup.innerHTML = ``;
-        testAreaID.value = ``;
-        console.log(searchedItem)
         currentItem = searchedItem[0];
         clearWindows();
-        setEditFields();
     }else{
+        let searchedItem = exports.Base.baseArray.filter((item) => {
+            return item._name.toLowerCase() == itemName;
+        }); 
         clearWindows();
-        infoWindow.innerText = 'ERROR: \nSupport for (customized) bases coming soon..';
-        listGroup.innerHTML = ``;
-        testAreaID.value = ``;
+        currentItem = new exports.Item(searchedItem[0]);
+        updateCurrentItemInfoWindow(currentItem);
     }
+    setEditFields()
+
 }
 
 document.getElementById("testBtnID").addEventListener("click", function(){
-    console.log(document.getElementById("testTextAreaID").innerHTML) 
-    let g = document.getElementById("testTextAreaID");
-
-    console.log(g)
+    currentItem.addAttr(new exports.BasicAttribute(exports.AttributeName.attrArray[79], 84));
+    clearWindows();
+    setEditFields();
+    console.log(currentItem)
 })
 
 let btnAddItem = document.getElementById("btnAddItemID");
@@ -348,17 +354,200 @@ function setEditFields() {
     if (currentItem._base._type == `Weapon` || currentItem._base._type == `Armor`) { ethSockRadRow.hidden = false; }
 
     updateCurrentItemInfoWindow(currentItem);
+    //display item name
     let nameRow = document.createElement("div");
-    nameRow.classList.add("row");
-    nameRow.classList.add("removableAttrRowClass");
+    nameRow.classList.add("row","removableAttrRowClass");
     let nameCol = document.createElement('h3');
     nameCol.classList.add("col")
     let nameColTextNode = document.createTextNode(currentItem._name)
     nameCol.appendChild(nameColTextNode);
     nameRow.appendChild(nameCol);
     attributeArea.appendChild(nameRow)
+
+    //add searchbar
+    if (["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1) {
+        let fullNickAttrArray = exports.AttributeName.attrArray.sort();
+        let mappedNickArray = fullNickAttrArray.map(element => {
+            return element._attrNickName.toLowerCase();
+        });
+
+        //1.0 create row
+        let searchAttrRow = document.createElement("div");
+        searchAttrRow.classList.add("row","removableAttrRowClass");
+        
+        let searchAttrCol = document.createElement("div");
+        searchAttrCol.classList.add("col-5");
+
+        //2.a add search bar with listeners
+        //2.a.1 create bar
+        let searchAttrBar = document.createElement("textarea");
+        searchAttrBar.setAttribute("rows", 1);
+        searchAttrBar.classList.add("w-100", "text-nowrap")
+        searchAttrBar.placeholder = `Search and select an attribute`;
+        searchAttrBar.style.resize = "none";
+        searchAttrBar.style.overflow = "hidden";
+        searchAttrBar.id = "searchAttrBarID";
+        //new search bar
+        //2.a.2 add bar functionality
+        //(see bottom)
+
+        //2.a.2 change focus behavior on bar
+        searchAttrBar.addEventListener('focus', () => {
+            searchAttrBar.select();
+        })
+        
+        //2.a.3 add bar to row
+        searchAttrCol.appendChild(searchAttrBar);
+        searchAttrRow.appendChild(searchAttrCol);
+        //2.b.1 add label for search bar result
+        let lblAttrResult = document.createElement("div");
+        lblAttrResult.id = 'lblAttrResultID';
+        lblAttrResult.innerText = 'Choose attribute'
+        lblAttrResult.classList.add("col-3");
+        searchAttrRow.appendChild(lblAttrResult);
+
+        //1.c textbox actValue for attribute
+        let attrValueArea = document.createElement("textarea");
+        attrValueArea.id = 'txtAreaAttrValueID';
+        attrValueArea.setAttribute("rows", 1);
+        attrValueArea.placeholder = `Value`;
+        attrValueArea.classList.add("col-2", "text-nowrap")
+        attrValueArea.style.resize = "none";
+        attrValueArea.style.overflow = "hidden";
+        attrValueArea.addEventListener("keydown", (e) => {
+            stopDefault(e);
+            if(e.key === "Enter" || e.key === "Tab"){addAttribute()}
+        });
+        searchAttrRow.appendChild(attrValueArea)
+        //1.d submit button
+
+        let attrSubmitValBtn = document.createElement("button");
+        attrSubmitValBtn.type = "button";
+        attrSubmitValBtn.classList.add("btn", "btn-sm", "btn-success", "col-2", "text-nowrap")
+        attrSubmitValBtn.innerText = "Add attribute"
+        //1234
+
+        //currentItem.addAttr(new exports.BasicAttribute(exports.AttributeName.attrArray[79], 84));
+        console.log(currentItem)
+        attrSubmitValBtn.addEventListener("click", addAttribute)
+        function addAttribute(){
+            let attrResult = document.getElementById("lblAttrResultID").innerText;
+            let attrVal = document.getElementById("txtAreaAttrValueID").value;
+            let filteredResult = fullNickAttrArray.filter((nickName) =>{
+                return nickName._attrNickName.toLowerCase() === attrResult
+            })
+            currentItem.addAttr(new exports.BasicAttribute(filteredResult[0], attrVal));
+            clearWindows();
+            setEditFields();
+        }
+        searchAttrRow.appendChild(attrSubmitValBtn);
+        //add row to window
+        attributeArea.appendChild(searchAttrRow);
+        
+        //2.a searchbar 
+
+      //2.a textfield for custom name
+      //2.b submit button for change name
+      //2.c set Item._customName = textfield
+
+      //3. add row for list-group
+      let listGroupRow = document.createElement("div");
+      listGroupRow.classList.add('row');
+
+      let listGroupCol = document.createElement("div");
+      listGroupCol.classList.add("col-12");
+
+      let listGroupUl = document.createElement("ul");
+      listGroupUl.classList.add("list-group");
+      listGroupUl.id = "listGroupAttrID"
+
+
+        listGroupCol.appendChild(listGroupUl);
+        listGroupRow.appendChild(listGroupCol);
+        attributeArea.appendChild(listGroupRow);
+
+
+      let listGroupAttr = document.getElementById("listGroupAttrID");
+      listGroupAttr.style.position = "absolute";
+      searchAttrBar.addEventListener("keyup", (e) => {
+        searchBar.value = ``;
+        listGroup.innerHTML = ``;
+        listGroupNamesGen(e, mappedNickArray, listGroupAttr);
+    });
+      searchAttrBar.addEventListener("keydown", (e) => {stopDefault(e)});
+
+    }
+    //add custom namebar
+
+    //add level option
+
+    //add buttons to upgrade base
+    if(currentItem._magicClass === "Base"){
+        //add magicClass buttons with listeners
+        let btnClassRow = document.createElement("div");
+        btnClassRow.classList.add("row","removableAttrRowClass");
+
+        let btnGroup = document.createElement("div");
+        btnGroup.classList.add("btn-group")
+        btnGroup.setAttribute("role","group");
+
+        btnGroup.appendChild(generateRadioButton('Magic'));
+        btnGroup.appendChild(generateRadioButton('Rare'));
+        btnGroup.appendChild(generateRadioButton('Crafted'));
+        btnClassRow.appendChild(btnGroup);
+        attributeArea.appendChild(btnClassRow)
+
+        //add row for superior input
+        let superiorEditRow = document.createElement("div");
+        superiorEditRow.classList.add("row","removableAttrRowClass")
+
+        let supCol = document.createElement("div");
+        supCol.classList.add("col");
+        supCol.innerText = "Superior?"
+        superiorEditRow.appendChild(supCol);
+
+        let supLowCol = document.createElement("div");
+        supLowCol.classList.add("col");
+        supLowCol.innerText = "0"
+        superiorEditRow.appendChild(supLowCol);
+
+        let supHighCol = document.createElement("div");
+        supHighCol.classList.add("col");
+        supHighCol.innerText = "15"
+        superiorEditRow.appendChild(supHighCol);
+
+        //add col for textbox
+        let superActCol = document.createElement("textarea");
+        superActCol.classList.add("col-2")
+        superActCol.setAttribute("type", "number");
+        superActCol.setAttribute("rows", 1);
+        superActCol.innerHTML = `${currentItem._base._ed}`;
+        superActCol.style.resize = "none";
+        superActCol.style.overflow = "hidden";
+        superActCol.id = 'needThis'
+        superActCol.addEventListener("keyup", (e) => {
+            if(e.target.value + 0 > 0){
+                currentItem._base._ed = e.target.value;
+                currentItem._base._defActVal = currentItem._base._maxDef;
+            }else{
+                currentItem._base._ed = 0;
+            }
+            updateCurrentItemInfoWindow(currentItem);
+            clearWindows();
+            setEditFields();
+            let g = document.getElementById('needThis');
+            g.setSelectionRange(3,3)
+            g.focus();
+        });
+        superActCol.addEventListener('click', () => {
+            superActCol.select();
+        })
+        superiorEditRow.appendChild(superActCol);
+        attributeArea.appendChild(superiorEditRow);
+    }
+    
     //add special row if no ed and no extra defense
-    if (grabInScope._base._ed == 0 && grabInScope._base._addedDef == 0 && grabInScope._base._defActVal != undefined) {
+    if (grabInScope._base._ed == 0 && /*grabInScope._base._addedDef == 0 && */grabInScope._base._defActVal != undefined) {
         let ethMult = (grabInScope._base._isEth) ? 1.5 : 1;
         let newRow = generateRowForDefOnly(currentItem, ethMult)
         attributeArea.appendChild(newRow);
@@ -371,11 +560,33 @@ function setEditFields() {
     attributeArea.appendChild(newRow);
 }
 
+function generateRadioButton(lblText){
+    let colDiv = document.createElement("div");
+    colDiv.classList.add("col-2")
+
+    let genBtn = document.createElement("button");
+    genBtn.classList.add("btn", "btn-sm", "btn-outline-primary","text-light");
+
+    let genBtnTextNode = document.createTextNode(`${lblText}`);
+    genBtn.appendChild(genBtnTextNode);
+    genBtn.addEventListener("click", e => setMagicClass(e))
+    colDiv.appendChild(genBtn)
+
+    return colDiv;
+}
+
+function setMagicClass (e) {
+    console.log(e.target.innerHTML)
+    currentItem._magicClass = e.target.innerHTML;
+    currentItem._base._ed = 0;
+    clearWindows();
+    setEditFields();
+}
+
 function generateRowForPrice(itemToGen) {
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row");
-    thisRow.classList.add("removableAttrRowClass");
+    thisRow.classList.add("row","removableAttrRowClass");
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
     priceHeaderCol.classList.add("col");
@@ -404,8 +615,7 @@ function generateRowForPrice(itemToGen) {
 function generateRowForDefOnly(itemToGen, ethMult) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row");
-    thisRow.classList.add("removableAttrRowClass");
+    thisRow.classList.add("row","removableAttrRowClass");
     //1.1 f
     const attrNickCol = document.createElement("div");
     attrNickCol.classList.add("col");
@@ -429,7 +639,7 @@ function generateRowForDefOnly(itemToGen, ethMult) {
     defActTextArea.classList.add("col-2");
     defActTextArea.setAttribute("type", "number");
     defActTextArea.setAttribute("rows", 1);
-    defActTextArea.innerHTML = `${base._maxDef}`;
+    defActTextArea.innerHTML = `${base._defActVal}`;
     defActTextArea.style.resize = "none";
     defActTextArea.style.overflow = "hidden";
     defActTextArea.addEventListener("keyup", (e) => {
@@ -445,8 +655,9 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row");
-    thisRow.classList.add("removableAttrRowClass");
+    thisRow.classList.add("row","removableAttrRowClass");
+    console.log(attr)
+    console.log('line 623')
 
     //1.1F 0
     if (attr._attributeName._attrName != ``) {
@@ -467,17 +678,21 @@ function generateRowForField(attr) {
 
     }
     //1.2 aFinV 2
+    if(attr._attrFloorMinVal){
     const attrFloorMinCol = document.createElement("div");
     attrFloorMinCol.classList.add("col-1");
     const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
     attrFloorMinCol.appendChild(attrFloorMinText);
     thisRow.appendChild(attrFloorMinCol)
+    }
     //1.3 aFMaxV 3
+    if(attr._attrFloorMaxVal){
     const attrFloorMaxCol = document.createElement("div");
     attrFloorMaxCol.classList.add("col-1");
     const attrFloormaxText = document.createTextNode(`${attr._attrFloorMaxVal}`);
     attrFloorMaxCol.appendChild(attrFloormaxText);
     thisRow.appendChild(attrFloorMaxCol)
+    }
     //1.4 aFAV text area 4
     const attrFloorActTextArea = document.createElement("textarea");
     attrFloorActTextArea.classList.add("col-2");
@@ -489,6 +704,9 @@ function generateRowForField(attr) {
     attrFloorActTextArea.style.overflow = "hidden";
     attrFloorActTextArea.addEventListener("keyup", (e) => {
         attr._attrFloorActVal = (e.target.value)
+        if(attr._attributeName._attrName === "Level Requirement"){
+            currentItem._levelReq = attr._attrFloorActVal
+        };
         updateCurrentItemInfoWindow(currentItem);
     })
     attrFloorActTextArea.addEventListener('focus', () => {
@@ -557,16 +775,23 @@ function updateCurrentItemInfoWindow(element) {
     let eachString = ``;
     let name = element._name;
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
+    let lvlReq = (currentItem._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${currentItem._levelReq}` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${element._base._ed}${exports.AttributeName.attrArray[0]._attrNickName}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
-    let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName}` : ``;
-    tempString += `${name}${isEth}${sockets}${ed}${def}`;
-    if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` }
+    let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
+    if (currentItem._base._ed > 0 && currentItem._magicClass === "Base") {
+        name += ` - ${exports.AttributeName.attrArray[85]._attrNickName}`;
+    }
+    if (['Magic','Rare','Crafted'].indexOf(currentItem._magicClass) > -1){
+        name += ` - ${currentItem._magicClass}`
+    }
+    tempString += `${name}${isEth}${sockets}${ed}${def}${lvlReq}`;
+    if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}`};
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (shrtAttrName != '% Enhanced Defense' && shrtAttrName != '% Enhanced Damage' && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense') {
+        if (shrtAttrName != '% Enhanced Defense' && shrtAttrName != '% Enhanced Damage' && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
             tempString += ` / ${elementTwo._attributeName._attrNickName}`;
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` ${elementTwo._classOrTreeName}`;
@@ -589,7 +814,6 @@ function updateCurrentItemInfoWindow(element) {
     if (element._price != 0) {
         tempString += ` - ${element._price} ${exports.AttributeName.attrArray[3]._attrNickName} ${eachString}`
     }
-
     infoWindow.innerText = tempString;
     return (tempString);
 }
@@ -609,12 +833,9 @@ function checkNightDay() {
 }
 
 function setDayMode() {
-    body[0].classList.remove("bg-dark")
-    body[0].classList.add('bg-success')
-    body[0].classList.add("bg-gradient")
-    body[0].classList.remove('text-light')
-    tradeThreadTextArea.classList.remove('bg-dark');
-    tradeThreadTextArea.classList.remove('text-light');
+    body[0].classList.remove("bg-dark",'text-light');
+    body[0].classList.add('bg-success',"bg-gradient");
+    tradeThreadTextArea.classList.remove('bg-dark','text-light');
     sunIcon.style.display = "none";
     moonIcon.style.display = "block";
     isDay = true;
@@ -622,12 +843,9 @@ function setDayMode() {
     localStorage.setItem('dayMode', isDay);
 }
 function setNightMode() {
-    body[0].classList.remove("bg-success")
-    body[0].classList.add('bg-dark')
-    body[0].classList.remove("bg-gradient")
-    body[0].classList.add('text-light')
-    tradeThreadTextArea.classList.add('bg-dark');
-    tradeThreadTextArea.classList.add('text-light');
+    body[0].classList.remove("bg-success","bg-gradient")
+    body[0].classList.add('bg-dark','text-light')
+    tradeThreadTextArea.classList.add('bg-dark','text-light');
     sunIcon.style.display = "block";
     moonIcon.style.display = "none";
     isDay = false;
@@ -636,11 +854,10 @@ function setNightMode() {
 }
 document.getElementById('clearAllBtnID').addEventListener("click", clearLocalData);
 function clearLocalData() {
-    localStorage.removeItem("attrArray");
-    localStorage.removeItem("tradeArray");
-    localStorage.removeItem("dayMode");
+    let removeKeys = ["attrArray","tradeArray","dayMode"];
+    removeKeys.forEach(k => localStorage.removeItem(k));
     document.getElementById('clearAllBtnID');
-    infoWindow.innerText = `Local storage cleared`
+    infoWindow.innerText = `All page settings and saved trades were deleted`
 }
 
 function clearWindows() {
@@ -648,8 +865,17 @@ function clearWindows() {
     infoWindow.innerText = ``;
     ethSockRadRow.hidden = true;
     btnAddItem.style.display = "none";
-
+    listGroup.innerHTML = ``;
+    searchBar.value = ``;
 }
+
 checkNightDay();
 loadAttrNickNames();
 sortTradeList();
+
+
+let body_ = document.getElementsByTagName("body");
+body_[0].addEventListener("click", e => {
+    //console.log(e)
+    //console.log(currentItem)
+})
