@@ -1029,6 +1029,7 @@ DeathsWeb.addAttr(new Attribute(LifeOnKill, 7, 12));
 
 const SmallCharm = new Base("Small Charm", "Charm", "Elite");
 const Annihilus = new Unique(SmallCharm, "Annihilus", 0, 0);
+console.log(SmallCharm)
 Annihilus.addAttr(new Attribute(AllAttributes, 10, 20));
 Annihilus.addAttr(new Attribute(AllRes, 10, 20));
 Annihilus.addAttr(new Attribute(ExperGained, 5, 10));

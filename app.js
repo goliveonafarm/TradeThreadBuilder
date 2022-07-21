@@ -249,10 +249,14 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
     _listGroup.innerHTML = ``;
     const userInput = (_searchBar.value.toLowerCase());
 
-    outPut = outPut.filter((name) => {
-      return name.includes(userInput);
-    });
+    if (['key','rune','essence','potion', 'Gem',].indexOf(outPut) > -1){
+        name += ` - ${currentItem._magicClass}`
+    }
 
+    outPut = outPut.filter((name) => {
+        if(name != "key" && name != "rune" && name != "essence" && name != "potion" && name != "gem" && name != "socket"){
+      return name.includes(userInput)};
+    });
     if (e.key != 'Tab' && e.key != 'Enter'){
         if (!outPut.length) {
           let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
@@ -298,18 +302,23 @@ function setChosenItem (itemName){
     let searchedItem = exports.Unique.uniqueArr.filter((item) => {
         return item._name.toLowerCase() == itemName;
     });
-
     if (searchedItem.length > 0){
         currentItem = searchedItem[0];
         clearWindows();
     }else{
-        let searchedItem = exports.Base.baseArray.filter((item) => {
+        searchedItem = exports.Base.baseArray.filter((item) => {
             return item._name.toLowerCase() == itemName;
         }); 
         clearWindows();
+        console.log(searchedItem)
         currentItem = new exports.Item(searchedItem[0]);
+        if(["Small Charm", "Large Charm", "Grand Charm"].indexOf(currentItem._base._name) > -1){
+            currentItem._magicClass = "Magic"
+        }
+        //(["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1)
         updateCurrentItemInfoWindow(currentItem);
     }
+    console.log(currentItem)
     setEditFields()
 
 }
@@ -360,9 +369,9 @@ function setEditFields() {
     nameCol.appendChild(nameColTextNode);
     nameRow.appendChild(nameCol);
     attributeArea.appendChild(nameRow)
-
+    console.log(currentItem)
     //add searchbar
-    if (["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1) {
+    if (["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1){
         let fullNickAttrArray = exports.AttributeName.attrArray.sort();
         let mappedNickArray = fullNickAttrArray.map(element => {
             return element._attrNickName.toLowerCase();
