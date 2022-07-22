@@ -4,6 +4,7 @@ let myListIndex = 0;
 let myTradeItems = [];
 let sortWithCategory = false;
 let deleteFlag = false;
+let editFlag = false;
 let isDay = false;
 let chosenMagicClass = null;
 let chosenName = null;
@@ -54,10 +55,24 @@ document.getElementById('categBtnID').addEventListener("click", () => {
 });
 
 document.getElementById('removeBtnID').addEventListener("click", () => {
-    sortTradeList();
-    deleteFlag = true;
-    infoWindow.innerText = `Click on an item in the trade window to remove it`;
+    if (myTradeItems.length > 0) {
+        sortTradeList();
+        deleteFlag = true;
+        editFlag = false;
+        infoWindow.innerText = `Click on an item in the trade window to remove it`;
+    }
 });
+
+document.getElementById('editBtnID').addEventListener("click", () => {
+    console.log('hit click event')
+    if (myTradeItems.length > 0) {
+        console.log('hit tradeItems > 0')
+        sortTradeList();
+        editFlag = true;
+        deleteFlag = false;
+        infoWindow.innerText = `Click on an item in the trade window to edit it.\nThis will delete your old item and queue up a copy!`;
+    }
+})
 
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
     const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
@@ -88,15 +103,27 @@ document.getElementById('loadBtnID').addEventListener('click', () => {
     }
 })
 
+
 tradeThreadTextArea.addEventListener("mouseup", e => {
     let selectStart = e.target.selectionStart;
     let myString = tradeThreadTextArea.value.substring(0, selectStart);
     let mySplitArray = myString.split('\n');
     myListIndex = mySplitArray.length - 1;
     if (deleteFlag) {
-        myTradeItems.splice(myListIndex, 1);
         sortTradeList();
+        myTradeItems.splice(myListIndex, 1);
         infoWindow.innerText = `Item # ${myListIndex + 1} removed`;
+        sortTradeList();
+    }
+    if (editFlag) {
+        console.log(myTradeItems[myListIndex])
+        currentItem = myTradeItems[myListIndex];
+        myTradeItems.splice(myListIndex, 1)
+        clearWindows();
+        setEditFields();
+        sortTradeList();
+        infoWindow.innerText = "";
+        editFlag = false;
     }
 })
 document.getElementById('clearBtnID').addEventListener("click", () => {
@@ -116,9 +143,9 @@ function loadAttrNickNames() {
         const attrJSONStr = localStorage.getItem("attrArray");
         if (attrJSONStr != null) {
             const parsedAttrArr = JSON.parse(attrJSONStr);
-            exports.AttributeName.updateValues(parsedAttrArr) 
+            exports.AttributeName.updateValues(parsedAttrArr)
         };
-    } catch (error) {console.log(error)}
+    } catch (error) { console.log(error) }
     setAttrNickNames();
 }
 
@@ -149,7 +176,7 @@ function setAttrNickNames() {
         let nickNameCol = document.createElement("div");
         nickNameCol.classList.add("col-6");
         let nickTxtArea = document.createElement("textarea");
-        nickTxtArea.classList.add('w-100','text-nowrap');
+        nickTxtArea.classList.add('w-100', 'text-nowrap');
         nickTxtArea.setAttribute('id', 'attrTextAreaID' + index);
         nickTxtArea.setAttribute("rows", 1);
         nickTxtArea.style.overflow = "hidden";
@@ -191,6 +218,7 @@ function updateTradeList() {
                 tradeThreadTextArea.value += `${lastClassType}\n`;
             }
         }
+        console.log(element)
         let myString = updateCurrentItemInfoWindow(element);
         tradeThreadTextArea.value += `${myString}\n`;
     });
@@ -225,7 +253,7 @@ let listGroup = document.getElementById("listGroupItemID");
 const searchBar = document.getElementById('searchBarID');
 searchBar.addEventListener("keyup", (e) => {
     currentItem = null;
-    if(document.getElementById('listGroupAttrID')){
+    if (document.getElementById('listGroupAttrID')) {
         document.getElementById('searchAttrBarID').value = ``;
         document.getElementById('listGroupAttrID').innerHTML = ``;
     }
@@ -236,9 +264,10 @@ searchBar.addEventListener("keydown", (e) => {
 });
 searchBar.style.resize = "none";
 
-function stopDefault(e){
-    if(e.key == 'Tab' || e.key == 'Enter'){
-    e.preventDefault()}
+function stopDefault(e) {
+    if (e.key == 'Tab' || e.key == 'Enter') {
+        e.preventDefault()
+    }
 }
 
 function listGroupNamesGen(e, searchedArray, modiListGroup) {
@@ -249,39 +278,40 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
     _listGroup.innerHTML = ``;
     const userInput = (_searchBar.value.toLowerCase());
 
-    if (['key','rune','essence','potion', 'Gem',].indexOf(outPut) > -1){
+    if (['key', 'rune', 'essence', 'potion', 'Gem',].indexOf(outPut) > -1) {
         name += ` - ${currentItem._magicClass}`
     }
 
     outPut = outPut.filter((name) => {
-        if(name != "key" && name != "rune" && name != "essence" && name != "potion" && name != "gem" && name != "socket"){
-      return name.includes(userInput)};
+        if (name != "key" && name != "rune" && name != "essence" && name != "potion" && name != "gem" && name != "socket") {
+            return name.includes(userInput)
+        };
     });
-    if (e.key != 'Tab' && e.key != 'Enter'){
+    if (e.key != 'Tab' && e.key != 'Enter') {
         if (!outPut.length) {
-          let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
+            let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
 
-          _listGroup.appendChild(g);
-        } else {
-          for (let i = 0;i < 10 && i < outPut.length && userInput.length > 0;i++) {
-            let g = listItemGen(outPut[i]);
-            if(e.target.id == 'searchBarID'){
-            g.addEventListener('click', e => setChosenItem(e.target.outerText))
-            }else{//if generated search bar
-                g.addEventListener('click', e => {
-                    document.getElementById('lblAttrResultID').innerText = e.target.outerText
-                    _listGroup.innerHTML = ``;
-                    document.getElementById('searchAttrBarID').value = e.target.outerText;
-                })
-            }
             _listGroup.appendChild(g);
-          }
+        } else {
+            for (let i = 0; i < 10 && i < outPut.length && userInput.length > 0; i++) {
+                let g = listItemGen(outPut[i]);
+                if (e.target.id == 'searchBarID') {
+                    g.addEventListener('click', e => setChosenItem(e.target.outerText))
+                } else {//if generated search bar
+                    g.addEventListener('click', e => {
+                        document.getElementById('lblAttrResultID').innerText = e.target.outerText
+                        _listGroup.innerHTML = ``;
+                        document.getElementById('searchAttrBarID').value = e.target.outerText;
+                    })
+                }
+                _listGroup.appendChild(g);
+            }
         }
-    }else{
-        if(e.target.id == 'searchBarID'){
-        setChosenItem(outPut[0])
+    } else {
+        if (e.target.id == 'searchBarID') {
+            setChosenItem(outPut[0])
         }
-        else{
+        else {
             document.getElementById('lblAttrResultID').innerText = outPut[0];
             _listGroup.innerHTML = ``;
             document.getElementById('searchAttrBarID').value = outPut[0];
@@ -289,46 +319,38 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
     }
 }
 
-function listItemGen(textString){
+function listItemGen(textString) {
     const listGroupItem = document.createElement("li");
     const listGroupItemTextNode = document.createTextNode(`${textString}`);
     listGroupItem.appendChild(listGroupItemTextNode);
-    listGroupItem.classList.add("bg-white",'list-group-item')
+    listGroupItem.classList.add("bg-white", 'list-group-item')
 
     return listGroupItem;
 }
 
-function setChosenItem (itemName){
+function setChosenItem(itemName) {
     let searchedItem = exports.Unique.uniqueArr.filter((item) => {
         return item._name.toLowerCase() == itemName;
     });
-    if (searchedItem.length > 0){
+    if (searchedItem.length > 0) {
         currentItem = searchedItem[0];
         clearWindows();
-    }else{
+    } else {
         searchedItem = exports.Base.baseArray.filter((item) => {
             return item._name.toLowerCase() == itemName;
-        }); 
+        });
         clearWindows();
-        console.log(searchedItem)
         currentItem = new exports.Item(searchedItem[0]);
-        if(["Small Charm", "Large Charm", "Grand Charm"].indexOf(currentItem._base._name) > -1){
-            currentItem._magicClass = "Magic"
+        if (["Small Charm", "Large Charm", "Grand Charm"].indexOf(currentItem._base._name) > -1) {
+            currentItem._magicClass = "Charm"
         }
         //(["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1)
         updateCurrentItemInfoWindow(currentItem);
     }
-    console.log(currentItem)
     setEditFields()
 
 }
 
-document.getElementById("testBtnID").addEventListener("click", function(){
-    currentItem.addAttr(new exports.BasicAttribute(exports.AttributeName.attrArray[79], 84));
-    clearWindows();
-    setEditFields();
-    console.log(currentItem)
-})
 
 let btnAddItem = document.getElementById("btnAddItemID");
 
@@ -362,30 +384,26 @@ function setEditFields() {
     updateCurrentItemInfoWindow(currentItem);
     //display item name
     let nameRow = document.createElement("div");
-    nameRow.classList.add("row","removableAttrRowClass");
+    nameRow.classList.add("row", "removableAttrRowClass");
     let nameCol = document.createElement('h3');
     nameCol.classList.add("col")
     let nameColTextNode = document.createTextNode(currentItem._name)
     nameCol.appendChild(nameColTextNode);
     nameRow.appendChild(nameCol);
     attributeArea.appendChild(nameRow)
-    console.log(currentItem)
     //add searchbar
-    if (["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1){
+    if (["Magic", "Rare", "Crafted", "Charm"].indexOf(currentItem._magicClass) > -1) {
         let fullNickAttrArray = exports.AttributeName.attrArray.sort();
         let mappedNickArray = fullNickAttrArray.map(element => {
             return element._attrNickName.toLowerCase();
         });
 
-        //1.0 create row
         let searchAttrRow = document.createElement("div");
-        searchAttrRow.classList.add("row","removableAttrRowClass");
-        
+        searchAttrRow.classList.add("row", "removableAttrRowClass");
+
         let searchAttrCol = document.createElement("div");
         searchAttrCol.classList.add("col-5");
 
-        //2.a add search bar with listeners
-        //2.a.1 create bar
         let searchAttrBar = document.createElement("textarea");
         searchAttrBar.setAttribute("rows", 1);
         searchAttrBar.classList.add("w-100", "text-nowrap")
@@ -393,26 +411,18 @@ function setEditFields() {
         searchAttrBar.style.resize = "none";
         searchAttrBar.style.overflow = "hidden";
         searchAttrBar.id = "searchAttrBarID";
-        //new search bar
-        //2.a.2 add bar functionality
-        //(see bottom)
-
-        //2.a.2 change focus behavior on bar
         searchAttrBar.addEventListener('focus', () => {
             searchAttrBar.select();
         })
-        
-        //2.a.3 add bar to row
+
         searchAttrCol.appendChild(searchAttrBar);
         searchAttrRow.appendChild(searchAttrCol);
-        //2.b.1 add label for search bar result
         let lblAttrResult = document.createElement("div");
         lblAttrResult.id = 'lblAttrResultID';
         lblAttrResult.innerText = 'Choose attribute'
         lblAttrResult.classList.add("col-3");
         searchAttrRow.appendChild(lblAttrResult);
 
-        //1.c textbox actValue for attribute
         let attrValueArea = document.createElement("textarea");
         attrValueArea.id = 'txtAreaAttrValueID';
         attrValueArea.setAttribute("rows", 1);
@@ -422,23 +432,20 @@ function setEditFields() {
         attrValueArea.style.overflow = "hidden";
         attrValueArea.addEventListener("keydown", (e) => {
             stopDefault(e);
-            if(e.key === "Enter" || e.key === "Tab"){addAttribute()}
+            if (e.key === "Enter" || e.key === "Tab") { addAttribute() }
         });
         searchAttrRow.appendChild(attrValueArea)
-        //1.d submit button
 
         let attrSubmitValBtn = document.createElement("button");
         attrSubmitValBtn.type = "button";
         attrSubmitValBtn.classList.add("btn", "btn-sm", "btn-success", "col-2", "text-nowrap")
         attrSubmitValBtn.innerText = "Add attribute"
-        //1234
 
-        //currentItem.addAttr(new exports.BasicAttribute(exports.AttributeName.attrArray[79], 84));
         attrSubmitValBtn.addEventListener("click", addAttribute)
-        function addAttribute(){
+        function addAttribute() {
             let attrResult = document.getElementById("lblAttrResultID").innerText;
             let attrVal = document.getElementById("txtAreaAttrValueID").value;
-            let filteredResult = fullNickAttrArray.filter((nickName) =>{
+            let filteredResult = fullNickAttrArray.filter((nickName) => {
                 return nickName._attrNickName.toLowerCase() === attrResult
             })
             currentItem.addAttr(new exports.BasicAttribute(filteredResult[0], attrVal));
@@ -446,16 +453,8 @@ function setEditFields() {
             setEditFields();
         }
         searchAttrRow.appendChild(attrSubmitValBtn);
-        //add row to window
         attributeArea.appendChild(searchAttrRow);
-        
-        //2.a searchbar 
 
-        //2.a textfield for custom name
-        //2.b submit button for change name
-        //2.c set Item._customName = textfield
-
-        //3. add row for list-group
         let listGroupRow = document.createElement("div");
         listGroupRow.classList.add('row');
 
@@ -463,35 +462,37 @@ function setEditFields() {
         listGroupCol.classList.add("col-12");
 
         let listGroupUl = document.createElement("ul");
-        listGroupUl.classList.add("list-group","position-absolute");
+        listGroupUl.classList.add("list-group", "position-absolute");
         listGroupUl.id = "listGroupAttrID"
 
         listGroupCol.appendChild(listGroupUl);
         listGroupRow.appendChild(listGroupCol);
         attributeArea.appendChild(listGroupRow);
 
+        //line break row
+        let lineBrkRow = document.createElement("br");
+        attributeArea.appendChild(lineBrkRow)
+
         let listGroupAttr = document.getElementById("listGroupAttrID");
         searchAttrBar.addEventListener("keyup", (e) => {
             searchBar.value = ``;
             listGroup.innerHTML = ``;
             listGroupNamesGen(e, mappedNickArray, listGroupAttr);
-    });
-      searchAttrBar.addEventListener("keydown", (e) => {stopDefault(e)});
+        });
+        searchAttrBar.addEventListener("keydown", (e) => { stopDefault(e) });
 
     }
     //add custom namebar
 
-    //add level option
-
     //add buttons to upgrade base
-    if(currentItem._magicClass === "Base"){
+    if (currentItem._magicClass === "Base") {
         //add magicClass buttons with listeners
         let btnClassRow = document.createElement("div");
-        btnClassRow.classList.add("row","removableAttrRowClass");
+        btnClassRow.classList.add("row", "removableAttrRowClass");
 
         let btnGroup = document.createElement("div");
         btnGroup.classList.add("btn-group")
-        btnGroup.setAttribute("role","group");
+        btnGroup.setAttribute("role", "group");
 
         btnGroup.appendChild(generateRadioButton('Magic'));
         btnGroup.appendChild(generateRadioButton('Rare'));
@@ -499,9 +500,10 @@ function setEditFields() {
         btnClassRow.appendChild(btnGroup);
         attributeArea.appendChild(btnClassRow)
 
+        attributeArea.appendChild(createHeaderRow())
         //add row for superior input
         let superiorEditRow = document.createElement("div");
-        superiorEditRow.classList.add("row","removableAttrRowClass")
+        superiorEditRow.classList.add("row", "removableAttrRowClass")
 
         let supCol = document.createElement("div");
         supCol.classList.add("col");
@@ -509,12 +511,12 @@ function setEditFields() {
         superiorEditRow.appendChild(supCol);
 
         let supLowCol = document.createElement("div");
-        supLowCol.classList.add("col");
+        supLowCol.classList.add("col-1");
         supLowCol.innerText = "0"
         superiorEditRow.appendChild(supLowCol);
 
         let supHighCol = document.createElement("div");
-        supHighCol.classList.add("col");
+        supHighCol.classList.add("col-1");
         supHighCol.innerText = "15"
         superiorEditRow.appendChild(supHighCol);
 
@@ -528,17 +530,17 @@ function setEditFields() {
         superActCol.style.overflow = "hidden";
         superActCol.id = 'needThis'
         superActCol.addEventListener("keyup", (e) => {
-            if(e.target.value + 0 > 0){
+            if (e.target.value + 0 > 0) {
                 currentItem._base._ed = e.target.value;
                 currentItem._base._defActVal = currentItem._base._maxDef;
-            }else{
+            } else {
                 currentItem._base._ed = 0;
             }
             updateCurrentItemInfoWindow(currentItem);
             clearWindows();
             setEditFields();
             let g = document.getElementById('needThis');
-            g.setSelectionRange(3,3)
+            g.setSelectionRange(3, 3)
             g.focus();
         });
         superActCol.addEventListener('click', () => {
@@ -546,8 +548,15 @@ function setEditFields() {
         })
         superiorEditRow.appendChild(superActCol);
         attributeArea.appendChild(superiorEditRow);
+    } else {
+        attributeArea.appendChild(createCustomNameRow());
+        attributeArea.appendChild(createHeaderRow());
+
     }
-    
+
+    //add header row
+
+
     //add special row if no ed and no extra defense
     if (grabInScope._base._ed == 0 && /*grabInScope._base._addedDef == 0 && */grabInScope._base._defActVal != undefined) {
         let ethMult = (grabInScope._base._isEth) ? 1.5 : 1;
@@ -562,11 +571,11 @@ function setEditFields() {
     attributeArea.appendChild(newRow);
 }
 
-function generateRadioButton(lblText){
+function generateRadioButton(lblText) {
     let colDiv = document.createElement("div");
     colDiv.classList.add("col-2")
     let genBtn = document.createElement("button");
-    genBtn.classList.add("btn", "btn-sm", "btn-outline-primary","text-light");
+    genBtn.classList.add("btn", "btn-sm", "btn-outline-primary", "text-light");
 
     let genBtnTextNode = document.createTextNode(`${lblText}`);
     genBtn.appendChild(genBtnTextNode);
@@ -576,7 +585,74 @@ function generateRadioButton(lblText){
     return colDiv;
 }
 
-function setMagicClass (e) {
+function createHeaderRow() {
+    let headerRow = document.createElement("div");
+    headerRow.classList.add("row", "removableAttrRowClass");
+
+    //header col-0 //0 1 1 2
+    let emptyHeaderLeaderCol = document.createElement("div");
+    emptyHeaderLeaderCol.classList.add("col")
+    headerRow.appendChild(emptyHeaderLeaderCol)
+
+    let minHeaderCol = document.createElement("div");
+    minHeaderCol.classList.add("col-1");
+    let minHeaderColTextNode = document.createTextNode("Min")
+    minHeaderCol.appendChild(minHeaderColTextNode);
+    headerRow.appendChild(minHeaderCol);
+
+    let maxHeaderCol = document.createElement("div");
+    maxHeaderCol.classList.add("col-1");
+    let maxHeaderColTextNode = document.createTextNode("Max");
+    maxHeaderCol.appendChild(maxHeaderColTextNode);
+    headerRow.appendChild(maxHeaderCol);
+
+    let emptyHeaderEndCol = document.createElement("div");
+    emptyHeaderEndCol.classList.add("col-2")
+    headerRow.appendChild(emptyHeaderEndCol);
+
+    return headerRow;
+}
+
+function createCustomNameRow(){
+    let customNameRow = document.createElement("div");
+    customNameRow.classList.add("row","removableAttrRowClass");
+
+    let customTextAreaCol = document.createElement("div");
+    customTextAreaCol.classList.add("col-5");
+    let customTextArea = document.createElement("textarea");
+    customTextArea.classList.add("col-10","w-100", "text-nowrap");
+    customTextArea.setAttribute("rows", 1);
+    customTextArea.placeholder = "Optional - customize item name here"
+    if(!currentItem._customName){customTextArea.innerHTML = currentItem._customName}
+    customTextArea.style.resize = "none";
+    customTextArea.style.overflow = "hidden";
+    customTextArea.id = "customTextAreaID";
+    customTextArea.addEventListener('focus', () => {
+        customTextArea.select();
+    })
+    customTextAreaCol.appendChild(customTextArea);
+    customNameRow.appendChild(customTextAreaCol);
+    
+    let customNameSubmitBtnCol = document.createElement("div");
+    customNameSubmitBtnCol.classList.add("col-2");
+    let customNameSubmitBtn = document.createElement("button");
+    customNameSubmitBtn.classList.add("btn", "btn-sm", "btn-success", "text-light");
+    let genBtnTextNode = document.createTextNode(`Submit`);
+    customNameSubmitBtn.appendChild(genBtnTextNode);
+    customNameSubmitBtn.addEventListener("click", ()=>{
+        let customTextAreaElem = document.getElementById("customTextAreaID");
+        currentItem._customName = customTextAreaElem.value;
+        customTextAreaElem.value = ``;
+        clearWindows();
+        setEditFields();
+    })
+    customNameSubmitBtnCol.appendChild(customNameSubmitBtn);
+    customNameRow.appendChild(customNameSubmitBtnCol);
+
+    return customNameRow;
+}
+
+function setMagicClass(e) {
     console.log(e.target.innerHTML)
     currentItem._magicClass = e.target.innerHTML;
     currentItem._base._ed = 0;
@@ -587,7 +663,7 @@ function setMagicClass (e) {
 function generateRowForPrice(itemToGen) {
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row","removableAttrRowClass");
+    thisRow.classList.add("row", "removableAttrRowClass");
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
     priceHeaderCol.classList.add("col");
@@ -616,22 +692,22 @@ function generateRowForPrice(itemToGen) {
 function generateRowForDefOnly(itemToGen, ethMult) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row","removableAttrRowClass");
+    thisRow.classList.add("row", "removableAttrRowClass");
     //1.1 f
     const attrNickCol = document.createElement("div");
     attrNickCol.classList.add("col");
-    const attrNickText = document.createTextNode(`${exports.AttributeName.attrArray[2]._attrNickName}`);
+    const attrNickText = document.createTextNode(`(Total) ${exports.AttributeName.attrArray[2]._attrNickName}`);
     attrNickCol.appendChild(attrNickText);
     thisRow.appendChild(attrNickCol)
     //2.1 dMin
     const baseMinCol = document.createElement("div");
-    baseMinCol.classList.add("col");
+    baseMinCol.classList.add("col-1");
     const baseMinText = document.createTextNode(`${Math.floor(base._minDef * ethMult)}`);
     baseMinCol.appendChild(baseMinText);
     thisRow.appendChild(baseMinCol)
     //2.2 dmax
     const baseMaxCol = document.createElement("div");
-    baseMaxCol.classList.add("col");
+    baseMaxCol.classList.add("col-1");
     const baseMaxText = document.createTextNode(`${Math.floor(base._maxDef * ethMult)}`);
     baseMaxCol.appendChild(baseMaxText);
     thisRow.appendChild(baseMaxCol)
@@ -656,22 +732,9 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row","removableAttrRowClass");
+    thisRow.classList.add("row", "removableAttrRowClass");
     //1.1F 0
-    if(attr._attributeName._attrName === `Enhanced Defense %`){
-        //wwwwwwwwwwwwwwwwwwwwww
-        let ethMult = (currentItem._base._isEth) ? 1.5 : 1;
-        console.log("Test script:\n")
-        console.log(attr)
-        console.log(currentItem)
-        if(attr._attrFloorActVal === 100){
-            let defRow = generateRowForDefOnly(currentItem, ethMult)
-            attributeArea.appendChild(defRow)
-            console.log('finished')
-            console.log(defRow)
-        };
-    }
-    if (attr._attributeName._attrName != ``) {
+    if (attr._attributeName._attrNickName != ``) {
         const attrNickCol = document.createElement("div");
         attrNickCol.classList.add("col");
 
@@ -689,20 +752,20 @@ function generateRowForField(attr) {
 
     }
     //1.2 aFinV 2
-    if(attr._attrFloorMinVal){
-    const attrFloorMinCol = document.createElement("div");
-    attrFloorMinCol.classList.add("col-1");
-    const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
-    attrFloorMinCol.appendChild(attrFloorMinText);
-    thisRow.appendChild(attrFloorMinCol)
+    if (attr._attrFloorMinVal) {
+        const attrFloorMinCol = document.createElement("div");
+        attrFloorMinCol.classList.add("col-1");
+        const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
+        attrFloorMinCol.appendChild(attrFloorMinText);
+        thisRow.appendChild(attrFloorMinCol)
     }
     //1.3 aFMaxV 3
-    if(attr._attrFloorMaxVal){
-    const attrFloorMaxCol = document.createElement("div");
-    attrFloorMaxCol.classList.add("col-1");
-    const attrFloormaxText = document.createTextNode(`${attr._attrFloorMaxVal}`);
-    attrFloorMaxCol.appendChild(attrFloormaxText);
-    thisRow.appendChild(attrFloorMaxCol)
+    if (attr._attrFloorMaxVal) {
+        const attrFloorMaxCol = document.createElement("div");
+        attrFloorMaxCol.classList.add("col-1");
+        const attrFloormaxText = document.createTextNode(`${attr._attrFloorMaxVal}`);
+        attrFloorMaxCol.appendChild(attrFloormaxText);
+        thisRow.appendChild(attrFloorMaxCol)
     }
     //1.4 aFAV text area 4
     const attrFloorActTextArea = document.createElement("textarea");
@@ -715,18 +778,18 @@ function generateRowForField(attr) {
     attrFloorActTextArea.style.overflow = "hidden";
     attrFloorActTextArea.addEventListener("keyup", (e) => {
         attr._attrFloorActVal = (e.target.value)
-        if(attr._attributeName._attrName === "Level Requirement"){
+        if (attr._attributeName._attrName === "Level Requirement") {
             currentItem._levelReq = attr._attrFloorActVal
         };
-        if(attr._attributeName._attrName === "Enhanced Defense %"){
+        if (attr._attributeName._attrName === "Enhanced Defense %") {
             clearWindows();
             setEditFields();
         }
-        if(attr._attributeName._attrName === "Defense"){
+        if (attr._attributeName._attrName === "Defense") {
             currentItem._base._addedDef = attr._attrFloorActVal;
             console.log('yeppers')
         }
-        if(attr._attrFloorActVal === '0' && !(currentItem instanceof exports.Unique)){
+        if (attr._attrFloorActVal === '0' && !(currentItem instanceof exports.Unique)) {
             let removeIndexer = currentItem._arr.indexOf(attr);
             currentItem._arr.splice(removeIndexer, 1)
             clearWindows();
@@ -800,23 +863,24 @@ function updateCurrentItemInfoWindow(element) {
     let eachString = ``;
     let name = element._name;
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
-    let lvlReq = (currentItem._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${currentItem._levelReq}` : ``;
+    let lvlReq = (element._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${element._levelReq}` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${element._base._ed}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
-    if (currentItem._base._ed > 0 && currentItem._magicClass === "Base") {
+    if (element._base._ed > 0 && element._magicClass === "Base") {
         name += ` - ${exports.AttributeName.attrArray[85]._attrNickName}`;
     }
-    if (['Magic','Rare','Crafted'].indexOf(currentItem._magicClass) > -1){
-        name += ` - ${currentItem._magicClass}`
+    if (['Magic', 'Rare', 'Crafted'].indexOf(element._magicClass) > -1) {
+        name += ` - ${element._magicClass}`
     }
+    if (element._customName){name = element._customName};
     tempString += `${name}${isEth}${sockets}${ed}${def}${lvlReq}`;
-    if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}`};
+    if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` };
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (shrtAttrName != 'Enhanced Defense %' /*&& shrtAttrName != 'Enhanced Damage %' */&& shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
+        if (shrtAttrName != 'Enhanced Defense %' /*&& shrtAttrName != 'Enhanced Damage %' */ && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
             tempString += ` / ${elementTwo._attributeName._attrNickName}`;
             if (elementTwo._attrType == 'skillAttribute') {
                 tempString += ` ${elementTwo._classOrTreeName}`;
@@ -832,7 +896,7 @@ function updateCurrentItemInfoWindow(element) {
                 eachString = ` / each`
             }
         }
-        if (shrtAttrName == 'Defense'){
+        if (shrtAttrName == 'Defense') {
             tempString += `/ +${elementTwo._attrFloorActVal} ${elementTwo._attributeName._attrNickName}`
         }
     })
@@ -858,9 +922,9 @@ function checkNightDay() {
 }
 
 function setDayMode() {
-    body[0].classList.remove("bg-dark",'text-light');
-    body[0].classList.add('bg-success',"bg-gradient");
-    tradeThreadTextArea.classList.remove('bg-dark','text-light');
+    body[0].classList.remove("bg-dark", 'text-light');
+    body[0].classList.add('bg-success', "bg-gradient");
+    tradeThreadTextArea.classList.remove('bg-dark', 'text-light');
     sunIcon.style.display = "none";
     moonIcon.style.display = "block";
     isDay = true;
@@ -868,9 +932,9 @@ function setDayMode() {
     localStorage.setItem('dayMode', isDay);
 }
 function setNightMode() {
-    body[0].classList.remove("bg-success","bg-gradient")
-    body[0].classList.add('bg-dark','text-light')
-    tradeThreadTextArea.classList.add('bg-dark','text-light');
+    body[0].classList.remove("bg-success", "bg-gradient")
+    body[0].classList.add('bg-dark', 'text-light')
+    tradeThreadTextArea.classList.add('bg-dark', 'text-light');
     sunIcon.style.display = "block";
     moonIcon.style.display = "none";
     isDay = false;
@@ -879,7 +943,7 @@ function setNightMode() {
 }
 document.getElementById('clearAllBtnID').addEventListener("click", clearLocalData);
 function clearLocalData() {
-    let removeKeys = ["attrArray","tradeArray","dayMode"];
+    let removeKeys = ["attrArray", "tradeArray", "dayMode"];
     removeKeys.forEach(k => localStorage.removeItem(k));
     document.getElementById('clearAllBtnID');
     infoWindow.innerText = `All page settings and saved trades were deleted`
@@ -899,8 +963,3 @@ loadAttrNickNames();
 sortTradeList();
 
 
-let body_ = document.getElementsByTagName("body");
-body_[0].addEventListener("click", e => {
-    //console.log(e)
-    //console.log(currentItem)
-})
