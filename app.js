@@ -355,11 +355,6 @@ function setChosenItem(itemName) {
 let btnAddItem = document.getElementById("btnAddItemID");
 
 function setEditFields() {
-    sockRads.forEach(elem => {
-        elem.checked = 'false'
-    })
-    sockRads[0].checked = "true"
-
     ethRads.forEach(elem => {
         elem.checked = 'false'
     })
@@ -391,6 +386,76 @@ function setEditFields() {
     nameCol.appendChild(nameColTextNode);
     nameRow.appendChild(nameCol);
     attributeArea.appendChild(nameRow)
+
+    //add buttons to upgrade base
+    if (currentItem._magicClass === "Base") {
+        //add magicClass buttons with listeners
+        let btnClassRow = document.createElement("div");
+        btnClassRow.classList.add("row", "removableAttrRowClass");
+
+        let btnGroup = document.createElement("div");
+        btnGroup.classList.add("btn-group")
+        btnGroup.setAttribute("role", "group");
+
+        btnGroup.appendChild(generateRadioButton('Magic'));
+        btnGroup.appendChild(generateRadioButton('Rare'));
+        btnGroup.appendChild(generateRadioButton('Crafted'));
+        //btnGroup.appendChild(generateRadioButton('Runeword'));
+        btnClassRow.appendChild(btnGroup);
+        attributeArea.appendChild(btnClassRow)
+
+        attributeArea.appendChild(createHeaderRow())
+        //add row for superior input
+        let superiorEditRow = document.createElement("div");
+        superiorEditRow.classList.add("row", "removableAttrRowClass")
+
+        let supCol = document.createElement("div");
+        supCol.classList.add("col");
+        supCol.innerText = "Superior? Add enhanced defense as an attribute only to non bases"
+        superiorEditRow.appendChild(supCol);
+
+        let supLowCol = document.createElement("div");
+        supLowCol.classList.add("col-1");
+        supLowCol.innerText = "0"
+        superiorEditRow.appendChild(supLowCol);
+
+        let supHighCol = document.createElement("div");
+        supHighCol.classList.add("col-1");
+        supHighCol.innerText = "15"
+        superiorEditRow.appendChild(supHighCol);
+
+        //add col for textbox
+        let superActCol = document.createElement("textarea");
+        superActCol.classList.add("col-2")
+        superActCol.setAttribute("type", "number");
+        superActCol.setAttribute("rows", 1);
+        superActCol.innerHTML = `${currentItem._base._ed}`;
+        superActCol.style.resize = "none";
+        superActCol.style.overflow = "hidden";
+        superActCol.id = 'needThis'
+        superActCol.addEventListener("keyup", (e) => {
+            if (e.target.value + 0 > 0) {
+                currentItem._base._ed = e.target.value;
+                currentItem._base._defActVal = currentItem._base._maxDef;
+            } else {
+                currentItem._base._ed = 0;
+            }
+            updateCurrentItemInfoWindow(currentItem);
+            clearWindows();
+            setEditFields();
+            let g = document.getElementById('needThis');
+            g.setSelectionRange(3, 3)
+            g.focus();
+        });
+        superActCol.addEventListener('click', () => {
+            superActCol.select();
+        })
+        superiorEditRow.appendChild(superActCol);
+        attributeArea.appendChild(superiorEditRow);
+    } else {
+        attributeArea.appendChild(createCustomNameRow());
+
+    }
     //add searchbar
     if (["Magic", "Rare", "Crafted", "Charm"].indexOf(currentItem._magicClass) > -1) {
         let fullNickAttrArray = exports.AttributeName.attrArray.sort();
@@ -484,77 +549,10 @@ function setEditFields() {
     }
     //add custom namebar
 
-    //add buttons to upgrade base
-    if (currentItem._magicClass === "Base") {
-        //add magicClass buttons with listeners
-        let btnClassRow = document.createElement("div");
-        btnClassRow.classList.add("row", "removableAttrRowClass");
 
-        let btnGroup = document.createElement("div");
-        btnGroup.classList.add("btn-group")
-        btnGroup.setAttribute("role", "group");
-
-        btnGroup.appendChild(generateRadioButton('Magic'));
-        btnGroup.appendChild(generateRadioButton('Rare'));
-        btnGroup.appendChild(generateRadioButton('Crafted'));
-        btnClassRow.appendChild(btnGroup);
-        attributeArea.appendChild(btnClassRow)
-
-        attributeArea.appendChild(createHeaderRow())
-        //add row for superior input
-        let superiorEditRow = document.createElement("div");
-        superiorEditRow.classList.add("row", "removableAttrRowClass")
-
-        let supCol = document.createElement("div");
-        supCol.classList.add("col");
-        supCol.innerText = "Superior?"
-        superiorEditRow.appendChild(supCol);
-
-        let supLowCol = document.createElement("div");
-        supLowCol.classList.add("col-1");
-        supLowCol.innerText = "0"
-        superiorEditRow.appendChild(supLowCol);
-
-        let supHighCol = document.createElement("div");
-        supHighCol.classList.add("col-1");
-        supHighCol.innerText = "15"
-        superiorEditRow.appendChild(supHighCol);
-
-        //add col for textbox
-        let superActCol = document.createElement("textarea");
-        superActCol.classList.add("col-2")
-        superActCol.setAttribute("type", "number");
-        superActCol.setAttribute("rows", 1);
-        superActCol.innerHTML = `${currentItem._base._ed}`;
-        superActCol.style.resize = "none";
-        superActCol.style.overflow = "hidden";
-        superActCol.id = 'needThis'
-        superActCol.addEventListener("keyup", (e) => {
-            if (e.target.value + 0 > 0) {
-                currentItem._base._ed = e.target.value;
-                currentItem._base._defActVal = currentItem._base._maxDef;
-            } else {
-                currentItem._base._ed = 0;
-            }
-            updateCurrentItemInfoWindow(currentItem);
-            clearWindows();
-            setEditFields();
-            let g = document.getElementById('needThis');
-            g.setSelectionRange(3, 3)
-            g.focus();
-        });
-        superActCol.addEventListener('click', () => {
-            superActCol.select();
-        })
-        superiorEditRow.appendChild(superActCol);
-        attributeArea.appendChild(superiorEditRow);
-    } else {
-        attributeArea.appendChild(createCustomNameRow());
-        attributeArea.appendChild(createHeaderRow());
-
-    }
 
     //add header row
+    attributeArea.appendChild(createHeaderRow());
 
 
     //add special row if no ed and no extra defense
@@ -613,17 +611,17 @@ function createHeaderRow() {
     return headerRow;
 }
 
-function createCustomNameRow(){
+function createCustomNameRow() {
     let customNameRow = document.createElement("div");
-    customNameRow.classList.add("row","removableAttrRowClass");
+    customNameRow.classList.add("row", "removableAttrRowClass", "pb-3");
 
     let customTextAreaCol = document.createElement("div");
     customTextAreaCol.classList.add("col-5");
     let customTextArea = document.createElement("textarea");
-    customTextArea.classList.add("col-10","w-100", "text-nowrap");
+    customTextArea.classList.add("col-10", "w-100", "text-nowrap");
     customTextArea.setAttribute("rows", 1);
     customTextArea.placeholder = "Optional - customize item name here"
-    if(!currentItem._customName){customTextArea.innerHTML = currentItem._customName}
+    if (!currentItem._customName) { customTextArea.innerHTML = currentItem._customName }
     customTextArea.style.resize = "none";
     customTextArea.style.overflow = "hidden";
     customTextArea.id = "customTextAreaID";
@@ -632,14 +630,14 @@ function createCustomNameRow(){
     })
     customTextAreaCol.appendChild(customTextArea);
     customNameRow.appendChild(customTextAreaCol);
-    
+
     let customNameSubmitBtnCol = document.createElement("div");
     customNameSubmitBtnCol.classList.add("col-2");
     let customNameSubmitBtn = document.createElement("button");
     customNameSubmitBtn.classList.add("btn", "btn-sm", "btn-success", "text-light");
     let genBtnTextNode = document.createTextNode(`Submit`);
     customNameSubmitBtn.appendChild(genBtnTextNode);
-    customNameSubmitBtn.addEventListener("click", ()=>{
+    customNameSubmitBtn.addEventListener("click", () => {
         let customTextAreaElem = document.getElementById("customTextAreaID");
         currentItem._customName = customTextAreaElem.value;
         customTextAreaElem.value = ``;
@@ -787,7 +785,6 @@ function generateRowForField(attr) {
         }
         if (attr._attributeName._attrName === "Defense") {
             currentItem._base._addedDef = attr._attrFloorActVal;
-            console.log('yeppers')
         }
         if (attr._attrFloorActVal === '0' && !(currentItem instanceof exports.Unique)) {
             let removeIndexer = currentItem._arr.indexOf(attr);
@@ -837,14 +834,6 @@ function generateRowForField(attr) {
     return thisRow;
 }
 
-const sockRads = document.querySelectorAll('.classSocketQuery');
-for (const radio of sockRads) {
-    radio.addEventListener("click", (e) => {
-        currentItem._base._sockets = parseInt(e.target.value);
-        updateCurrentItemInfoWindow(currentItem);
-    })
-}
-
 const ethRads = document.querySelectorAll('.classEthQuery');
 for (const radio of ethRads) {
     radio.addEventListener("click", (e) => {
@@ -858,14 +847,16 @@ function updateCurrentItemInfoWindow(element) {
     element._arr.forEach(elementOne => {
         if (elementOne._attributeName._attrName == "Enhanced Defense %" /*|| elementOne._attributeName._attrName == "Enhanced Damage %"*/) { element._base._ed = elementOne._attrFloorActVal; }
         if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
+        if (elementOne._attributeName._attrName == "Open Sockets") { element._base._sockets = elementOne._attrFloorActVal; }
+
     })
     let tempString = ``;
     let eachString = ``;
     let name = element._name;
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
     let lvlReq = (element._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${element._levelReq}` : ``;
-    let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} OS` : ``;
-    let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${element._base._ed}` : ` / ${element._base._ed}${exports.AttributeName.attrArray[1]._attrNickName}`;
+    let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} ${exports.AttributeName.attrArray[86]._attrNickName}` : ``;
+    let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${element._base._ed}` : ` / ${exports.AttributeName.attrArray[1]._attrNickName}${element._base._ed}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
     if (element._base._ed > 0 && element._magicClass === "Base") {
@@ -874,30 +865,32 @@ function updateCurrentItemInfoWindow(element) {
     if (['Magic', 'Rare', 'Crafted'].indexOf(element._magicClass) > -1) {
         name += ` - ${element._magicClass}`
     }
-    if (element._customName){name = element._customName};
+    if (element._customName) { name = element._customName };
     tempString += `${name}${isEth}${sockets}${ed}${def}${lvlReq}`;
     if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` };
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (shrtAttrName != 'Enhanced Defense %' /*&& shrtAttrName != 'Enhanced Damage %' */ && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
-            tempString += ` / ${elementTwo._attributeName._attrNickName}`;
-            if (elementTwo._attrType == 'skillAttribute') {
-                tempString += ` ${elementTwo._classOrTreeName}`;
+        if (true) {
+            if (shrtAttrName != 'Enhanced Defense %' && shrtAttrName != 'Open Sockets' /*&& shrtAttrName != 'Enhanced Damage %' */ && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
+                tempString += ` / ${elementTwo._attributeName._attrNickName}`;
+                if (elementTwo._attrType == 'skillAttribute') {
+                    tempString += ` ${elementTwo._classOrTreeName}`;
+                }
+                tempString += ` ${elementTwo._attrFloorActVal}`
+                if (elementTwo._attrType == 'twoFieldAttribute') {
+                    tempString += ` - ${elementTwo._attrCeilActVal}`;
+                }
             }
-            tempString += ` ${elementTwo._attrFloorActVal}`
-            if (elementTwo._attrType == 'twoFieldAttribute') {
-                tempString += ` - ${elementTwo._attrCeilActVal}`;
+            if (shrtAttrName == 'Quantity') {
+                if (elementTwo._attrFloorActVal > 1) {
+                    tempString += ` ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
+                    eachString = ` / each`
+                }
             }
-        }
-        if (shrtAttrName == 'Quantity') {
-            if (elementTwo._attrFloorActVal > 1) {
-                tempString += ` ${elementTwo._attributeName._attrNickName} ${elementTwo._attrFloorActVal}`;
-                eachString = ` / each`
+            if (shrtAttrName == 'Defense') {
+                tempString += `/ +${elementTwo._attrFloorActVal} ${elementTwo._attributeName._attrNickName}`
             }
-        }
-        if (shrtAttrName == 'Defense') {
-            tempString += `/ +${elementTwo._attrFloorActVal} ${elementTwo._attributeName._attrNickName}`
         }
     })
     if (element._price != 0) {
