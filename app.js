@@ -26,9 +26,16 @@ function addNewItemCopy() {
     if (copyBase._type == 'Jewelry') pushedBase = new exports.Base(copyBase._name, copyBase._itemClass, copyBase._tier);
     pushedBase._isEth = copyBase._isEth;
     pushedBase._sockets = copyBase._sockets;
+    pushedBase._magicClass = copyBase._magicClass
     let pushedItem = null;
-    if (currentItem._magicClass != 'Base') pushedItem = new exports.Unique(pushedBase, copyItem._name, copyItem._base._ed, copyItem._base._addedDef);
-    if (currentItem._magicClass == 'Base') pushedItem = new exports.Item(pushedBase);
+    if (currentItem._magicClass != 'Base' && currentItem._magicClass != 'Magic' && currentItem._magicClass != 'Rare' && currentItem._magicClass != 'Crafted') {
+        pushedItem = new exports.Unique(
+            pushedBase,
+            copyItem._name,
+            copyItem._base._ed,
+            copyItem._base._addedDef
+        )
+    } else { pushedItem = new exports.Item(pushedBase) };
     copyItem._arr.forEach(element => {
         let attrCopy = null;
         if (element._attrType == 'attribute') attrCopy = new exports.Attribute(element._attributeName, element._attrFloorMinVal, element._attrFloorMaxVal);
@@ -43,7 +50,6 @@ function addNewItemCopy() {
     pushedItem._price = copyItem._price;
     copyItem._price = 0;
     myTradeItems.push(pushedItem);
-
     sortTradeList();
 }
 
@@ -75,10 +81,15 @@ document.getElementById('editBtnID').addEventListener("click", () => {
 })
 
 document.getElementById('btnSaveAttrNickID').addEventListener("click", () => {
-    const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
-    localStorage.setItem("attrArray", jsonArr);
+    saveAttrArray();
     infoWindow.innerText = "Saved custom attribute names";
 });
+
+function saveAttrArray() {
+    const jsonArr = JSON.stringify(exports.AttributeName.attrArray);
+    localStorage.setItem("attrArray", jsonArr);
+    //loadAttrNickNames();
+}
 
 document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
     loadAttrNickNames();
@@ -116,7 +127,6 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
         sortTradeList();
     }
     if (editFlag) {
-        console.log(myTradeItems[myListIndex])
         currentItem = myTradeItems[myListIndex];
         myTradeItems.splice(myListIndex, 1)
         clearWindows();
@@ -143,10 +153,22 @@ function loadAttrNickNames() {
         const attrJSONStr = localStorage.getItem("attrArray");
         if (attrJSONStr != null) {
             const parsedAttrArr = JSON.parse(attrJSONStr);
-            exports.AttributeName.updateValues(parsedAttrArr)
+            if (parsedAttrArr.length != exports.AttributeName.attrArray.length) {
+                errResetAttributes();
+            } else {
+                exports.AttributeName.updateValues(parsedAttrArr)
+            }
         };
-    } catch (error) { console.log(error) }
+    } catch (error) {
+        errResetAttributes()
+    }
     setAttrNickNames();
+}
+
+function errResetAttributes() {
+    infoWindow.innerText = `TypeError: A change was made to the attribute list and your attribute names were reset, sorry!`
+    exports.AttributeName.resetNickNames();
+    saveAttrArray();
 }
 
 function updateAttrNickname(index) {
@@ -185,6 +207,10 @@ function setAttrNickNames() {
         nickTxtArea.addEventListener("keyup", () => {
             updateAttrNickname(index);
             updateTradeList();
+            saveAttrArray();
+            if (currentItem) { clearWindows(); setEditFields(); }
+            infoWindow.innerText = `Customized ${element._attrName} as ${element._attrNickName}`;
+
         })
         nickTxtArea.addEventListener('focus', () => {
             nickTxtArea.select();
@@ -204,7 +230,11 @@ document.getElementById('btnAddItemID').addEventListener("click", () => {
         clearWindows();
         infoWindow.innerText = `Added ${currentItem._name} to trade list`;
         currentItem = null;
-    } catch (error) { infoWindow.innerText = `You do not currently have an item to add`; }
+    } catch (error) {
+        infoWindow.innerText = `You do not currently have an item to add`;
+        console.log(error);
+    }
+
 })
 
 function updateTradeList() {
@@ -218,7 +248,6 @@ function updateTradeList() {
                 tradeThreadTextArea.value += `${lastClassType}\n`;
             }
         }
-        console.log(element)
         let myString = updateCurrentItemInfoWindow(element);
         tradeThreadTextArea.value += `${myString}\n`;
     });
@@ -400,7 +429,7 @@ function setEditFields() {
         btnGroup.appendChild(generateRadioButton('Magic'));
         btnGroup.appendChild(generateRadioButton('Rare'));
         btnGroup.appendChild(generateRadioButton('Crafted'));
-        //btnGroup.appendChild(generateRadioButton('Runeword'));
+
         btnClassRow.appendChild(btnGroup);
         attributeArea.appendChild(btnClassRow)
 
@@ -411,7 +440,7 @@ function setEditFields() {
 
         let supCol = document.createElement("div");
         supCol.classList.add("col");
-        supCol.innerText = "Superior? Add enhanced defense as an attribute only to non bases"
+        supCol.innerText = `${exports.AttributeName.attrArray[0]._attrNickName}`
         superiorEditRow.appendChild(supCol);
 
         let supLowCol = document.createElement("div");
@@ -549,10 +578,10 @@ function setEditFields() {
     }
     //add custom namebar
 
-
-
-    //add header row
-    attributeArea.appendChild(createHeaderRow());
+    //add MinMax header row
+    if (grabInScope._magicClass != "Base") {
+        attributeArea.appendChild(createHeaderRow())
+    }
 
 
     //add special row if no ed and no extra defense
@@ -577,7 +606,9 @@ function generateRadioButton(lblText) {
 
     let genBtnTextNode = document.createTextNode(`${lblText}`);
     genBtn.appendChild(genBtnTextNode);
-    genBtn.addEventListener("click", e => setMagicClass(e))
+    genBtn.addEventListener("click", e => {
+        setMagicClass(e)
+    })
     colDiv.appendChild(genBtn)
 
     return colDiv;
@@ -620,38 +651,35 @@ function createCustomNameRow() {
     let customTextArea = document.createElement("textarea");
     customTextArea.classList.add("col-10", "w-100", "text-nowrap");
     customTextArea.setAttribute("rows", 1);
-    customTextArea.placeholder = "Optional - customize item name here"
+    customTextArea.placeholder = "Optional"
     if (!currentItem._customName) { customTextArea.innerHTML = currentItem._customName }
     customTextArea.style.resize = "none";
     customTextArea.style.overflow = "hidden";
     customTextArea.id = "customTextAreaID";
+    customTextArea.addEventListener('keyup', () =>{
+        let customTextAreaElem = document.getElementById("customTextAreaID");
+        currentItem._customName = customTextAreaElem.value;
+        clearWindows();
+        setEditFields();
+        document.getElementById("customTextAreaID").select();
+        document.getElementById("customTextAreaID").value = currentItem._customName
+    })
     customTextArea.addEventListener('focus', () => {
-        customTextArea.select();
+        //customTextArea.select();
     })
     customTextAreaCol.appendChild(customTextArea);
     customNameRow.appendChild(customTextAreaCol);
 
-    let customNameSubmitBtnCol = document.createElement("div");
-    customNameSubmitBtnCol.classList.add("col-2");
-    let customNameSubmitBtn = document.createElement("button");
-    customNameSubmitBtn.classList.add("btn", "btn-sm", "btn-success", "text-light");
-    let genBtnTextNode = document.createTextNode(`Submit`);
-    customNameSubmitBtn.appendChild(genBtnTextNode);
-    customNameSubmitBtn.addEventListener("click", () => {
-        let customTextAreaElem = document.getElementById("customTextAreaID");
-        currentItem._customName = customTextAreaElem.value;
-        customTextAreaElem.value = ``;
-        clearWindows();
-        setEditFields();
-    })
-    customNameSubmitBtnCol.appendChild(customNameSubmitBtn);
-    customNameRow.appendChild(customNameSubmitBtnCol);
+    let customNameLabel = document.createElement("div");
+    customNameLabel.classList.add("col");
+    let customNameLabelTextNode = document.createTextNode("Customize item name or add affixes")
+    customNameLabel.appendChild(customNameLabelTextNode);
+    customNameRow.appendChild(customNameLabel);
 
     return customNameRow;
 }
 
 function setMagicClass(e) {
-    console.log(e.target.innerHTML)
     currentItem._magicClass = e.target.innerHTML;
     currentItem._base._ed = 0;
     clearWindows();
@@ -665,7 +693,7 @@ function generateRowForPrice(itemToGen) {
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
     priceHeaderCol.classList.add("col");
-    const attrNickText = document.createTextNode(`Price - optional. Edit Forum Gold attribute name through attribute names button)`);
+    const attrNickText = document.createTextNode(`Price (optional) -`);
     priceHeaderCol.appendChild(attrNickText);
     thisRow.appendChild(priceHeaderCol)
     //2.1 create price col
@@ -871,7 +899,7 @@ function updateCurrentItemInfoWindow(element) {
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (true) {
+        if (elementTwo._attrFloorActVal != 0) {
             if (shrtAttrName != 'Enhanced Defense %' && shrtAttrName != 'Open Sockets' /*&& shrtAttrName != 'Enhanced Damage %' */ && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
                 tempString += ` / ${elementTwo._attributeName._attrNickName}`;
                 if (elementTwo._attrType == 'skillAttribute') {
@@ -954,5 +982,9 @@ function clearWindows() {
 checkNightDay();
 loadAttrNickNames();
 sortTradeList();
+
+document.getElementsByTagName("body")[0].addEventListener("click", (e) => {
+
+})
 
 

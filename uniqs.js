@@ -63,6 +63,7 @@ export class Attribute extends BasicAttribute {
     super(attributeName, attrFloorMaxVal);
     this._attrFloorMinVal = attrFloorMinVal;
     this._attrFloorMaxVal = attrFloorMaxVal;
+    this._attrFloorActVal = attrFloorMinVal;
     this._attrType = "attribute";
   }
   get attrFloorMin() {
@@ -257,7 +258,7 @@ let QuantizedItemIndexer = 0;
 export class QuantizedItem extends Unique {
   constructor(base, name, ed, addedDef) {
     super(base, name, ed, addedDef);
-    this.addAttr(new Attribute(ItemQuantity, 0, 99));
+    this.addAttr(new Attribute(ItemQuantity, 1, 99));
     this._quantizedIndex = QuantizedItemIndexer++;
     this._magicClass = "Misc";
   }
@@ -353,12 +354,23 @@ ItemQuantity._attrName = "Quantity";
 const empty = new AttributeName("");
 empty._editable = false;
 empty._attrName = "Empty Value";
-const Superior = new AttributeName("Superior");
-const OpenSockets = new AttributeName("Open Sockets");
-console.log(AttributeName.attrArray);
+const emptyTwo = new AttributeName("");
+emptyTwo._editable = false;
+emptyTwo._attrName = "Custom val1";
+const emptyThree = new AttributeName("");
+emptyThree._editable = false;
+emptyThree._attrName = "Custom val2";
+const emptyFour = new AttributeName("");
+emptyFour._editable = false;
+emptyFour._attrName = "Custom val3";
+const emptyFive = new AttributeName("");
+emptyFive._editable = false;
+emptyFive._attrName = "Custom val4";
+
+console.log(AttributeName.attrArray)
 
 const SlayerGuard = new Armor("Slayer Guard", "Barbarian Helm", "Exceptional", 93, 120);
-const ArreatsFace = new Unique(SlayerGuard, "Arreats Face", 0);
+const ArreatsFace = new Unique(SlayerGuard, "Arreats Face", 0, 0);
 ArreatsFace.addAttr(new Attribute(EnhancedDef, 150, 200));
 ArreatsFace.addAttr(new Attribute(LifeSteal, 3, 6));
 const FuryVisor = new Armor("Fury Visor", "Barbarian Helm", "Elite", 105, 150);

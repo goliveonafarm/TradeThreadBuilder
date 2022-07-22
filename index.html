@@ -11,6 +11,9 @@
         crossorigin="anonymous"></script>
     <script type="module" src="app.js"></script>
     <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <title>Trade thread builder</title>
 </head>
 
@@ -28,7 +31,8 @@
             </div>
             <div class="col-1">
                 <img title="Turn on night mode" id="moonIconID" src="FontIcons/moonIcon.svg">
-                <img title="Turn on day mode" style="-webkit-filter: invert(100%);" id="sunIconID" src="FontIcons/sunIcon.svg">
+                <img title="Turn on day mode" style="-webkit-filter: invert(100%);" id="sunIconID"
+                    src="FontIcons/sunIcon.svg">
             </div>
         </div>
         <div class="row collapse text-end" id="attrCollapseID">
@@ -56,8 +60,8 @@
     <div class="container-xl pb-1">
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap" rows="1"
-                    id="searchBarID" placeholder="Search items or services"></textarea>
+                <textarea class="w-100 text-nowrap" rows="1" id="searchBarID"
+                    placeholder="Search items or services"></textarea>
             </div>
         </div>
         <div class="row">
@@ -92,11 +96,13 @@
         </div>
         <div class="row p-1">
             <div class="col ">
-                <label id="lblCurrentItemID">Start by typing your item. Tab/enter will select the first item from the list. Or you can click on any of them. Most buttons have mouse over tool tips.</label>
+                <label id="lblCurrentItemID">Tab/enter will select the first item or click on any of them. Most buttons
+                    have mouse over tool tips.</label>
             </div>
             <div class="col-2 text-end">
-                <button style="display:none" class="btn btn-sm btn-success text-nowrap text-dark" type="button" aria-expanded="false" id="btnAddItemID"
-                    data-toggle="tooltip" title="Adds the current item to your trade thread">Add item
+                <button style="display:none" class="btn btn-sm btn-success text-nowrap text-dark" type="button"
+                    aria-expanded="false" id="btnAddItemID" data-toggle="tooltip"
+                    title="Adds the current item to your trade thread">Add item
                     <img src="FontIcons/earmarkIcon.svg">
                 </button>
             </div>
@@ -143,43 +149,34 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <textarea class="w-100 text-nowrap bg-dark text-light" rows="25"
-                    id="tradeThreadTextAreaID"></textarea>
+                <textarea class="w-100 text-nowrap bg-dark text-light" rows="25" id="tradeThreadTextAreaID"></textarea>
             </div>
         </div>
-
-  
-
-<div class="row p-1">
-    <div class="col">
-        <div class="float-start">
-            <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
-            id="clearBtnID"
-            title="This will delete your entire trade list from the trade list window and you will have to load or start over">
-            Delete Trade List
-        </button>
-        </div>
-            <div class="float-end">
-                <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
-                    id="clearAllBtnID"
-                    title="This will only delete the local data used for this webpage only. You can use a program like CCleaner to clear all your local storage. After clearing storage you can still save your current trade in the trade window and not lose anything">
-                    <img src="FontIcons/warningIcon2.svg">Delete local storage
-                </button>
+        <div class="row p-1">
+            <div class="col">
+                <div class="float-start">
+                    <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                        id="clearBtnID"
+                        title="This will delete your entire trade list from the trade list window and you will have to load or start over">
+                        Delete Trade List
+                    </button>
+                </div>
+                <div class="float-end">
+                    <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                        id="clearAllBtnID"
+                        title="This will only delete the local data used for this webpage only. You can use a program like CCleaner to clear all your local storage. After clearing storage you can still save your current trade in the trade window and not lose anything">
+                        <img src="FontIcons/warningIcon2.svg">Delete local storage
+                    </button>
+                </div>
             </div>
-
         </div>
-    
+        <div class=" p-2 float-end">
+            <button style="display: none;" class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button"
+                aria-expanded="false" id="testBtnID"
+                title="This button is for testing purposes only and should not do anything :P">
+                Test </button>
         </div>
-
-            <div class=" p-2 float-end">
-                <button style="display: none;" class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
-                    id="testBtnID" title="This button is for testing purposes only and should not do anything :P">
-                    Test </button>
-            </div>
-
     </div>
-
-    
 </body>
 
 </html>
