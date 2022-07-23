@@ -50,6 +50,8 @@ function addNewItemCopy() {
     pushedItem._price = copyItem._price;
     copyItem._price = 0;
     myTradeItems.push(pushedItem);
+
+    saveTradeList();
     sortTradeList();
 }
 
@@ -97,22 +99,21 @@ document.getElementById('btnLoadAttrNickID').addEventListener('click', () => {
     updateTradeList();
 });
 
-document.getElementById('saveBtnID').addEventListener('click', () => {
+function saveTradeList() {
     const tradeJSONArr = JSON.stringify(myTradeItems);
     localStorage.setItem("tradeArray", tradeJSONArr);
     infoWindow.innerText = "Saved trade list";
+}
 
-});
-
-document.getElementById('loadBtnID').addEventListener('click', () => {
+function loadTradeList() {
     const tradeJSONStr = localStorage.getItem("tradeArray");
     if (tradeJSONStr != null) {
         const parsedTradeStr = JSON.parse(tradeJSONStr);
         myTradeItems = parsedTradeStr;
         updateTradeList();
-        infoWindow.innerText = "Loaded trade list";
+        tradeThreadTextArea.value = "Tab/enter will select the first item or click on any of them. Most buttons have mouse over tool tips. Attributes with values of 0 are hidden or removed"
     }
-})
+}
 
 
 tradeThreadTextArea.addEventListener("mouseup", e => {
@@ -124,6 +125,7 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
         sortTradeList();
         myTradeItems.splice(myListIndex, 1);
         infoWindow.innerText = `Item # ${myListIndex + 1} removed`;
+        saveTradeList();
         sortTradeList();
     }
     if (editFlag) {
@@ -131,6 +133,7 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
         myTradeItems.splice(myListIndex, 1)
         clearWindows();
         setEditFields();
+        saveTradeList();
         sortTradeList();
         infoWindow.innerText = "";
         editFlag = false;
@@ -139,8 +142,8 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
 document.getElementById('clearBtnID').addEventListener("click", () => {
     tradeThreadTextArea.value = ``;
     myTradeItems = [];
+    saveTradeList();
     infoWindow.innerText = "Trade thread deleted. Load or start a new one";
-
 })
 document.getElementById('clipboardBtnID').addEventListener("click", () => {
     tradeThreadTextArea.select();
@@ -222,20 +225,6 @@ function setAttrNickNames() {
     });
     console.log('setAttrNickNames() successful')
 }
-
-document.getElementById('btnAddItemID').addEventListener("click", () => {
-    try {
-        addNewItemCopy();
-        sortTradeList();
-        clearWindows();
-        infoWindow.innerText = `Added ${currentItem._name} to trade list`;
-        currentItem = null;
-    } catch (error) {
-        infoWindow.innerText = `You do not currently have an item to add`;
-        console.log(error);
-    }
-
-})
 
 function updateTradeList() {
     tradeThreadTextArea.value = ``;
@@ -321,16 +310,17 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
             let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
 
             _listGroup.appendChild(g);
-        } else {
+        } else {//if clicked listeners
             for (let i = 0; i < 10 && i < outPut.length && userInput.length > 0; i++) {
                 let g = listItemGen(outPut[i]);
                 if (e.target.id == 'searchBarID') {
                     g.addEventListener('click', e => setChosenItem(e.target.outerText))
                 } else {//if generated search bar
                     g.addEventListener('click', e => {
-                        document.getElementById('lblAttrResultID').innerText = e.target.outerText
-                        _listGroup.innerHTML = ``;
-                        document.getElementById('searchAttrBarID').value = e.target.outerText;
+                        //document.getElementById('lblAttrResultID').innerText = e.target.outerText
+                        //_listGroup.innerHTML = ``;
+                        //document.getElementById('searchAttrBarID').value = e.target.outerText;
+                        addAttributeSearch(outPut[i]);
                     })
                 }
                 _listGroup.appendChild(g);
@@ -341,11 +331,22 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
             setChosenItem(outPut[0])
         }
         else {
-            document.getElementById('lblAttrResultID').innerText = outPut[0];
+            addAttributeSearch(outPut[0]);
             _listGroup.innerHTML = ``;
-            document.getElementById('searchAttrBarID').value = outPut[0];
         }
     }
+}
+
+function addAttributeSearch(name) {
+    let fullNickAttrArray = exports.AttributeName.attrArray.sort();
+    let filteredResult = fullNickAttrArray.filter((nickName) => {
+        return nickName._attrNickName.toLowerCase() === name
+    })
+    currentItem.addAttr(new exports.BasicAttribute(filteredResult[0], 0));
+    clearWindows();
+    setEditFields();
+    document.getElementById('lblAttrResultID').innerText = 'Choose attribute';
+
 }
 
 function listItemGen(textString) {
@@ -380,19 +381,39 @@ function setChosenItem(itemName) {
 
 }
 
-
-let btnAddItem = document.getElementById("btnAddItemID");
+function displayAddItemBtn(){
+        //add item button
+        let addItemBtn = document.createElement("button");
+        addItemBtn.classList.add("btn", "btn-sm", "btn-success", "text-nowrap", "text-dark");
+        let addItemBtnTextNode = document.createTextNode("Add item");
+        addItemBtn.appendChild(addItemBtnTextNode);
+        let addItemBtnImg = document.createElement("img");
+        addItemBtnImg.src = "FontIcons/earmarkIcon.svg";
+        addItemBtn.title = 'Adds the current item to your trade thread';
+        addItemBtn.id = "addItemBtnID";
+        addItemBtn.appendChild(addItemBtnImg);
+        addItemBtn.addEventListener("click", () => {
+            try {
+                addNewItemCopy();
+                sortTradeList();
+                clearWindows();
+                infoWindow.innerText = `Added ${currentItem._name} to trade list`;
+                currentItem = null;
+                document.getElementById("ethCheckBoxID").checked = false;
+                document.getElementById("addItemBtnID").remove();
+    
+            } catch (error) {
+                infoWindow.innerText = `You do not currently have an item to add`;
+                console.log(error);
+            }
+        })
+        document.getElementById("infoWindowRowID").appendChild(returnCol(addItemBtn, 2));
+}
 
 function setEditFields() {
-    ethRads.forEach(elem => {
-        elem.checked = 'false'
-    })
-    ethRads[0].checked = "true"
-
+    displayAddItemBtn();
+    document.getElementById("displayEthCheckBoxID").hidden = false;
     let grabInScope = currentItem;
-    grabInScope._base._sockets = 0;
-    grabInScope._base._isEth = false;
-    btnAddItem.style.display = "block";
     //if unique
     if (chosenMagicClass == 'Unique' || chosenMagicClass == 'Misc') {
         const uniqListArr = exports.Unique.uniqueArr.map(element => {
@@ -414,6 +435,7 @@ function setEditFields() {
     let nameColTextNode = document.createTextNode(currentItem._name)
     nameCol.appendChild(nameColTextNode);
     nameRow.appendChild(nameCol);
+
     attributeArea.appendChild(nameRow)
 
     //add buttons to upgrade base
@@ -455,7 +477,7 @@ function setEditFields() {
 
         //add col for textbox
         let superActCol = document.createElement("textarea");
-        superActCol.classList.add("col-2")
+        superActCol.classList.add("w-100")
         superActCol.setAttribute("type", "number");
         superActCol.setAttribute("rows", 1);
         superActCol.innerHTML = `${currentItem._base._ed}`;
@@ -479,13 +501,13 @@ function setEditFields() {
         superActCol.addEventListener('click', () => {
             superActCol.select();
         })
-        superiorEditRow.appendChild(superActCol);
+        superiorEditRow.appendChild(returnCol(superActCol, 2));
         attributeArea.appendChild(superiorEditRow);
     } else {
         attributeArea.appendChild(createCustomNameRow());
 
     }
-    //add searchbar
+    //add attribute searchbar
     if (["Magic", "Rare", "Crafted", "Charm"].indexOf(currentItem._magicClass) > -1) {
         let fullNickAttrArray = exports.AttributeName.attrArray.sort();
         let mappedNickArray = fullNickAttrArray.map(element => {
@@ -517,36 +539,13 @@ function setEditFields() {
         lblAttrResult.classList.add("col-3");
         searchAttrRow.appendChild(lblAttrResult);
 
-        let attrValueArea = document.createElement("textarea");
-        attrValueArea.id = 'txtAreaAttrValueID';
-        attrValueArea.setAttribute("rows", 1);
-        attrValueArea.placeholder = `Value`;
-        attrValueArea.classList.add("col-2", "text-nowrap")
-        attrValueArea.style.resize = "none";
-        attrValueArea.style.overflow = "hidden";
-        attrValueArea.addEventListener("keydown", (e) => {
-            stopDefault(e);
-            if (e.key === "Enter" || e.key === "Tab") { addAttribute() }
-        });
-        searchAttrRow.appendChild(attrValueArea)
+        let fillAreaOne = document.createElement("div");
+        fillAreaOne.classList.add("col-2")
+        searchAttrRow.appendChild(fillAreaOne)
 
-        let attrSubmitValBtn = document.createElement("button");
-        attrSubmitValBtn.type = "button";
-        attrSubmitValBtn.classList.add("btn", "btn-sm", "btn-success", "col-2", "text-nowrap")
-        attrSubmitValBtn.innerText = "Add attribute"
-
-        attrSubmitValBtn.addEventListener("click", addAttribute)
-        function addAttribute() {
-            let attrResult = document.getElementById("lblAttrResultID").innerText;
-            let attrVal = document.getElementById("txtAreaAttrValueID").value;
-            let filteredResult = fullNickAttrArray.filter((nickName) => {
-                return nickName._attrNickName.toLowerCase() === attrResult
-            })
-            currentItem.addAttr(new exports.BasicAttribute(filteredResult[0], attrVal));
-            clearWindows();
-            setEditFields();
-        }
-        searchAttrRow.appendChild(attrSubmitValBtn);
+        let fillAreaTwo = document.createElement("div");
+        fillAreaTwo.classList.add("col-2")
+        searchAttrRow.appendChild(fillAreaTwo);
         attributeArea.appendChild(searchAttrRow);
 
         let listGroupRow = document.createElement("div");
@@ -571,24 +570,30 @@ function setEditFields() {
         searchAttrBar.addEventListener("keyup", (e) => {
             searchBar.value = ``;
             listGroup.innerHTML = ``;
+            document.getElementById('lblAttrResultID').innerText = searchAttrBar.value;
+            if (!searchAttrBar.value) { document.getElementById('lblAttrResultID').innerText = "Choose attribute" };
             listGroupNamesGen(e, mappedNickArray, listGroupAttr);
         });
         searchAttrBar.addEventListener("keydown", (e) => { stopDefault(e) });
 
     }
-    //add custom namebar
 
     //add MinMax header row
     if (grabInScope._magicClass != "Base") {
         attributeArea.appendChild(createHeaderRow())
     }
 
-
     //add special row if no ed and no extra defense
     if (grabInScope._base._ed == 0 && /*grabInScope._base._addedDef == 0 && */grabInScope._base._defActVal != undefined) {
         let ethMult = (grabInScope._base._isEth) ? 1.5 : 1;
         let newRow = generateRowForDefOnly(currentItem, ethMult)
         attributeArea.appendChild(newRow);
+    }
+    //generate row for sockets only on bases
+    //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+    if (currentItem._magicClass === "Base") {
+        // let getThisRow = generateRowForField()
+        attributeArea.appendChild(generateRowForSocketsOnly(currentItem));
     }
     grabInScope._arr.forEach(item => {
         let newRow = generateRowForField(item);
@@ -618,7 +623,6 @@ function createHeaderRow() {
     let headerRow = document.createElement("div");
     headerRow.classList.add("row", "removableAttrRowClass");
 
-    //header col-0 //0 1 1 2
     let emptyHeaderLeaderCol = document.createElement("div");
     emptyHeaderLeaderCol.classList.add("col")
     headerRow.appendChild(emptyHeaderLeaderCol)
@@ -649,14 +653,14 @@ function createCustomNameRow() {
     let customTextAreaCol = document.createElement("div");
     customTextAreaCol.classList.add("col-5");
     let customTextArea = document.createElement("textarea");
-    customTextArea.classList.add("col-10", "w-100", "text-nowrap");
+    customTextArea.classList.add("w-100", "text-nowrap");
     customTextArea.setAttribute("rows", 1);
     customTextArea.placeholder = "Optional"
     if (!currentItem._customName) { customTextArea.innerHTML = currentItem._customName }
     customTextArea.style.resize = "none";
     customTextArea.style.overflow = "hidden";
     customTextArea.id = "customTextAreaID";
-    customTextArea.addEventListener('keyup', () =>{
+    customTextArea.addEventListener('keyup', () => {
         let customTextAreaElem = document.getElementById("customTextAreaID");
         currentItem._customName = customTextAreaElem.value;
         clearWindows();
@@ -690,15 +694,16 @@ function generateRowForPrice(itemToGen) {
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
-    priceHeaderCol.classList.add("col");
-    const attrNickText = document.createTextNode(`Price (optional) -`);
+    const attrNickText = document.createTextNode(`Price (optional)`);
     priceHeaderCol.appendChild(attrNickText);
-    thisRow.appendChild(priceHeaderCol)
+    thisRow.appendChild(returnCol(priceHeaderCol, 0));
+
     //2.1 create price col
     const priceTextArea = document.createElement("textarea");
-    priceTextArea.classList.add("col-2");
+    priceTextArea.classList.add("w-100");
     priceTextArea.setAttribute("type", "number");
     priceTextArea.setAttribute("rows", 1);
     priceTextArea.innerHTML = `${itemToGen._price}`;
@@ -711,48 +716,86 @@ function generateRowForPrice(itemToGen) {
     priceTextArea.addEventListener('focus', () => {
         priceTextArea.select();
     })
-    thisRow.appendChild(priceTextArea);
+    thisRow.appendChild(returnCol(priceTextArea, 2));
     return thisRow;
 }
-//Superior?
+function returnCol(divTag, colSize) {
+    let insertIntoCol = divTag;
+    let _colSize = `col-${colSize}`;
+    if (colSize === 0) {
+        _colSize = `col`;
+    }
+
+    let returnColumn = document.createElement("div");
+    returnColumn.classList.add(_colSize)
+    returnColumn.appendChild(insertIntoCol);
+
+    return returnColumn;
+}
+function generateRowForSocketsOnly(itemToGen) {
+    let base = itemToGen._base;
+    const thisRow = document.createElement("div");
+    thisRow.classList.add("row", "removableAttrRowClass");
+
+    const attrNickCol = document.createElement("div");
+    const attrNickText = document.createTextNode(`${exports.AttributeName.attrArray[86]._attrNickName}`);
+    attrNickCol.appendChild(attrNickText);
+    thisRow.appendChild(returnCol(attrNickCol, 0));
+
+    const socketTextArea = document.createElement("textarea");
+    socketTextArea.classList.add("w-100");
+    socketTextArea.setAttribute("type", "number");
+    socketTextArea.setAttribute("rows", 1);
+    socketTextArea.innerHTML = `${base._sockets}`;
+    socketTextArea.style.resize = "none";
+    socketTextArea.style.overflow = "hidden";
+    socketTextArea.addEventListener("keyup", (e) => {
+        base._sockets = (e.target.value)
+        console.log(currentItem)
+        updateCurrentItemInfoWindow(currentItem);
+    });
+    socketTextArea.addEventListener('focus', () => {
+        socketTextArea.select();
+    })
+    thisRow.appendChild(returnCol(socketTextArea, 2));
+
+    return thisRow;
+}
 function generateRowForDefOnly(itemToGen, ethMult) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
     //1.1 f
     const attrNickCol = document.createElement("div");
-    attrNickCol.classList.add("col");
     const attrNickText = document.createTextNode(`(Total) ${exports.AttributeName.attrArray[2]._attrNickName}`);
     attrNickCol.appendChild(attrNickText);
-    thisRow.appendChild(attrNickCol)
+    thisRow.appendChild(returnCol(attrNickCol, 0))
     //2.1 dMin
     const baseMinCol = document.createElement("div");
-    baseMinCol.classList.add("col-1");
     const baseMinText = document.createTextNode(`${Math.floor(base._minDef * ethMult)}`);
     baseMinCol.appendChild(baseMinText);
-    thisRow.appendChild(baseMinCol)
+    thisRow.appendChild(returnCol(baseMinCol, 1));
     //2.2 dmax
     const baseMaxCol = document.createElement("div");
-    baseMaxCol.classList.add("col-1");
     const baseMaxText = document.createTextNode(`${Math.floor(base._maxDef * ethMult)}`);
     baseMaxCol.appendChild(baseMaxText);
-    thisRow.appendChild(baseMaxCol)
+    thisRow.appendChild(returnCol(baseMaxCol, 1))
     //2.3 dAct
     const defActTextArea = document.createElement("textarea");
-    defActTextArea.classList.add("col-2");
+    defActTextArea.classList.add("w-100");
     defActTextArea.setAttribute("type", "number");
     defActTextArea.setAttribute("rows", 1);
     defActTextArea.innerHTML = `${base._defActVal}`;
     defActTextArea.style.resize = "none";
     defActTextArea.style.overflow = "hidden";
     defActTextArea.addEventListener("keyup", (e) => {
-        base._defActVal = (e.target.value)
+        base._defActVal = (parseInt(e.target.value))
         updateCurrentItemInfoWindow(currentItem);
     });
     defActTextArea.addEventListener('focus', () => {
         defActTextArea.select();
     })
-    thisRow.appendChild(defActTextArea);
+    thisRow.appendChild(returnCol(defActTextArea, 2));
     return thisRow;
 }
 
@@ -795,7 +838,7 @@ function generateRowForField(attr) {
     }
     //1.4 aFAV text area 4
     const attrFloorActTextArea = document.createElement("textarea");
-    attrFloorActTextArea.classList.add("col-2");
+    attrFloorActTextArea.classList.add("w-100");
     attrFloorActTextArea.setAttribute("type", "number");
     attrFloorActTextArea.setAttribute("rows", 1);
     attrFloorActTextArea.setAttribute("id", `attrFloorTextAreaID${floorActIndexer}`)
@@ -825,7 +868,8 @@ function generateRowForField(attr) {
     attrFloorActTextArea.addEventListener('focus', () => {
         attrFloorActTextArea.select();
     })
-    thisRow.appendChild(attrFloorActTextArea)
+    thisRow.appendChild(returnCol(attrFloorActTextArea, 2));
+
     if (attr instanceof TwoFieldAttribute) {
         //1.5 aCMinVal
         const attrACMinValcol = document.createElement("div");
@@ -862,13 +906,16 @@ function generateRowForField(attr) {
     return thisRow;
 }
 
-const ethRads = document.querySelectorAll('.classEthQuery');
-for (const radio of ethRads) {
-    radio.addEventListener("click", (e) => {
-        currentItem._base._isEth = (e.target.value == 'True');
-        updateCurrentItemInfoWindow(currentItem);
-    })
-}
+document.getElementById("ethCheckBoxID").addEventListener("click", (e) => {
+    if (e.currentTarget.checked) {
+        currentItem._base._isEth = true
+        console.log(true);
+        console.log(currentItem);
+    } else { currentItem._base._isEth = false };
+    clearWindows();
+    setEditFields();
+    console.log(currentItem)
+})
 
 function updateCurrentItemInfoWindow(element) {
     infoWindow.innerText = ``;
@@ -887,6 +934,7 @@ function updateCurrentItemInfoWindow(element) {
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${element._base._ed}` : ` / ${exports.AttributeName.attrArray[1]._attrNickName}${element._base._ed}`;
     if (element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
+    if (element._base._defActVal == 0 || !Number.isInteger(element._base._defActVal)) { def = `` };
     if (element._base._ed > 0 && element._magicClass === "Base") {
         name += ` - ${exports.AttributeName.attrArray[85]._attrNickName}`;
     }
@@ -973,14 +1021,14 @@ function clearLocalData() {
 function clearWindows() {
     attributeArea.innerHTML = ``;
     infoWindow.innerText = ``;
-    ethSockRadRow.hidden = true;
-    btnAddItem.style.display = "none";
     listGroup.innerHTML = ``;
     searchBar.value = ``;
+    document.getElementById("displayEthCheckBoxID").hidden = true;
 }
 
 checkNightDay();
 loadAttrNickNames();
+loadTradeList();
 sortTradeList();
 
 document.getElementsByTagName("body")[0].addEventListener("click", (e) => {

@@ -17,7 +17,7 @@
     <title>Trade thread builder</title>
 </head>
 
-<body class="bg-dark text-light">
+<body class="bg-dark text-light" style="font-family: Roboto;">
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
             <div class="col-11">
@@ -74,37 +74,21 @@
     </div>
     <div class="container-xl  pb-1" id="attrAreaID"></div>
     <div class="container-xl  pb-1">
-        <div hidden class="row" id="ethSockRadID">
-
+        <div class="row" id="ethSockRadID">
             <div class="row text-end">
-                <div class="col">
-                    <div class=" form-check form-check-inline ">
-                        <input class=" form-check-input classEthQuery" type="radio" name="socketsEthGroup" value="False"
-                            checked>
-                        <label class="form-check-label" for="flexRadioDefault11">
-                            Non Ethereal
-                        </label>
-                    </div>
-                    <div class="form-check form-check-inline ">
-                        <input class="form-check-input classEthQuery" type="radio" value="True" name="socketsEthGroup">
-                        <label class="form-check-label" for="flexRadioDefault10">
-                            Ethereal
-                        </label>
-                    </div>
+                <div class="col" id="displayEthCheckBoxID" hidden="true">
+                    <input class="form-check-input" type="checkbox" value="" id="ethCheckBoxID">
+                    <label class="form-check-label" for="defaultCheck1">
+                      Ethereal
+                    </label>
                 </div>
+
             </div>
         </div>
-        <div class="row p-1">
+        <div class="row p-1" id="infoWindowRowID">
             <div class="col ">
-                <label id="lblCurrentItemID">Tab/enter will select the first item or click on any of them. Most buttons
-                    have mouse over tool tips.</label>
-            </div>
-            <div class="col-2 text-end">
-                <button style="display:none" class="btn btn-sm btn-success text-nowrap text-dark" type="button"
-                    aria-expanded="false" id="btnAddItemID" data-toggle="tooltip"
-                    title="Adds the current item to your trade thread">Add item
-                    <img src="FontIcons/earmarkIcon.svg">
-                </button>
+                <label id="lblCurrentItemID">Tab/enter will select the first item, or click on any of them. Most buttons
+                    have mouse over tool tips. Setting an attribute value to 0 will remove or hide it</label>
             </div>
         </div>
         <div class="row p-1">
@@ -119,20 +103,10 @@
             <div class="col-2">
                 <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
                     title="This will add category names for your trade list">Categorize
+                    <img src="FontIcons/sortDownIcon.svg"
                 </button>
             </div>
-            <div class="col-2">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="saveBtnID"
-                    title="Save your trade list to local storage and retrieve it later">Save
-                    <img src="FontIcons/save2.svg">
-                </button>
-            </div>
-            <div class="col-2">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="loadBtnID"
-                    data-toggle="tooltip" title="Load your trade list from local storage">Load
-                    <img src="FontIcons/downloadIcon.svg">
-                </button>
-            </div>
+
             <div class="col-2">
                 <button class="btn btn-sm btn-info text-nowrap" type="button" aria-expanded="false" id="editBtnID"
                     data-toggle="tooltip" title="DELETES YOUR OLD ITEM then you MUST add it back!">Edit Item

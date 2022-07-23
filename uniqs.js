@@ -27,15 +27,6 @@ export class AttributeName {
     });
     console.log("updateValues() successful");
   }
-  get attrNickName() {
-    return this._attrNickName;
-  }
-  set attrNickName(newNick) {
-    this._attrNickName = newNick;
-  }
-  get attrName() {
-    return this._attrName;
-  }
 }
 
 export class BasicAttribute {
@@ -43,18 +34,6 @@ export class BasicAttribute {
     this._attributeName = attributeName;
     this._attrFloorActVal = attrFloorMaxVal;
     this._attrType = "basic";
-  }
-  get attributeName() {
-    return this._attributeName;
-  }
-  set attributeName(attributeName) {
-    this._attributeName = attributeName;
-  }
-  get attrFloorActVal() {
-    return this._attrFloorActVal;
-  }
-  set attrFloorActVal(newVal) {
-    this._attrFloorActVal = newVal;
   }
 }
 
@@ -65,18 +44,6 @@ export class Attribute extends BasicAttribute {
     this._attrFloorMaxVal = attrFloorMaxVal;
     this._attrFloorActVal = attrFloorMinVal;
     this._attrType = "attribute";
-  }
-  get attrFloorMin() {
-    return this._attrFloorMinVal;
-  }
-  set attrFloorMin(newVal) {
-    this._attrFloorMinVal = newVal;
-  }
-  get attrFloorMaxVal() {
-    return this._attrFloorMaxVal;
-  }
-  set attrFloorMaxVal(newVal) {
-    this._attrFloorMaxVal = newVal;
   }
 }
 
@@ -90,12 +57,6 @@ export class SkillAttribute extends Attribute {
     super(attributeName, attrFloorMinVal, attrFloorMaxVal);
     this._classOrTreeName = classOrTreeName;
     this._attrType = "skillAttribute";
-  }
-  get classOrTreeName() {
-    return this._classOrTreeName;
-  }
-  set classOrTreeName(newVal) {
-    this._classOrTreeName = newVal;
   }
 }
 
@@ -113,24 +74,6 @@ export class TwoFieldAttribute extends Attribute {
     this._attrCeilActVal = attrCeilMaxVal;
     this._attrType = "twoFieldAttribute";
   }
-  get attrCeilMinVal() {
-    return this._attrCeilMinVal;
-  }
-  set attrCeilMinVal(newVal) {
-    this._attrCeilMinVal = newVal;
-  }
-  get attrCeilMaxVal() {
-    return this._attrCeilMaxVal;
-  }
-  set attrCeilMaxVal(newVal) {
-    this._attrCeilMaxVal = newVal;
-  }
-  get attrCeilActVal() {
-    return this._attrCeilActVal;
-  }
-  set attrCeilActVal(newVal) {
-    this._attrCeilActVal = newVal;
-  }
 }
 
 //Bases
@@ -146,26 +89,6 @@ export class Base {
     this._type = "Jewelry";
     Base.baseArray.push(this);
   }
-  get baseName() {
-    return this._baseName;
-  }
-  get itemClass() {
-    return this._itemClass;
-  }
-  set ed(newEd) {
-    if (Object.hasOwn(this, "_thisRowFieldActVal"))
-      this._defActVal = this._maxDef;
-    this._ed = newEd;
-  }
-  get ed() {
-    return this._ed;
-  }
-  set isEth(bool) {
-    this._isEth = bool;
-  }
-  get isEth() {
-    return this._isEth;
-  }
 }
 
 export class Weapon extends Base {
@@ -174,12 +97,6 @@ export class Weapon extends Base {
     this._minDamage = minDamage;
     this._maxDamage = maxDamage;
     this._type = "Weapon";
-  }
-  get minDamage() {
-    return this._minDamage;
-  }
-  get maxDamage() {
-    return this._maxDamage;
   }
 }
 
@@ -354,6 +271,8 @@ ItemQuantity._attrName = "Quantity";
 const empty = new AttributeName("");
 empty._editable = false;
 empty._attrName = "Empty Value";
+const Superior = new AttributeName("Superior");
+const OpenSockets = new AttributeName("Open Sockets");
 const emptyTwo = new AttributeName("");
 emptyTwo._editable = false;
 emptyTwo._attrName = "Custom val1";
