@@ -285,6 +285,11 @@ emptyFour._attrName = "Custom val3";
 const emptyFive = new AttributeName("");
 emptyFive._editable = false;
 emptyFive._attrName = "Custom val4";
+//console.log(AttributeName.attrArray);
+
+
+
+
 
 const SlayerGuard = new Armor("Slayer Guard", "Barbarian Helm", "Exceptional", 93, 120);
 const ArreatsFace = new Unique(SlayerGuard, "Arreats Face", 0, 0);
