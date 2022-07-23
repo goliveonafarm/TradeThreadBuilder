@@ -111,7 +111,7 @@ function loadTradeList() {
         const parsedTradeStr = JSON.parse(tradeJSONStr);
         myTradeItems = parsedTradeStr;
         updateTradeList();
-        tradeThreadTextArea.value = "Tab/enter will select the first item or click on any of them. Most buttons have mouse over tool tips. Attributes with values of 0 are hidden or removed"
+        infoWindow.innerText = "Tab/enter will select the first item or click on any of them. Most buttons have mouse over tool tips. Attributes with values of 0 are hidden or removed"
     }
 }
 
@@ -1029,7 +1029,6 @@ function clearWindows() {
 checkNightDay();
 loadAttrNickNames();
 loadTradeList();
-sortTradeList();
 
 document.getElementsByTagName("body")[0].addEventListener("click", (e) => {
 
