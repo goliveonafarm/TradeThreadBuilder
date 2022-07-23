@@ -287,7 +287,7 @@ const searchBar = document.getElementById('searchBarID');
 searchBar.addEventListener("keyup", (e) => {
     currentItem = null;
     if (document.getElementById('listGroupAttrID')) {
-        document.getElementById('searchAttrBarID').value = ``;
+        //document.getElementById('searchAttrBarID').value = ``;
         document.getElementById('listGroupAttrID').innerHTML = ``;
     }
     listGroupNamesGen(e, mappedNameArray, listGroup);
@@ -336,6 +336,7 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
                         //_listGroup.innerHTML = ``;
                         //document.getElementById('searchAttrBarID').value = e.target.outerText;
                         addAttributeSearch(outPut[i]);
+
                     })
                 }
                 _listGroup.appendChild(g);
@@ -349,6 +350,12 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
             addAttributeSearch(outPut[0]);
             _listGroup.innerHTML = ``;
         }
+    }
+    
+    if(outPut[0]) {
+        return outPut[0]
+    }else{
+        return `Choose attribute`
     }
 }
 
@@ -566,16 +573,9 @@ function setEditFields() {
         let lblAttrResult = document.createElement("div");
         lblAttrResult.id = 'lblAttrResultID';
         lblAttrResult.innerText = 'Choose attribute'
-        lblAttrResult.classList.add("col-3");
+        lblAttrResult.classList.add("col");
         searchAttrRow.appendChild(lblAttrResult);
 
-        let fillAreaOne = document.createElement("div");
-        fillAreaOne.classList.add("col-2")
-        searchAttrRow.appendChild(fillAreaOne)
-
-        let fillAreaTwo = document.createElement("div");
-        fillAreaTwo.classList.add("col-2")
-        searchAttrRow.appendChild(fillAreaTwo);
         attributeArea.appendChild(searchAttrRow);
 
         let listGroupRow = document.createElement("div");
@@ -600,9 +600,10 @@ function setEditFields() {
         searchAttrBar.addEventListener("keyup", (e) => {
             searchBar.value = ``;
             listGroup.innerHTML = ``;
-            document.getElementById('lblAttrResultID').innerText = searchAttrBar.value;
+            let thisValue = listGroupNamesGen(e, mappedNickArray, listGroupAttr);
+            document.getElementById('lblAttrResultID').innerText = thisValue;
             if (!searchAttrBar.value) { document.getElementById('lblAttrResultID').innerText = "Choose attribute" };
-            listGroupNamesGen(e, mappedNickArray, listGroupAttr);
+
         });
         searchAttrBar.addEventListener("keydown", (e) => { stopDefault(e) });
 
@@ -1055,6 +1056,8 @@ function clearLocalData() {
     let removeKeys = ["attrArray", "tradeArray", "dayMode"];
     removeKeys.forEach(k => localStorage.removeItem(k));
     document.getElementById('clearAllBtnID');
+    clearWindows();//wwwwwwwwwwwwwwwwwww
+    tradeThreadTextArea.value = ``
     infoWindow.innerText = `All page settings and saved trades were deleted`
 }
 
