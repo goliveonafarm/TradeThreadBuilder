@@ -10,6 +10,7 @@ let chosenMagicClass = null;
 let chosenName = null;
 let currentItem = null;
 let floorActIndexer = 0;
+let bgSecondaryIndexer = 0;
 let ethSockRadRow = document.getElementById('ethSockRadID');
 let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
 let infoWindow = document.getElementById('lblCurrentItemID');
@@ -225,7 +226,7 @@ function setAttrNickNames() {
         attrHTMLRows[index % 4].appendChild(row);
     });
 }
-document.getElementById("testBtnID").addEventListener("click", updateTradeList);
+
 function updateTradeList() {
     tradeThreadTextArea.value = ``;
     let lastClassType = null;
@@ -260,14 +261,12 @@ function sortTradeList() {
     updateTradeList();
 }
 
-
 let fullNameListArray = exports.Unique.uniqueArr.concat(exports.Base.baseArray)
 let mappedNameArray = fullNameListArray.map(element => {
     return element._name.toLowerCase();
 });
 mappedNameArray.sort();
 let listGroup = document.getElementById("listGroupItemID");
-
 const searchBar = document.getElementById('searchBarID');
 searchBar.addEventListener("keyup", (e) => {
     currentItem = null;
@@ -288,6 +287,7 @@ function stopDefault(e) {
 }
 
 function listGroupNamesGen(e, searchedArray, modiListGroup) {
+
     let _searchBar = e.target;
     let _listGroup = modiListGroup;
     _listGroup.style.zIndex = "2";
@@ -305,41 +305,69 @@ function listGroupNamesGen(e, searchedArray, modiListGroup) {
         };
     });
     if (e.key != 'Tab' && e.key != 'Enter') {
-        if (!outPut.length) {
+        if (!outPut.length) {//out array is empty
             let g = listItemGen("no results, letters must be typed in order, including spaces, you dont have to start with the first letter(s) (capitalization does not matter).");
 
             _listGroup.appendChild(g);
-        } else {
+        } else {//this runs if there are things in output array
             for (let i = 0; i < 10 && i < outPut.length && userInput.length > 0; i++) {
                 let g = listItemGen(outPut[i]);
-                if (e.target.id == 'searchBarID') {
+                if (e.target.id === 'searchBarID') {//this runs if item search bar
                     g.addEventListener('click', e => setChosenItem(e.target.outerText))
-                } else {
+                } else if (e.target.id === 'searchAttrBarID') {//this runs if attr search bar
                     g.addEventListener('click', e => {
                         addAttributeSearch(outPut[i]);
                     })
                     g.addEventListener('mouseover', e => {
                         document.getElementById('lblAttrResultID').innerText = e.target.innerText;
                     })
+                } else {//this runs if NOT item search bar AND not in attr search bar
+                    g.addEventListener('click', e => {
+                        addRuneword(outPut[i]);
+                    })
+                    g.addEventListener('keydown', e => {
+                        document.getElementById('lblRuneWordResultID').innerText = e.target.value
+                    })
+                    g.addEventListener('mouseover', e => {
+                        document.getElementById('lblRuneWordResultID').innerText = e.target.innerText;
+                    })
                 }
                 _listGroup.appendChild(g);
             }
         }
-    } else {
-        if (e.target.id == 'searchBarID') {
+    } else {//if we hit enter or tab this will run
+        if (e.target.id == 'searchBarID') {//this will run on item search bar
             setChosenItem(outPut[0])
         }
-        else {
+        else if (e.target.id == 'searchAttrBarID') {//this runs if NOT item search bar
             addAttributeSearch(outPut[0]);
             _listGroup.innerHTML = ``;
         }
+        else {
+            addRuneword(outPut[0]);
+            _listGroup.innerHTML = ``;
+            console.log('set runeword')
+        }
     }
-
+    //this always runs
+    //we dont always accept variable being returned?
     if (outPut[0]) {
         return outPut[0]
     } else {
         return `Choose attribute`
     }
+}
+
+function addRuneword(runewordName) {
+    let fullRunewordArray = exports.RuneWord.RuneWordArray.sort();
+    let filteredResult = fullRunewordArray.filter((runeword) => {
+        return runeword._runeWordName.toLowerCase() === runewordName
+    })
+    const newRuneWord = new exports.RuneWordItem(currentItem._base, filteredResult[0]);
+    currentItem = newRuneWord;
+
+    clearWindows();
+    setEditFields();
 }
 
 function addAttributeSearch(name) {
@@ -367,29 +395,25 @@ function setChosenItem(itemName) {
     let searchedItem = exports.Unique.uniqueArr.filter((item) => {
         return item._name.toLowerCase() == itemName;
     });
+    clearWindows();
     if (searchedItem.length > 0) {
         currentItem = searchedItem[0];
-        clearWindows();
     } else {
         searchedItem = exports.Base.baseArray.filter((item) => {
             return item._name.toLowerCase() == itemName;
         });
-        clearWindows();
         currentItem = new exports.Item(searchedItem[0]);
         if (["Small Charm", "Large Charm", "Grand Charm"].indexOf(currentItem._base._name) > -1) {
             currentItem._magicClass = "Charm"
         }
-        //(["Magic", "Rare", "Crafted"].indexOf(currentItem._magicClass) > -1)
-        updateCurrentItemInfoWindow(currentItem);
     }
     setEditFields()
-
 }
 
 function displayAddItemBtn() {
     //add item button
     let addItemBtn = document.createElement("button");
-    addItemBtn.classList.add("btn", "btn-sm", "btn-success", "text-nowrap", "text-dark", "removableAttrRowClass");
+    addItemBtn.classList.add("btn", "btn-sm", "btn-primary", "btn-outline-light", "text-light", "removableAttrRowClass", "w-100");
     let addItemBtnTextNode = document.createTextNode("Add item");
     addItemBtn.appendChild(addItemBtnTextNode);
     let addItemBtnImg = document.createElement("img");
@@ -405,8 +429,6 @@ function displayAddItemBtn() {
             clearWindows();
             infoWindow.innerText = `Added ${currentItem._name} to trade list`;
             currentItem = null;
-
-
         } catch (error) {
             infoWindow.innerText = `You do not currently have an item to add`;
             console.log(error);
@@ -420,9 +442,10 @@ function displayAddItemBtn() {
 }
 
 function setEditFields() {
+    floorActIndexer = 0;
     if (currentItem == null) {
         console.log("null")
-        console.log(currentItem)//wwwwwwwwwww
+        console.log(currentItem)
     }
     displayAddItemBtn();
     document.getElementById("displayEthCheckBoxID").hidden = false;
@@ -441,17 +464,10 @@ function setEditFields() {
 
     updateCurrentItemInfoWindow(currentItem);
     //display item name
-    let nameRow = document.createElement("div");
-    nameRow.classList.add("row", "removableAttrRowClass");
-    let nameCol = document.createElement('h3');
-    nameCol.classList.add("col")
-    let nameColTextNode = document.createTextNode(currentItem._name)
-    nameCol.appendChild(nameColTextNode);
-    nameRow.appendChild(nameCol);
 
-    attributeArea.appendChild(nameRow)
+    attributeArea.appendChild(returnNameRow())
 
-    //add buttons to upgrade base
+    //if base - add buttons to upgrade
     if (currentItem._magicClass === "Base") {
         //add magicClass buttons with listeners
         let btnClassRow = document.createElement("div");
@@ -465,7 +481,6 @@ function setEditFields() {
         btnGroup.appendChild(generateRadioButton('Rare'));
         btnGroup.appendChild(generateRadioButton('Crafted'));
         btnGroup.appendChild(generateRadioButton('Runeword'));
-
 
         btnClassRow.appendChild(btnGroup);
         attributeArea.appendChild(btnClassRow)
@@ -484,65 +499,16 @@ function setEditFields() {
         let mappedNickArray = fullNickAttrArray.map(element => {
             return element._attrNickName.toLowerCase();
         });
-
-        let searchAttrRow = document.createElement("div");
-        searchAttrRow.classList.add("row", "removableAttrRowClass");
-
-        let searchAttrCol = document.createElement("div");
-        searchAttrCol.classList.add("col-5");
-
-        let searchAttrBar = document.createElement("textarea");
-        searchAttrBar.setAttribute("rows", 1);
-        searchAttrBar.classList.add("w-100", "text-nowrap")
-        searchAttrBar.placeholder = `Search and select an attribute`;
-        searchAttrBar.style.resize = "none";
-        searchAttrBar.style.overflow = "hidden";
-        searchAttrBar.id = "searchAttrBarID";
-        searchAttrBar.addEventListener('focus', () => {
-            searchAttrBar.select();
-        })
-
-        searchAttrCol.appendChild(searchAttrBar);
-        searchAttrRow.appendChild(searchAttrCol);
-        let lblAttrResult = document.createElement("div");
-        lblAttrResult.id = 'lblAttrResultID';
-        lblAttrResult.innerText = 'Choose attribute'
-        lblAttrResult.classList.add("col");
-        searchAttrRow.appendChild(lblAttrResult);
-
-        attributeArea.appendChild(searchAttrRow);
-
-        let listGroupRow = document.createElement("div");
-        listGroupRow.classList.add('row');
-
-        let listGroupCol = document.createElement("div");
-        listGroupCol.classList.add("col-12");
-
-        let listGroupUl = document.createElement("ul");
-        listGroupUl.classList.add("list-group", "position-absolute");
-        listGroupUl.id = "listGroupAttrID"
-
-        listGroupCol.appendChild(listGroupUl);
-        listGroupRow.appendChild(listGroupCol);
-        attributeArea.appendChild(listGroupRow);
-
-        //line break row
-        let lineBrkRow = document.createElement("br");
-        attributeArea.appendChild(lineBrkRow)
-
-        let listGroupAttr = document.getElementById("listGroupAttrID");
-        searchAttrBar.addEventListener("keyup", (e) => {
-            searchBar.value = ``;
-            listGroup.innerHTML = ``;
-            let thisValue = listGroupNamesGen(e, mappedNickArray, listGroupAttr);
-            document.getElementById('lblAttrResultID').innerText = thisValue;
-            if (!searchAttrBar.value) { document.getElementById('lblAttrResultID').innerText = "Choose attribute" };
-
-        });
-        searchAttrBar.addEventListener("keydown", (e) => { stopDefault(e) });
+        //all variables
+        let mappedAttrArray = mappedNickArray;
+        let searchAttrBarID = "searchAttrBarID"
+        let searchAttrBarPlaceholder = "Search and select an attribute"
+        let lblAttrResultID = "lblAttrResultID"
+        let lblAttrResultInnerText = "Choose attribute"
+        generateSearchBar(mappedAttrArray, searchAttrBarID, searchAttrBarPlaceholder, lblAttrResultID, lblAttrResultInnerText);
 
     }
-    //wwwwwwwwwwwwwwwwwwwwwwwwwwwfix enhance defense textboxt
+    //ERROR --------------- fix enhance defense textboxt
     //add MinMax header row
     if (grabInScope._magicClass != "Base") {
         attributeArea.appendChild(createHeaderRow())
@@ -554,10 +520,15 @@ function setEditFields() {
         let newRow = generateRowForDefOnly(currentItem, ethMult)
         attributeArea.appendChild(newRow);
     }
-    //insert superior row 
+    //insert superior row  & runeword search bar
     if (grabInScope._magicClass == "Runeword") {
-        let returnedEditRow = returnSuperiorEditRow();
-        attributeArea.appendChild(returnedEditRow);
+        let filteredResult = grabInScope._arr.filter((attr) => {
+            return attr._attrName === "Enhanced Defense %";
+        })
+        if (!filteredResult) {
+            let returnedEditRow = returnSuperiorEditRow();
+            attributeArea.appendChild(returnedEditRow);
+        }
     }
     //generate row for sockets only on bases
     if (currentItem._magicClass === "Base") {
@@ -573,10 +544,66 @@ function setEditFields() {
     attributeArea.appendChild(newRow);
 }
 
+//creates searchAttrRow & listgroup row
+function generateSearchBar(mappedArray, searchBarID, searchBarPlaceholder, lblResultID, lblResultInnerText) {
+    let searchAttrRow = document.createElement("div");
+    searchAttrRow.classList.add("row", "removableAttrRowClass");
+    let searchAttrCol = document.createElement("div");
+    searchAttrCol.classList.add("col-5");
+    let searchAttrBar = document.createElement("textarea");
+    searchAttrBar.setAttribute("rows", 1);
+    searchAttrBar.classList.add("w-100", "text-nowrap")
+    searchAttrBar.placeholder = searchBarPlaceholder;
+    searchAttrBar.style.resize = "none";
+    searchAttrBar.style.overflow = "hidden";
+    searchAttrBar.id = searchBarID;
+    searchAttrBar.addEventListener('focus', () => {
+        searchAttrBar.select();
+    })
+
+    searchAttrCol.appendChild(searchAttrBar);
+    searchAttrRow.appendChild(searchAttrCol);
+    let lblAttrResult = document.createElement("div");
+    lblAttrResult.id = lblResultID;
+    lblAttrResult.innerText = lblResultInnerText
+    lblAttrResult.classList.add("col");
+    searchAttrRow.appendChild(lblAttrResult);
+
+    let listGroupRow = document.createElement("div");
+    listGroupRow.classList.add('row');
+    let listGroupCol = document.createElement("div");
+    listGroupCol.classList.add("col-12");
+    let listGroupUl = document.createElement("ul");
+    listGroupUl.classList.add("list-group", "position-absolute");
+    listGroupUl.id = "listGroupAttrID"
+    listGroupCol.appendChild(listGroupUl);
+    listGroupRow.appendChild(listGroupCol);
+
+    attributeArea.appendChild(searchAttrRow);
+    attributeArea.appendChild(listGroupRow);
+
+    searchAttrBar.addEventListener("keydown", (e) => { stopDefault(e) });
+
+    searchAttrBar.addEventListener("keyup", (e) => {
+        let listGroupAttr = document.getElementById("listGroupAttrID");
+        searchBar.value = ``;
+        listGroup.innerHTML = ``;
+        let thisValue = listGroupNamesGen(e, mappedArray, listGroupAttr);
+        if (document.getElementById(lblResultID)) {
+            document.getElementById(lblResultID).innerText = thisValue;
+        }
+        if (!searchAttrBar.value) { document.getElementById(lblResultID).innerText = lblResultInnerText };
+    });
+
+}
+
 function returnSuperiorEditRow() {
     //add row for superior input
     let superiorEditRow = document.createElement("div");
     superiorEditRow.classList.add("row", "removableAttrRowClass")
+    const formatCol = document.createElement("div");
+    formatCol.classList.add("col-5")
+    superiorEditRow.appendChild(formatCol);
 
     let supCol = document.createElement("div");
     supCol.classList.add("col");
@@ -713,14 +740,43 @@ function setMagicClass(e) {
     currentItem._magicClass = e.target.innerHTML;
     currentItem._base._ed = 0;
     clearWindows();
-    setEditFields();
+    if (currentItem._magicClass != "Runeword" || currentItem instanceof exports.RuneWordItem) {
+        setEditFields();
+    } else {
+        attributeArea.appendChild(returnNameRow());
+        let fullRunewordArray = exports.RuneWord.RuneWordArray.sort();
+        let mappedRunewordArray = fullRunewordArray.map(element => {
+            return element._runeWordName.toLowerCase();
+        });
+        //all variables
+        let searchRunewordBarID = "searchRuneBarID"
+        let searchRunewordBarPlaceholder = "Search and select a runeword"
+        let lblRunewordResultID = "lblRuneWordResultID"
+        let lblRunewordResultInnerText = "Choose Runeword"
+
+        generateSearchBar(mappedRunewordArray, searchRunewordBarID, searchRunewordBarPlaceholder, lblRunewordResultID, lblRunewordResultInnerText);
+    }
 }
 
+function returnNameRow() {
+    let nameRow = document.createElement("div");
+    nameRow.classList.add("row", "removableAttrRowClass");
+    let nameCol = document.createElement('h3');
+    nameCol.classList.add("col")
+    let nameColTextNode = document.createTextNode(currentItem._name)
+    nameCol.appendChild(nameColTextNode);
+    nameRow.appendChild(nameCol);
+
+    return nameRow;
+}
 function generateRowForPrice(itemToGen) {
+
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
-
+    const formatCol = document.createElement("div");
+    formatCol.classList.add("col-5")
+    thisRow.appendChild(formatCol);
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
     const attrNickText = document.createTextNode(`Price (optional)`);
@@ -762,6 +818,9 @@ function generateRowForSocketsOnly(itemToGen) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    const formatCol = document.createElement("div");
+    formatCol.classList.add("col-5")
+    thisRow.appendChild(formatCol);
 
     const attrNickCol = document.createElement("div");
     const attrNickText = document.createTextNode(`${exports.AttributeName.attrArray[86]._attrNickName}`);
@@ -790,6 +849,9 @@ function generateRowForDefOnly(itemToGen, ethMult) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    const formatCol = document.createElement("div");
+    formatCol.classList.add("col-5")
+    thisRow.appendChild(formatCol);
     //1.1 f
     const attrNickCol = document.createElement("div");
     const attrNickText = document.createTextNode(`(Total) ${exports.AttributeName.attrArray[2]._attrNickName}`);
@@ -827,39 +889,42 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    //add col here to try to fix spacing
+    //if(bgSecondaryIndexer++ % 2 == 0){thisRow.classList.add("bg-secondary")}
+
     //1.1F 0
+    const formatCol = document.createElement("div");
+    formatCol.classList.add("col-5")
+    thisRow.appendChild(formatCol);
     if (attr._attributeName._attrNickName != ``) {
         const attrNickCol = document.createElement("div");
-        attrNickCol.classList.add("col");
 
         const attrNickText = document.createTextNode(attr._attributeName._attrName == 'Quantity' ? `Amount -` : `${attr._attributeName._attrNickName}`);
         attrNickCol.appendChild(attrNickText);
-        thisRow.appendChild(attrNickCol)
+        thisRow.appendChild(returnCol(attrNickCol, 0));
     }
     if (attr instanceof SkillAttribute) {
         const attrClassOrTreeNameCol = document.createElement("div");
-        attrClassOrTreeNameCol.classList.add("col");
         const classOrTreeNameTextNode = document.createTextNode(`${attr._classOrTreeName}`);
         attrClassOrTreeNameCol.appendChild(classOrTreeNameTextNode);
-        thisRow.appendChild(attrClassOrTreeNameCol);
+        let childRow = returnCol(attrClassOrTreeNameCol, 0);
+        thisRow.appendChild(childRow);
     } else {
 
     }
     //1.2 aFinV 2
     if (attr._attrFloorMinVal) {
         const attrFloorMinCol = document.createElement("div");
-        attrFloorMinCol.classList.add("col-1");
         const attrFloorMinText = document.createTextNode(`${attr._attrFloorMinVal}`);
         attrFloorMinCol.appendChild(attrFloorMinText);
-        thisRow.appendChild(attrFloorMinCol)
+        thisRow.appendChild(returnCol(attrFloorMinCol, 1));
     }
     //1.3 aFMaxV 3
     if (attr._attrFloorMaxVal) {
         const attrFloorMaxCol = document.createElement("div");
-        attrFloorMaxCol.classList.add("col-1");
         const attrFloormaxText = document.createTextNode(`${attr._attrFloorMaxVal}`);
         attrFloorMaxCol.appendChild(attrFloormaxText);
-        thisRow.appendChild(attrFloorMaxCol)
+        thisRow.appendChild(returnCol(attrFloorMaxCol, 1));
     }
     //1.4 aFAV text area 4
     const attrFloorActTextArea = document.createElement("textarea");
@@ -878,6 +943,10 @@ function generateRowForField(attr) {
         if (attr._attributeName._attrName === "Enhanced Defense %") {
             clearWindows();
             setEditFields();
+            let quickID = e.target.id;
+            let grabThisEle = document.getElementById(quickID)
+            grabThisEle.setSelectionRange(3, 3)
+            grabThisEle.focus();
         }
         if (attr._attributeName._attrName === "Defense") {
             currentItem._base._addedDef = attr._attrFloorActVal;
@@ -890,7 +959,7 @@ function generateRowForField(attr) {
         }
         updateCurrentItemInfoWindow(currentItem);
     })
-    attrFloorActTextArea.addEventListener('focus', () => {
+    attrFloorActTextArea.addEventListener('click', () => {
         attrFloorActTextArea.select();
     })
     thisRow.appendChild(returnCol(attrFloorActTextArea, 2));
@@ -1026,7 +1095,7 @@ function checkNightDay() {
 
 function setDayMode() {
     body[0].classList.remove("bg-dark", 'text-light');
-    body[0].classList.add('bg-success', "bg-gradient");
+    body[0].classList.add("bg-success");
     tradeThreadTextArea.classList.remove('bg-dark', 'text-light');
     sunIcon.style.display = "none";
     moonIcon.style.display = "block";
@@ -1035,7 +1104,7 @@ function setDayMode() {
     localStorage.setItem('dayMode', isDay);
 }
 function setNightMode() {
-    body[0].classList.remove("bg-success", "bg-gradient")
+    body[0].classList.remove('bg-success')
     body[0].classList.add('bg-dark', 'text-light')
     tradeThreadTextArea.classList.add('bg-dark', 'text-light');
     sunIcon.style.display = "block";
@@ -1073,6 +1142,8 @@ document.getElementsByTagName("body")[0].addEventListener("click", (e) => {
     //console.log(e)
     //console.log(currentItem)
     //console.log('LINE BREAK --------------------------------')
+
 })
 
-
+//currentItem = exports.customRuneWord;
+//setEditFields();

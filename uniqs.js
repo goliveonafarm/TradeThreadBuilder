@@ -153,8 +153,6 @@ export class Item {
     }
     this._arr.push(attr);
     if (this._magicClass === "Base") { this.magicClass = "Magic" };
-  }
-  removeAttr(index) {
 
   }
 }
@@ -171,6 +169,21 @@ export class Unique extends Item {
   }
 }
 
+export class RuneWordItem extends Item {
+  constructor(base, runeWordArray) {
+    super(base);
+    this._name = `${runeWordArray._runeWordName} ${base._name}`;
+    this._runeWordAttrArray = runeWordArray._runeWordAttrArray;
+    this._magicClass = "Runeword";
+    this.addRuneWordAttr();
+  }
+  addRuneWordAttr() {
+    this._runeWordAttrArray.forEach(element => {
+      this.addAttr(element);
+    })
+  }
+}
+
 let QuantizedItemIndexer = 0;
 export class QuantizedItem extends Unique {
   constructor(base, name, ed, addedDef) {
@@ -178,6 +191,16 @@ export class QuantizedItem extends Unique {
     this.addAttr(new Attribute(ItemQuantity, 1, 99));
     this._quantizedIndex = QuantizedItemIndexer++;
     this._magicClass = "Misc";
+  }
+}
+
+export class RuneWord {
+  static RuneWordArray = [];
+  constructor(runeWordName, runeWordAttrArray, possibleBases) {
+    this._runeWordName = runeWordName;
+    this._runeWordAttrArray = runeWordAttrArray;
+    this._possibleBases = possibleBases;
+    RuneWord.RuneWordArray.push(this);
   }
 }
 
@@ -233,7 +256,7 @@ const AllSkills = new AttributeName("All Skills");
 const Skills = new AttributeName("Skills");
 const ClassSkills = new AttributeName("Class Skills");
 const ClassSkillTree = new AttributeName("Class Skill Tree");
-const FCR = new AttributeName("Faster Cast Rate");
+const FCR = new AttributeName("Faster Cast Rate %");
 const BlockAndFasterBlock = new AttributeName("Chance of Blocking - Faster Block Rate");
 const IncrChanceBlockPerc = new AttributeName("Increase Chance to Block %");
 const FHR = new AttributeName("Faster Hit Recovery");
@@ -285,6 +308,11 @@ emptyFour._attrName = "Custom val3";
 const emptyFive = new AttributeName("");
 emptyFive._editable = false;
 emptyFive._attrName = "Custom val4";
+const MagicAbsorb = new AttributeName("Magic Absorb")
+const MagicDmg = new AttributeName("Magic Damage")
+const Damage = new AttributeName("Damage")
+const CrushingBlow = new AttributeName("Crushing Blow %")
+const MaxLifePerc = new AttributeName("Increase Maximum Life %")
 //console.log(AttributeName.attrArray);
 
 
@@ -1216,10 +1244,296 @@ const HellBumper = new Unique(Services, "Hell Bumper", 0, null);
 const Grush = new Unique(Services, "Grush", 0, null);
 const PlayersEar = new Unique(Services, "Custom player's ear", 0, null);
 
-const _insightArr = [
+
+
+const Steel = new RuneWord("Steel", [
+], ["Sword", "Axe", "Mace"]);
+const Nadir = new RuneWord("Nadir", [
+  new Attribute(EnhancedDef, 50, 50),
+  new Attribute(Def, 10, 10)
+], ["Helm"]);
+const Malice = new RuneWord("Malice", [
+], []);
+const Stealth = new RuneWord("Stealth", [
+], ["Armor"]);
+const Leaf = new RuneWord("Leaf", [
+], ["Stave"]);
+const HolyThunder = new RuneWord("Holy Thunder", [
+], ["Scepter"]);
+const Zephyr = new RuneWord("Zephyr", [
+], ["Polearm", "Stave"]);
+const AncientsPledge = new RuneWord("Ancient's Pledge", [
+  new BasicAttribute(EnhancedDef, 50)
+], []);
+const Pattern = new RuneWord("Pattern", [
+], ["Katar"]);
+const Strength = new RuneWord("Strength", [
+], []);
+const Spirit = new RuneWord("Spirit", [
+  new Attribute(FCR, 25, 35),
+  new Attribute(Mana, 89, 112),
+  new Attribute(MagicAbsorb, 3, 8)
+], []);
+const KingsGrace = new RuneWord("King's Grace", [
+], ["Sword", "Scepter"]);
+const Edge = new RuneWord("Edge", [
+  new Attribute(DmgDemon, 320, 380),
+  new Attribute(AllAttributes, 5, 10)
+], []);
+const Honor = new RuneWord("Honor", [
+], []);
+const Radiance = new RuneWord("Radiance", [
+  new BasicAttribute(EnhancedDef, 75)
+], ["Helm"]);
+const Insight = new RuneWord("Insight", [
   new SkillAttribute(empty, "Meditation Aura", 12, 17),
   new Attribute(EnhancedDmg, 200, 260),
   new Attribute(ArPerc, 180, 250),
   new SkillAttribute(empty, "Critical Strike", 1, 6)
+], []);
+const Lore = new RuneWord("Lore", [
+], ["Helm"]);
+const Peace = new RuneWord("Peace", [
+], ["Armor"]);
+const Rhyme = new RuneWord("Rhyme", [
+], []);
+const Myth = new RuneWord("Myth", [
+], ["Armor"]);
+const White = new RuneWord("White", [
+], ["Wand"]);
+const Memory = new RuneWord("Memory", [
+], ["Stave"]);
+const Black = new RuneWord("Black", [
+], ["Club", "Hammer", "Mace"]);
+const Splendor = new RuneWord("Splendor", [
+  new Attribute(EnhancedDef, 60, 100)
+], []);
+const Smoke = new RuneWord("Smoke", [
+  new BasicAttribute(EnhancedDef, 75)
+], ["Armor"]);
+const Harmony = new RuneWord("Harmony", [
+  new Attribute(EnhancedDmg, 200, 275),
+  new SkillAttribute(empty, "Valkyrie", 2, 6)
+], []);
+const Melody = new RuneWord("Melody", [
+], []);
+const Lionheart = new RuneWord("Lionheart", [
+], ["Armor"]);
+const UnbendingWill = new RuneWord("Unbending Will", [
+  new Attribute(IAS, 20, 30),
+  new Attribute(EnhancedDmg, 300, 350),
+  new Attribute(LifeSteal, 8, 10)
+], ["Sword"]);
+const Obedience = new RuneWord("Obedience", [
+  new Attribute(Def, 200, 300),
+  new Attribute(AllRes, 20, 30)
+], ["Polearm", "Spear"]);
+const Wealth = new RuneWord("Wealth", [
+], ["Armor"]);
+const VoiceOfReason = new RuneWord("VoiceOfReason", [
+  new Attribute(DmgDemon, 220, 350),
+  new Attribute(DmgUndead, 355, 375),
+], ["Sword", "Mace"]);
+const Treachery = new RuneWord("Treachery", [
+], ["Armor"]);
+const Passion = new RuneWord("Passion", [
+  new BasicAttribute(EnhancedDmg, 75),
+  new BasicAttribute(ArPerc, 50, 80)
+], []);
+const Lawbringer = new RuneWord("Lawbringer", [
+  new SkillAttribute(empty, "Sanctuary", 16, 18),
+  new Attribute(DefVsMisl, 200, 250)
+], ["Sword", "Hammer", "Scepter"]);
+const Enlightenment = new RuneWord("Enlightenment", [
+], ["Armor"]);
+const Wisdom = new RuneWord("Wisdom", [
+  new Attribute(ArPerc, 15, 25),
+  new Attribute(ManaSteal, 4, 8),
+  new BasicAttribute(EnhancedDef, 30)
+], ["Helm"]);
+const Gloom = new RuneWord("Gloom", [
+  new Attribute(EnhancedDef, 200, 260)
+], ["Armor"]);
+const Bone = new RuneWord("Bone", [
+  new Attribute(Mana, 100, 150)
+], ["Armor"]);
+const Stone = new RuneWord("Stone", [
+  new Attribute(EnhancedDef, 250, 290)
+], ["Armor"]);
+const CrescentMoonRuneWord = new RuneWord("Crescent Moon", [
+  new Attribute(EnhancedDmg, 180, 220),
+  new Attribute(MagicAbsorb, 9, 11)
+], ["Polearm", "Axe", "Sword"]);
+const Duress = new RuneWord("Duress", [
+  new Attribute(EnhancedDmg, 10, 20),
+  new Attribute(EnhancedDef, 150, 200)
+], ["Armor"]);
+const Prudence = new RuneWord("Prudence", [
+  new Attribute(EnhancedDef, 140, 170),
+  new Attribute(AllRes, 25, 35)
+], ["Armor"]);
+const Sanctuary = new RuneWord("Sanctuary", [
+  new Attribute(EnhancedDef, 130, 160),
+  new Attribute(AllRes, 50, 70)
+], []);
+const Rain = new RuneWord("Rain", [
+  new Attribute(Mana, 100, 150)
+], ["Armor"]);
+const Venom = new RuneWord("Venom", [
+], []);
+const Oath = new RuneWord("Oath", [
+  new Attribute(EnhancedDmg, 210, 340),
+  new Attribute(MagicAbsorb, 10, 15)
+], ["Sword", "Axe", "Mace"]);
+const Delirium = new RuneWord("Delirium", [
+], ["Helm"]);
+const Kingslayer = new RuneWord("Kingslayer", [
+  new Attribute(EnhancedDmg, 230, 270)
+], ["Sword", "Axe"]);
+const Principle = new RuneWord("Principle", [
+  new Attribute(Life, 100, 150)
+], ["Armor"]);
+const Rift = new RuneWord("Rift", [
+  new Attribute(MagicDmg, 160, 250),
+  new Attribute(AllAttributes, 5, 10)
+], ["Polearm", "Scepter"]);
+const Silence = new RuneWord("Silence", [
+], []);
+const Death = new RuneWord("Death", [
+  new Attribute(EnhancedDmg, 300, 385)
+], ["Sword", "Axe"]);
+const HeartOfTheOak = new RuneWord("Heart of the Oak", [
+  new Attribute(AllRes, 30, 40)
+], ["Maces", "Stave"]);
+const FlickeringFlame = new RuneWord("Flickering Flame", [
+  new BasicAttribute(EnhancedDef, 30),
+  new SkillAttribute(empty, "Resist Fire Aura", 4, 8),
+  new Attribute(EnemyFireResist, 10, 15),
+  new Attribute(Mana, 50, 75)
+], ["Helm"]);
+const Chaos = new RuneWord("Chaos", [
+  new BasicAttribute(EnhancedDef, 75),
+  new Attribute(EnhancedDmg, 290, 340),
+  new Attribute(MagicDmg, 216, 471)
+], ["Katar"]);
+const CallToArms = new RuneWord("CallToArms", [
+  new Attribute(EnhancedDmg, 250, 290),
+  new SkillAttribute(empty, "Battle Command", 2, 6),
+  new SkillAttribute(empty, "Battle Orders", 1, 6),
+  new SkillAttribute(empty, "Battle Cry", 1, 4),
+], []);
+const Exile = new RuneWord("Exile", [
+  new SkillAttribute(empty, "Defiance", 13, 16),
+  new Attribute(EnhancedDef, 220, 260),
+], ["Paladin Shield"]);
+const Fortitude = new RuneWord("Fortitude", [
+  new BasicAttribute(Def, 14),
+  new Attribute(AllRes, 25, 30),
+], []);
+const Grief = new RuneWord("Grief", [
+  new Attribute(IAS, 30, 40),
+  new Attribute(Damage, 340, 400),
+  new Attribute(EnemyPsnResist, 20, 25),
+  new Attribute(LifeOnKill, 10, 15),
+], ["Axe", "Sword"]);
+const Bramble = new RuneWord("Bramble", [
+  new SkillAttribute(empty, "Thorns Aura", 15, 21),
+  new Attribute(PsnDmg, 25, 50),
+  new BasicAttribute(Def, 300)
+], ["Armor"]);
+const Wind = new RuneWord("Wind", [
+  new Attribute(EnhancedDmg, 120, 160)
+], []);
+const Dragon = new RuneWord("Dragon", [
+  new Attribute(AllAttributes, 3, 5),
+  new BasicAttribute(Def, 360)
+], []);
+const Infinity = new RuneWord("Infinity", [
+  new Attribute(EnhancedDmg, 255, 325),
+  new Attribute(EnemyLightResist, 45, 55)
+], ["Polearm", "Spear"]);
+const ChainsOfHonor = new RuneWord("Chains of Honor", [
+  new BasicAttribute(EnhancedDef, 70)
+], ["Armor"]);
+const Eternity = new RuneWord("Eternity", [
+  new Attribute(EnhancedDmg, 260, 310)
+], []);
+const Wrath = new RuneWord("Wrath", [
+  new Attribute(DmgUndead, 250, 300),
+], []);
+const Beast = new RuneWord("Beast", [
+  new Attribute(EnhancedDmg, 240, 270),
+  new Attribute(Str, 25, 40)
+], ["Axe", "Scepter", "Hammer"]);
+const Enigma = new RuneWord("Enigma", [
+  new Attribute(Def, 750, 775)
+], ["Armor"]);
+const LastWish = new RuneWord("LastWish", [
+  new Attribute(EnhancedDmg, 330, 375),
+  new Attribute(CrushingBlow, 60, 70)
+], ["Sword", "Hammer", "Axe"]);
+const Brand = new RuneWord("Brand", [
+  new Attribute(EnhancedDmg, 260, 340),
+  new Attribute(DmgDemon, 280, 330)
+], []);
+const Ice = new RuneWord("Ice", [
+  new Attribute(EnhancedDmg, 140, 210),
+  new Attribute(ColdDmgPerc, 25, 30)
+], []);
+const Destruction = new RuneWord("Destruction", [
+  new Attribute(MagicDmg, 100, 180)
+], ["Sword", "Polearm"]);
+const Phoenix = new RuneWord("Phoenix", [
+  new SkillAttribute(empty, "Redemption Aura", 10, 15),
+  new Attribute(EnhancedDmg, 350, 400),
+  new Attribute(DefVsMisl, 350, 400),
+  new Attribute(FireAbsorbPerc, 15, 21)
+], []);
+const Dream = new RuneWord("Dream", [
+  new Attribute(FHR, 20, 30),
+  new Attribute(Def, 150, 220),
+  new Attribute(AllRes, 5, 20),
+  new Attribute(MagicFind, 12, 25)
+], []);
+const Faith = new RuneWord("Faith", [
+  new SkillAttribute(empty, "Fanaticism Aura", 12, 15),
+  new Attribute(Skills, 1, 2),
+  new Attribute(DefVsMisl, 350, 400),
+  new Attribute(FireAbsorbPerc, 15, 21)
+], []);
+const Famine = new RuneWord("Famine", [
+  new Attribute(EnhancedDmg, 320, 370)
+], ["Axe", "Hammer"]);
+const Fury = new RuneWord("Fury", [
+], []);
+const Mist = new RuneWord("Faith", [
+  new SkillAttribute(empty, "Concentration Aura", 8, 12),
+  new Attribute(EnhancedDmg, 325, 375)
+], []);
+const Plague = new RuneWord("Plague", [
+  new SkillAttribute(empty, "Cleansing  Aura", 13, 17),
+  new Attribute(Skills, 1, 2),
+  new Attribute(EnhancedDmg, 220, 320)
+], ["Sword", "Katar", "Dagger"]);
+const Doom = new RuneWord("Doom", [
+  new Attribute(EnhancedDmg, 330, 370),
+  new Attribute(EnemyColdResist, 40, 60)
+], ["Axe", "Polearm", "Hammer"]);
+const Pride = new RuneWord("Pride", [
+  new SkillAttribute(empty, "Concentration   Aura", 16, 20),
+  new Attribute(ArPerc, 260, 300)
+], ["Polearm", "Spear"]);
+const HandOfJustice = new RuneWord("Hand of Justice", [
+  new Attribute(EnhancedDmg, 280, 330)
+], []);
+const Obsession = new RuneWord("Obsession", [
+  new Attribute(MaxLifePerc, 15, 25),
+  new Attribute(ManaRegen, 15, 30),
+  new Attribute(AllRes, 60, 70)
+], ["Stave"]);
+const BreathOfTheDying = new RuneWord("BreathOfTheDying", [
+  new Attribute(EnhancedDmg, 350, 400),
+  new Attribute(LifeSteal, 12, 15)
+], []);
 
-];
+export const customRuneWord = new RuneWordItem(GildedShield, Spirit)

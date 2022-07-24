@@ -1,5 +1,4 @@
 <html lang="en" style="height:100%">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,7 +16,7 @@
     <title>Trade thread builder</title>
 </head>
 
-<body class="bg-dark text-light" style="font-family: Roboto;">
+<body class="bg-dark text-light bg-gradient" style="font-family: Roboto;">
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
             <div class="col-11">
@@ -75,15 +74,15 @@
                 </div>
             </div>
         </div>
-        <div class="row p-1" id="infoWindowRowID">
+        <div class="row p-1 h5" id="infoWindowRowID">
             <div class="col-10 ">
-                <label id="lblCurrentItemID">Tab/enter will select the first item, or click on any of them. Most buttons
+                <label id="lblCurrentItemID" class="w-100">Tab/enter will select the first item, or click on any of them. Most buttons
                     have mouse over tool tips. Setting an attribute value to 0 will remove or hide it</label>
             </div>
         </div>
         <div class="row p-1">
             <div class="col-2">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
+                <button class="btn btn-sm btn-primary  text-nowrap" type="button" aria-expanded="false"
                     id="clipboardBtnID" data-toggle="tooltip"
                     title="Copies your entire trade list. You can paste directly it into your trading thread">Clipboard
                     <img src="FontIcons/clipboardIcon.svg">
@@ -131,7 +130,7 @@
                 </div>
             </div>
         </div>
-        <div class=" p-2 float-end" style="display: none;">
+        <div class=" p-2 float-end">
             <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                 id="testBtnID" title="This button is for testing purposes only and should not do anything :P">
                 Test </button>
