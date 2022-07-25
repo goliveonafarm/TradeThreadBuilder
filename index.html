@@ -20,7 +20,7 @@
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
             <div class="col-11">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" data-bs-toggle="collapse"
+                <button class="btn btn-sm btn-primary bg-gradient text-nowrap" type="button" data-bs-toggle="collapse"
                     data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
                     data-toggle="tooltip"
                     title="You can customize the attribute names at any time, but only new items will display changes. If you have an error, reset values, save, then load.">Attribute
@@ -34,14 +34,14 @@
                     src="FontIcons/sunIcon.svg">
             </div>
         </div>
-        <div class="row collapse text-end position-absolute bg-dark text-light" id="attrCollapseID">
+        <div class="row p-1 collapse text-end position-absolute bg-dark text-light" id="attrCollapseID">
             <div class="col-3 attrColID"> </div>
             <div class="col-3 attrColID"> </div>
             <div class="col-3 attrColID"> </div>
             <div class="col-3 attrColID"> </div>
             <div class="row">
                 <div class="col-2">
-                    <button type="button" class="btn btn-sm btn-warning" id="btnResetAttrNickID" data-toggle="tooltip"
+                    <button type="button" class="btn btn-sm btn-warning bg-gradient btn-outline-dark" id="btnResetAttrNickID" data-toggle="tooltip"
                         title="Reset attribute names and update your trade list">! Reset
                         values</button>
                 </div>
@@ -75,35 +75,34 @@
             </div>
         </div>
         <div class="row p-1 h5" id="infoWindowRowID">
-            <div class="col-10 ">
+            <div class="col-10 text-end">
                 <label id="lblCurrentItemID" class="w-100">Tab/enter will select the first item, or click on any of them. Most buttons
                     have mouse over tool tips. Setting an attribute value to 0 will remove or hide it</label>
             </div>
         </div>
         <div class="row p-1">
             <div class="col-2">
-                <button class="btn btn-sm btn-primary  text-nowrap" type="button" aria-expanded="false"
+                <button class="w-100 float-start bg-gradient btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
                     id="clipboardBtnID" data-toggle="tooltip"
-                    title="Copies your entire trade list. You can paste directly it into your trading thread">Clipboard
+                    title="Copies your entire trade list. You can paste directly it into your trading thread">Copy
                     <img src="FontIcons/clipboardIcon.svg">
                 </button>
             </div>
             <div class="col-2">
-                <button class="btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
-                    title="This will add category names for your trade list">Categorize
+                <button class="w-100 float-start bg-gradient btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
+                    title="This will add category names for your trade list">Sort
                     <img src="FontIcons/sortDownIcon.svg">
                 </button>
             </div>
             <div class="col-2">
-                <button class="btn btn-sm btn-info text-nowrap" type="button" aria-expanded="false" id="editBtnID"
-                    data-toggle="tooltip" title="DELETES YOUR OLD ITEM then you MUST add it back!">Edit Item
+                <button class="w-100 float-end btn btn-sm btn-info text-nowrap bg-gradient" type="button" aria-expanded="false" id="editBtnID"
+                    data-toggle="tooltip" title="DELETES YOUR OLD ITEM then you MUST add it back!">Edit
                     <img src="">
                 </button>
             </div>
             <div class="col-2">
-                <button class="btn btn-sm btn-warning text-nowrap" type="button" aria-expanded="false" id="removeBtnID"
+                <button class="w-100 float-end bg-gradient btn btn-sm btn-warning text-nowrap" type="button" aria-expanded="false" id="removeBtnID"
                     data-toggle="tooltip" title="Click this button then an item on your trade list to remove it">Remove
-                    item
                     <img src="FontIcons/earmarkMinusIcon.svg">
                 </button>
             </div>
@@ -116,20 +115,21 @@
         <div class="row p-1">
             <div class="col">
                 <div class="float-start">
-                    <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                    <button class="btn btn-sm btn-danger bg-gradient btn-outline-dark text-nowrap" type="button" aria-expanded="false"
                         id="clearBtnID"
                         title="This will delete your entire trade list from the trade list window and you will have to load or start over">
                         Delete Trade List
                     </button>
                 </div>
                 <div class="float-end">
-                    <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
+                    <button class="btn btn-sm btn-danger bg-gradient btn-outline-dark text-nowrap" type="button" aria-expanded="false"
                         id="clearAllBtnID" title="This will delete all your saved settings">
                         <img src="FontIcons/warningIcon2.svg">
                     </button>
                 </div>
             </div>
         </div>
+        
         <div class=" p-2 float-end" style="display: none;">
             <button class="btn btn-sm btn-danger bg-gradient text-nowrap" type="button" aria-expanded="false"
                 id="testBtnID" title="This button is for testing purposes only and should not do anything :P">
