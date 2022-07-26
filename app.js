@@ -488,7 +488,10 @@ function setEditFields() {
     if (currentItem == null) {
     }
     displayAddItemBtn();
-    document.getElementById("displayEthCheckBoxID").hidden = false;
+    if(!(currentItem instanceof exports.QuantizedItem)){
+        document.getElementById("displayEthCheckBoxID").hidden = false;
+
+    }
     let grabInScope = currentItem;
     //if unique
     if (chosenMagicClass == 'Unique' || chosenMagicClass == 'Misc') {
@@ -1154,9 +1157,7 @@ function updateCurrentItemInfoWindow(element) {
         }
     }
     if(hideIfSpecialCirc){ed=``}
-
     if (!itemHasEnhanDefAttr && element._base._ed == 0 || element._base._ed == null) { ed = `` }
-    //if (element._base._ed != 0 && ) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
     if (addED) { 
         def = ` / ${element._base._defActVal} ${exports.AttributeName.attrArray[2]._attrNickName} `
