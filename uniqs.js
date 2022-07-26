@@ -335,7 +335,7 @@ const MaxLifePerc = new AttributeName("Increase Maximum Life %")
 const emptySix = new AttributeName("");
 emptySix._editable = false;
 emptySix._attrName = "Empty Value 2";
-console.log(AttributeName.attrArray)
+
 const JawboneCap = new Armor("Jawbone Cap", "Barbarian Helm", "Normal", 10, 15);
 const FangedHelm = new Armor("Fanged Helm", "Barbarian Helm", "Normal", 15, 20);
 const HornedHelm = new Armor("Horned Helm", "Barbarian Helm", "Normal", 25, 30);
@@ -413,6 +413,7 @@ Thundergods.addAttr(new Attribute(EnhancedDef, 160, 200));
 const ArachnidMesh = new Unique(SpiderwebSash, "Arachnid Mesh", 0, 0);
 ArachnidMesh.addAttr(new Attribute(EnhancedDef, 90, 120));
 const NosferatusCoil = new Unique(VampirefangBelt, "Nosferatu's Coil", 0, 0);
+NosferatusCoil.addAttr(new Attribute(LifeSteal, 5, 7));
 const VerdungosHeartyCord = new Unique(MithrilCoil, "Verdungos Heraty Cord", 0, 0);
 VerdungosHeartyCord.addAttr(new Attribute(EnhancedDef, 90, 140));
 VerdungosHeartyCord.addAttr(new Attribute(Vit, 30, 40));
@@ -533,7 +534,6 @@ OrmusRobes.addAttr(new Attribute(FireDmgPerc, 10, 15));
 OrmusRobes.addAttr(new Attribute(LightDmgPerc, 10, 15));
 OrmusRobes.addAttr(new Attribute(ManaRegen, 10, 15));
 OrmusRobes.addAttr(new SkillAttribute(empty, "Enter Skill", "", ""))
-
 const GladiatorsBane = new Unique(WireFleece, "Gladiator's Bane", 0, 50);
 GladiatorsBane.addAttr(new Attribute(EnhancedDef, 150, 200));
 GladiatorsBane.addAttr(new Attribute(DmgReduce, 15, 20));
@@ -886,11 +886,11 @@ TiamatsRebuke.addAttr(new Attribute(EnhancedDef, 140, 200));
 TiamatsRebuke.addAttr(new Attribute(AllRes, 25, 35));
 const LanceGuard = new Unique(BarbedShield, "Lance Guard", 0, 0);
 LanceGuard.addAttr(new Attribute(EnhancedDef, 70, 120));
-const Gerkes = new Unique(Pavise, "Gerke's", 0, 0);
-Gerkes.addAttr(new Attribute(EnhancedDef, 180, 240));
-Gerkes.addAttr(new Attribute(AllRes, 20, 30));
-Gerkes.addAttr(new Attribute(DmgReduce, 11, 16));
-Gerkes.addAttr(new Attribute(MageDmgReduce, 14, 18));
+const GerkesSanctuary = new Unique(Pavise, "Gerke's Sanctuary", 0, 0);
+GerkesSanctuary.addAttr(new Attribute(EnhancedDef, 180, 240));
+GerkesSanctuary.addAttr(new Attribute(AllRes, 20, 30));
+GerkesSanctuary.addAttr(new Attribute(DmgReduce, 11, 16));
+GerkesSanctuary.addAttr(new Attribute(MageDmgReduce, 14, 18));
 const LidlessWall = new Unique(GrimHelm, "Lidless Wall", 0, 0);
 LidlessWall.addAttr(new Attribute(EnhancedDef, 80, 130));
 LidlessWall.addAttr(new Attribute(ManaOnKill, 3, 5));
@@ -1032,6 +1032,10 @@ Brainhew.addAttr(new Attribute(ManaSteal, 10, 13));
 const Humongous = new Unique(GiantAxe, "Humongous", 0, 0);
 Humongous.addAttr(new Attribute(EnhancedDmg, 80, 120));
 Humongous.addAttr(new Attribute(Str, 20, 30));
+
+//missing exceptional axes
+
+
 const RazorsEdge = new Unique(Tomahawk, "Razor's Edge", 0, 0);
 RazorsEdge.addAttr(new Attribute(EnhancedDmg, 175, 225));
 const RuneMaster = new Unique(EttinAxe, "Rune Master", 220, 270);
@@ -1078,15 +1082,19 @@ const DiamondBow = new Weapon("Diamond Bow", "Bow", "Elite", 33, 40);
 const CrusaderBow = new Weapon("Crusader Bow", "Bow", "Elite", 15, 63);
 const WardBow = new Weapon("Ward Bow", "Bow", "Elite", 20, 53);
 const HydraBow = new Weapon("Hydra Bow", "Bow", "Elite", 10, 68);
+//missing normal bows
 const RavenClaw = new Unique(LongBow, "Raven Claw", 65, 0);
+//missing exceptional bows
 const KukoShakaku = new Unique(CedarBow, "Kuko Shakaku", 0, 0);
 KukoShakaku.addAttr(new Attribute(EnhancedDmg, 150, 180));
+
+//Elite bows
 const Eaglehorn = new Unique(CrusaderBow, "Eaglehorn", 200, 0);
 const Widowmaker = new Unique(WardBow, "Widowmaker", 0, 0);
 Widowmaker.addAttr(new Attribute(EnhancedDmg, 150, 200));
 Widowmaker.addAttr(new SkillAttribute(empty, "Guided Arrow", 3, 5));
-const Windoforce = new Unique(HydraBow, "Windforce", 250, 0);
-Windoforce.addAttr(new Attribute(ManaSteal, 6, 8));
+const Windforce = new Unique(HydraBow, "Windforce", 250, 0);
+Windforce.addAttr(new Attribute(ManaSteal, 6, 8));
 
 const LightCrossbow = new Weapon("Light Crossbow", "Crossbow", "Normal", 6, 9);
 const Crossbow = new Weapon("Crossbow", "Crossbow", "Normal", 9, 16);
@@ -1100,6 +1108,11 @@ const PelletBow = new Weapon("Pellet Bow", "Crossbow", "Elite", 28, 73);
 const GorgonCrossbow = new Weapon("Gorgon Crossbow", "Crossbow", "Elite", 25, 87);
 const CollossusCrossbow = new Weapon("Colossus Crossbow", "Crossbow", "Elite", 32, 91);
 const DemonCrossbow = new Weapon("Demon Crossbow", "Crossbow", "Elite", 26, 40);
+//missing normal crossbows
+
+//missing exceptional crossbows
+
+//Elite crossbows
 const Hellrack = new Unique(CollossusCrossbow, "Hellrack", 0, 0);
 Hellrack.addAttr(new Attribute(EnhancedDmg, 180, 230));
 Hellrack.addAttr(new Attribute(ArPerc, 100, 150));
@@ -1119,7 +1132,13 @@ const BoneKnife = new Weapon("Bone Knife", "Dagger", "Elite", 23, 49);
 const MithrilPoint = new Weapon("Bone Knife", "Dagger", "Elite", 37, 53);
 const FangedKnife = new Weapon("Fanged Kinfe", "Dagger", "Elite", 15, 57);
 const LegendSpike = new Weapon("Legend Spike", "Dagger", "Elite", 31, 47);
+
+//missing normal daggers
 const Gull = new Unique(Dagger, "Gull", 0, 0);
+
+//missing exceptional daggers
+
+//Elite daggers
 const Wizardspike = new Unique(BoneKnife, "Bone Knife", 0, 0);
 const Fleshripper = new Unique(FangedKnife, "Fleshripper", 0, 0);
 Fleshripper.addAttr(new Attribute(EnhancedDmg, 200, 300));
@@ -1212,6 +1231,11 @@ const Thresher = new Weapon("Thresher", "Polearm", "Elite", 12, 141);
 const CrypticAxe = new Weapon("Cryptic Axe", "Polearm", "Elite", 33, 150);
 const GreatPoleaxe = new Weapon("Great Poleaxe", "Polearm", "Elite", 46, 127);
 const GiantThresher = new Weapon("Giant Thresher", "Polearm", "Elite", 40, 114);
+//missing normal poleaxes
+
+//missing exceptional poleaxes
+
+//Elite poleaxes
 const Bonehew = new Unique(OgreAxe, "Bonehew", 0, 0);
 Bonehew.addAttr(new Attribute(EnhancedDmg, 270, 320));
 const ReapersToll = new Unique(Thresher, "Reapers Toll", 0, 0);
@@ -1280,6 +1304,8 @@ const BalrogSpear = new Weapon("Balrog Spear", "Javelin", "Elite", 40, 62);
 const GhostGlaive = new Weapon("Ghost Glaive", "Javelin", "Elite", 30, 85);
 const WingedHarpoon = new Weapon("Winged Harpoon", "Javelin", "Elite", 11, 77);
 
+//missing normal, exceptional, elite javelins
+
 const Club = new Weapon("Club", "Mace", "Normal", 1, 6);
 const SpikedClub = new Weapon("Spiked Club", "Mace", "Normal", 5, 8);
 const Mace = new Weapon("Mace", "Mace", "Normal", 3, 10);
@@ -1305,6 +1331,8 @@ const LegendaryMallet = new Weapon("Legendary Mallet", "Mace", "Elite", 50, 61);
 const OgreMaul = new Weapon("OgreMaul", "Mace", "Elite", 77, 106);
 const ThunderMaul = new Weapon("ThunderMaul", "Mace", "Elite", 33, 180);
 
+//missing normal, exceptional, elite maces
+
 const Scepter = new Weapon("Scepter", "Scepter", "Normal", 6, 11);
 const GrandScepter = new Weapon("Grand Scepter", "Scepter", "Normal", 8, 18);
 const WarScepter = new Weapon("War Scepter", "Scepter", "Normal", 10, 17);
@@ -1314,6 +1342,8 @@ const DivineScepter = new Weapon("Divine Scepter", "Scepter", "Exceptional", 16,
 const MightyScepter = new Weapon("Mighty Scepter", "Scepter", "Elite", 40, 52);
 const SeraphRod = new Weapon("Seraph Rod", "Scepter", "Elite", 45, 54);
 const Caduceus = new Weapon("Caduceus", "Scepter", "Elite", 37, 43);
+
+//missing normal, exceptional, elite maces
 
 const Spear = new Weapon("Spear", "Spear", "Noraml", 3, 15);
 const Trident = new Weapon("Trident", "Spear", "Noraml", 9, 15);
@@ -1331,6 +1361,8 @@ const Mancatcher = new Weapon("Mancatcher", "Spear", "Elite", 42, 92);
 const GhostSpear = new Weapon("Ghost Spear", "Spear", "Elite", 18, 155);
 const WarPike = new Weapon("War Pike", "Spear", "Elite", 33, 178);
 
+//missing normal, exceptional, elite spears
+
 const ShortStaff = new Weapon("Short Staff", "Stave", "Normal", 1, 5);
 const LongStaff = new Weapon("Long Staff", "Stave", "Normal", 2, 8);
 const GnarledStaff = new Weapon("Gnarled Staff", "Stave", "Normal", 4, 12);
@@ -1346,6 +1378,8 @@ const Stalagmite = new Weapon("Stalagmite", "Stave", "Elite", 75, 107);
 const ElderStaff = new Weapon("Elder Staff", "Stave", "Elite", 80, 93);
 const Shillelagh = new Weapon("Shillelagh", "Stave", "Elite", 65, 108);
 const ArchonStaff = new Weapon("Archon Staff", "Stave", "Elite", 83, 99);
+
+//missing normal, exceptional, elite staves
 
 const ShortSword = new Weapon("Short Sword", "Sword", "Normal", 2, 7);
 const Scimitar = new Weapon("Scimitar", "Sword", "Normal", 2, 6);
@@ -1390,6 +1424,8 @@ const ChampionSword = new Weapon("Champion Sword", "Sword", "Elite", 71, 83);
 const ColossusSword = new Weapon("Colossus Sword", "Sword", "Elite", 61, 121);
 const ColossusBlade = new Weapon("Colossus Blade", "Sword", "Elite", 58, 115);
 
+//missing normal, exceptional, elite swords
+
 const ThrowingKnife = new Weapon("Throwing Knife", "Throwing", "Normal", 2, 3);
 const BalancedKnife = new Weapon("Balanced Knife", "Throwing", "Normal", 1, 8);
 const ThrowingAxe = new Weapon("Throwing Axe", "Throwing", "Normal", 4, 7);
@@ -1402,6 +1438,8 @@ const FlyingKnife = new Weapon("Flying Knife", "Throwing", "Elite", 23, 54);
 const WingedKnife = new Weapon("Winged Knife", "Throwing", "Elite", 27, 35);
 const FlyingAxe = new Weapon("Flying Axe", "Throwing", "Elite", 17, 65);
 const WingedAxe = new Weapon("Winged Axe", "Throwing", "Elite", 11, 56);
+
+//missing normal, exceptional, elite throwing
 
 const SmallCharm = new Base("Small Charm", "Charm", "Elite");
 const LargeCharm = new Base("Large Charm", "Charm", "Elite");
