@@ -49,8 +49,6 @@ function addNewItemCopy() {
     } else { pushedItem = new exports.Item(pushedBase) };
 
     copyItem._arr.forEach(element => {
-        console.log("element: ")
-        console.log(element)
         let attrCopy = null;
         let fullNickAttrArray = exports.AttributeName.attrArray.sort();
         let filteredResult = fullNickAttrArray.filter((nickName) => {
@@ -69,7 +67,6 @@ function addNewItemCopy() {
         try {
             attrCopy._attrFloorActVal = element._attrFloorActVal;
         } catch (err) { console.log(err) }
-        console.log(attrCopy)
         pushedItem.addAttr(attrCopy)
     })
 
@@ -90,8 +87,6 @@ document.getElementById('categBtnID').addEventListener("click", () => {
         infoWindow.innerText = noItemsStr;
     }
 });
-
-
 
 document.getElementById('removeBtnID').addEventListener("click", () => {
     if (myTradeItems.length > 0) {
@@ -285,17 +280,16 @@ function calcDefHere(element) {
     let addedDef = parseFloat(element._base._addedDef);
     if (ed === null || isNaN(ed)) return ((def * ethMultiplier) + addedDef);
     if (ed != 0 && ed != null) { def += 1 }
-    //check to see if runeword. find if it has enhanced def in array. add this to ed
     if (isRuneWordItem) {
         let edAttr = element._arr.filter(attr => {
-            return attr._attributeName._attrName;
+            return attr._attributeName._attrName === "Enhanced Defense %";
         })
         if (edAttr.length > 0) {
             ed += parseFloat(edAttr[0]._attrFloorActVal);
         }
     }
-
-    return (addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1)));
+     let g = addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
+     return g;
 }
 
 function sortTradeList() {
@@ -332,7 +326,6 @@ function stopDefault(e) {
 }
 
 function listGroupNamesGen(e, searchedArray, modiListGroup) {
-
     let _searchBar = e.target;
     let _listGroup = modiListGroup;
     _listGroup.style.zIndex = "2";
@@ -427,7 +420,7 @@ function addAttributeSearch(name) {
 }
 
 function addCustomAttribute(name) {
-    currentItem.addAttr(new exports.SkillAttribute(exports.AttributeName.attrArray[84], name, 0, 0));
+    currentItem.addAttr(new exports.SkillAttribute(exports.AttributeName.attrArray[96], name, 0, 0));
     clearWindows();
     setEditFields();
 }
@@ -527,7 +520,7 @@ function setEditFields() {
         btnGroup.appendChild(generateRadioButton('Magic'));
         btnGroup.appendChild(generateRadioButton('Rare'));
         btnGroup.appendChild(generateRadioButton('Crafted'));
-        if (!currentItem._magicClass === "Jewel") {
+        if (!(currentItem._magicClass === "Jewel")) {
             btnGroup.appendChild(generateRadioButton('Runeword'));
         }
         btnClassRow.classList.add("pb-5")
@@ -1119,39 +1112,59 @@ function returnAttributeNameObj(attrName) {
 function updateCurrentItemInfoWindow(element) {
     infoWindow.innerText = ``;
     let itemHasEnhanDefAttr = false;
+    let hideIfSpecialCirc = false;
+    console.log(element)
     let addED = 0;
     element._arr.forEach(elementOne => {
         let g = returnAttributeNameObj(elementOne._attributeName._attrName);
         elementOne._attributeName = g;
         if (elementOne._attributeName._attrName == "Enhanced Defense %") {
+            if (elementOne._attrFloorActVal != 0) { itemHasEnhanDefAttr = true };
             if (!(element instanceof exports.RuneWordItem)) {
                 element._base._ed = elementOne._attrFloorActVal;
-                if (elementOne instanceof exports.Attribute) { itemHasEnhanDefAttr = true };
                 if (element instanceof exports.Unique) { element._base._defActVal = element._base._maxDef };
             } else {
                 addED = elementOne._attrFloorActVal;
+            }
+            if(element._magicClass == "Runeword" && elementOne instanceof exports.BasicAttribute && element._base._ed === 0){
+                hideIfSpecialCirc = true;
             }
         }
         //special rule for ED on uniq armor. if there is a value here set
         if (elementOne._attributeName._attrName == "Defense") { element._base._addedDef = elementOne._attrFloorActVal; }
         if (elementOne._attributeName._attrName == "Open Sockets") { element._base._sockets = elementOne._attrFloorActVal; }
-
+        elementOne
     })
+    if(itemHasEnhanDefAttr == false && element._base._ed != 0){
+        //hideIfSpecialCirc = false;
+    }
     let tempString = ``;
     let eachString = ``;
     let name = element._name;
+    if(element._magicClass == 'Runeword' && element._base._ed != 0){
+        name += " - Superior "
+    }
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
     let lvlReq = (element._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${element._levelReq}` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} ${exports.AttributeName.attrArray[86]._attrNickName}` : ``;
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${parseFloat(element._base._ed) + parseFloat(addED)}` : ` / ${exports.AttributeName.attrArray[1]._attrNickName}${element._base._ed}`;
+    if(!itemHasEnhanDefAttr){
+        if(element._magicClass != "Base" && element._magicClass != 0){
+        ed = ``
+        }
+    }
+    if(hideIfSpecialCirc){ed=``}
+
     if (!itemHasEnhanDefAttr && element._base._ed == 0 || element._base._ed == null) { ed = `` }
-    if (element._base._ed == 0) { ed = `` }
+    //if (element._base._ed != 0 && ) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
-    if (addED) { def = ` / ${element._base._defActVal} ${exports.AttributeName.attrArray[2]._attrNickName} ` }
+    if (addED) { 
+        def = ` / ${element._base._defActVal} ${exports.AttributeName.attrArray[2]._attrNickName} `
+     }
     if (element._base._defActVal == 0 || !Number.isInteger(element._base._defActVal)) { def = `` };
     if (element._base._ed > 0 && element._magicClass === "Base" && element._base._type === "Armor") {
         name += ` - ${exports.AttributeName.attrArray[85]._attrNickName}`;
-    }
+    }else 
     if (['Magic', 'Rare', 'Crafted'].indexOf(element._magicClass) > -1) {
         name += ` - ${element._magicClass}`
     }
@@ -1161,12 +1174,13 @@ function updateCurrentItemInfoWindow(element) {
     let array = element._arr;
     array.forEach(elementTwo => {
         let shrtAttrName = elementTwo._attributeName._attrName;
-        if (elementTwo._attrFloorActVal != 0 /*&& (elementTwo._attrFloorMinVal)*/) {
+        if (elementTwo._attrFloorActVal != 0 || elementTwo._ /*&& (elementTwo._attrFloorMinVal)*/) {
             if (shrtAttrName != 'Enhanced Defense %' && shrtAttrName != 'Open Sockets' /*&& shrtAttrName != 'Enhanced Damage %' */ && shrtAttrName != 'Quantity' && shrtAttrName != 'Defense' && shrtAttrName != 'Level Requirement') {
                 tempString += ` / ${elementTwo._attributeName._attrNickName}`;
                 if (elementTwo._attrType == 'skillAttribute') {
                     if (!isNaN(elementTwo._attrFloorActVal)) {
-                        tempString += ` ${elementTwo._classOrTreeName}`;
+                        if(elementTwo._attributeName._attrName != "Empty Value 2"){
+                        tempString += ` ${elementTwo._classOrTreeName}`}
                     }
                 }
                 tempString += ` ${elementTwo._attrFloorActVal}`

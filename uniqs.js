@@ -180,6 +180,14 @@ export class Unique extends Item {
   }
 }
 
+export class SetItem extends Unique {
+  constructor(setItemBase, setItemName, setItemEd, setAddedDef, fullSetName){
+    super(setItemBase, setItemName, setItemEd, setAddedDef);
+    this._magicClass = "Set";
+    this._fullSetName = fullSetName;
+  }
+}
+
 export class RuneWordItem extends Item {
   constructor(base, runeWordArray) {
     super(base);
@@ -324,10 +332,10 @@ const MagicDmg = new AttributeName("Magic Damage")
 const Damage = new AttributeName("Damage")
 const CrushingBlow = new AttributeName("Crushing Blow %")
 const MaxLifePerc = new AttributeName("Increase Maximum Life %")
-//console.log(AttributeName.attrArray);
-
-
-
+const emptySix = new AttributeName("");
+emptySix._editable = false;
+emptySix._attrName = "Empty Value 2";
+console.log(AttributeName.attrArray)
 const JawboneCap = new Armor("Jawbone Cap", "Barbarian Helm", "Normal", 10, 15);
 const FangedHelm = new Armor("Fanged Helm", "Barbarian Helm", "Normal", 15, 20);
 const HornedHelm = new Armor("Horned Helm", "Barbarian Helm", "Normal", 25, 30);
@@ -518,7 +526,7 @@ BlackHades.addAttr(new Attribute(DmgDemon, 30, 60));
 BlackHades.addAttr(new Attribute(Ar, 200, 250));
 const Corpsemourn = new Unique(OrnatePlate, "Corpsemourn", 0, 0);
 Corpsemourn.addAttr(new Attribute(EnhancedDef, 150, 180));
-const OrmusRobes = new Unique(DuskShroud, "Ormus' Robes", 0);
+const OrmusRobes = new Unique(DuskShroud, "Ormus' Robes", 0, 0);
 OrmusRobes.addAttr(new Attribute(Def, 10, 20));
 OrmusRobes.addAttr(new Attribute(ColdDmgPerc, 10, 15));
 OrmusRobes.addAttr(new Attribute(FireDmgPerc, 10, 15));
@@ -614,7 +622,6 @@ const Circlet = new Armor("Circlet", "Circlet", "Elite", 20, 30);
 const Coronet = new Armor("Coronet", "Circlet", "Elite", 30, 40);
 const Tiara = new Armor("Tiara", "Circlet", "Elite", 40, 50);
 const Diadem = new Armor("Diadem", "Circlet", "Elite", 50, 60);
-
 const KirasGuardian = new Unique(Tiara, "Kira's Guardian", 0, 0);
 KirasGuardian.addAttr(new Attribute(Def, 50, 120));
 KirasGuardian.addAttr(new Attribute(AllRes, 50, 70));
@@ -798,7 +805,6 @@ const GiantSkull = new Unique(BoneVisage, "Giant Skull", 0, 0);
 GiantSkull.addAttr(new Attribute(Def, 250, 320));
 GiantSkull.addAttr(new Attribute(Str, 25, 35));
 
-console.log(AttributeName.attrArray);
 const Targe = new Armor("Targe", "Paladin Shield", "Normal", 8, 12);
 const Rondache = new Armor("Rondache", "Paladin Shield", "Normal", 10, 18);
 const HeraldicShield = new Armor("Heraldic Shield", "Paladin Shield", "Normal", 16, 26);
@@ -1220,6 +1226,7 @@ TombReaver.addAttr(new Attribute(LifeOnKill, 10, 14));
 TombReaver.addAttr(new Attribute(MagicFind, 50, 80));
 const Stormspire = new Unique(GiantThresher, "Stormspire", 0, 0);
 Stormspire.addAttr(new Attribute(EnhancedDmg, 150, 250));
+
 const Wand = new Weapon("Wand", "Wand", "Normal", 2, 4);
 const YewWand = new Weapon("Yew Wand", "Wand", "Normal", 2, 8);
 const BoneWand = new Weapon("Bone Wand", "Wand", "Normal", 3, 7);
@@ -1240,7 +1247,7 @@ Maelstrom.addAttr(new SkillAttribute(empty, "Terror", 1, 3));
 Maelstrom.addAttr(new SkillAttribute(empty, "Corpse Explosion", 1, 3));
 const Gravespine = new Unique(BoneWand, "Gravespine", 0, 0);
 Gravespine.addAttr(new Attribute(Mana, 25, 50));
-let UmesLament = new Unique(GrimWand, "Ume's Lament", "Wand", 5, 11);
+const UmesLament = new Unique(GrimWand, "Ume's Lament", "Wand", 5, 11);
 const SuicideBranch = new Unique(BurntWand, "Suicide Branch", 0, 0);
 const CarinShard = new Unique(PetrifiedWand, "Carin Shard", 0, 0);
 const ArmOfKingLeoric = new Unique(TombWand, "Arm of King Leoric", 0, 0);
@@ -1298,7 +1305,103 @@ const LegendaryMallet = new Weapon("Legendary Mallet", "Mace", "Elite", 50, 61);
 const OgreMaul = new Weapon("OgreMaul", "Mace", "Elite", 77, 106);
 const ThunderMaul = new Weapon("ThunderMaul", "Mace", "Elite", 33, 180);
 
-//wwwwwwwwwwwwwwwwwconsole.log(AttributeName.attrArray)
+const Scepter = new Weapon("Scepter", "Scepter", "Normal", 6, 11);
+const GrandScepter = new Weapon("Grand Scepter", "Scepter", "Normal", 8, 18);
+const WarScepter = new Weapon("War Scepter", "Scepter", "Normal", 10, 17);
+const RuneScepter = new Weapon("Rune Scepter", "Scepter", "Exceptional", 13, 24);
+const HolyWaterSprinkler = new Weapon("Holy Water Sprinkler", "Scepter", "Exceptional", 14, 36);
+const DivineScepter = new Weapon("Divine Scepter", "Scepter", "Exceptional", 16, 38);
+const MightyScepter = new Weapon("Mighty Scepter", "Scepter", "Elite", 40, 52);
+const SeraphRod = new Weapon("Seraph Rod", "Scepter", "Elite", 45, 54);
+const Caduceus = new Weapon("Caduceus", "Scepter", "Elite", 37, 43);
+
+const Spear = new Weapon("Spear", "Spear", "Noraml", 3, 15);
+const Trident = new Weapon("Trident", "Spear", "Noraml", 9, 15);
+const Brandistock = new Weapon("Brandistock", "Spear", "Noraml", 7, 17);
+const Spetum = new Weapon("Spetum", "Spear", "Noraml", 15, 23);
+const Pike = new Weapon("Pike", "Spear", "Noraml", 14, 63);
+const WarSpear = new Weapon("War Spear", "Spear", "Exceptional", 10, 37);
+const Fuscina = new Weapon("Fuscina", "Spear", "Exceptional", 19, 37);
+const WarFork = new Weapon("War Fork", "Spear", "Exceptional", 16, 40);
+const Yari = new Weapon("Yari", "Spear", "Exceptional", 29, 59);
+const Lance = new Weapon("Lance", "Spear", "Exceptional", 27, 114);
+const HyperionSpear = new Weapon("Hyperion Spear", "Spear", "Elite", 35, 119);
+const StygianPike = new Weapon("Stygian Pike", "Spear", "Elite", 29, 114);
+const Mancatcher = new Weapon("Mancatcher", "Spear", "Elite", 42, 92);
+const GhostSpear = new Weapon("Ghost Spear", "Spear", "Elite", 18, 155);
+const WarPike = new Weapon("War Pike", "Spear", "Elite", 33, 178);
+
+const ShortStaff = new Weapon("Short Staff", "Stave", "Normal", 1, 5);
+const LongStaff = new Weapon("Long Staff", "Stave", "Normal", 2, 8);
+const GnarledStaff = new Weapon("Gnarled Staff", "Stave", "Normal", 4, 12);
+const BattleStaff = new Weapon("Battle Staff", "Stave", "Normal", 6, 13);
+const WarStaff = new Weapon("War Staff", "Stave", "Normal", 12, 28);
+const JoStaff = new Weapon("Jo Staff", "Stave", "Exceptional", 6, 21);
+const Quarterstaff = new Weapon("Quarterstaff", "Stave", "Exceptional", 8, 26);
+const CedarStaff = new Weapon("Cedar Staff", "Stave", "Exceptional", 11, 32);
+const GothicStaff = new Weapon("Gothic Staff", "Stave", "Exceptional", 14, 34);
+const RuneStaff = new Weapon("Rune Staff", "Stave", "Exceptional", 24, 58);
+const WalkingStick = new Weapon("Walking Stick", "Stave", "Elite", 69, 85);
+const Stalagmite = new Weapon("Stalagmite", "Stave", "Elite", 75, 107);
+const ElderStaff = new Weapon("Elder Staff", "Stave", "Elite", 80, 93);
+const Shillelagh = new Weapon("Shillelagh", "Stave", "Elite", 65, 108);
+const ArchonStaff = new Weapon("Archon Staff", "Stave", "Elite", 83, 99);
+
+const ShortSword = new Weapon("Short Sword", "Sword", "Normal", 2, 7);
+const Scimitar = new Weapon("Scimitar", "Sword", "Normal", 2, 6);
+const Sabre = new Weapon("Sabre", "Sword", "Normal", 3, 8);
+const Falchion = new Weapon("Falchion", "Sword", "Normal", 9, 17);
+const CrystalSword = new Weapon("Crystal Sword", "Sword", "Normal", 5, 15);
+const BroadSword = new Weapon("Broad Sword", "Sword", "Normal", 7, 14);
+const LongSword = new Weapon("Long Sword", "Sword", "Normal", 3, 19);
+const WarSword = new Weapon("War Sword", "Sword", "Normal", 8, 20);
+const TwoHandedSword = new Weapon("Two-Handed Sword", "Sword", "Normal", 8, 17);
+const Claymore = new Weapon("Claymore", "Sword", "Normal", 13, 30);
+const GiantSword = new Weapon("Giant Sword", "Sword", "Normal", 9, 28);
+const BastardSword = new Weapon("Bastard Sword", "Sword", "Normal", 20, 28);
+const Flamberge = new Weapon("Flamberge", "Sword", "Normal", 13, 26);
+const GreatSword = new Weapon("Great Sword", "Sword", "Normal", 25, 42);
+const Gladius = new Weapon("Gladius", "Sword", "Exceptional", 8, 22);
+const Cutlass = new Weapon("Cutlass", "Sword", "Exceptional", 8, 21);
+const Shamshir = new Weapon("Shamshir", "Sword", "Exceptional", 10, 24);
+const Tulwar = new Weapon("Tulwar", "Sword", "Exceptional", 16, 35);
+const DimensionialBlade = new Weapon("Dimensionial Blade", "Sword", "Exceptional", 13, 35);
+const BattleSword = new Weapon("Battle Sword", "Sword", "Exceptional", 16, 34);
+const RuneSword = new Weapon("Rune Sword", "Sword", "Exceptional", 10, 42);
+const AncientSword = new Weapon("Ancient Sword", "Sword", "Exceptional", 18, 43);
+const Espandon = new Weapon("Espandon", "Sword", "Exceptional", 18, 40);
+const DacianFalx = new Weapon("Dacian Falx", "Sword", "Exceptional", 26, 61);
+const TuskSword = new Weapon("Tusk Sword", "Sword", "Exceptional", 19, 58);
+const GothicSword = new Weapon("Gothic Sword", "Sword", "Exceptional", 39, 60);
+const Zweihander = new Weapon("Zweihander", "Sword", "Exceptional", 29, 54);
+const ExecutionerSword = new Weapon("Executioner Sword", "Sword", "Exceptional", 47, 80);
+const Falcata = new Weapon("Falcata", "Sword", "Elite", 31, 59);
+const Ataghan = new Weapon("Ataghan", "Sword", "Elite", 26, 46);
+const ElegantBlade = new Weapon("Elegant Blade", "Sword", "Elite", 33, 45);
+const HydraEdge = new Weapon("Hydra Edge", "Sword", "Elite", 28, 68);
+const PhaseBlade = new Weapon("Phase Blade", "Sword", "Elite", 31, 35);
+const ConquestSword = new Weapon("Conquest Sword", "Sword", "Elite", 37, 53);
+const CrypticSword = new Weapon("Cryptic Sword", "Sword", "Elite", 5, 77);
+const MythicalSword = new Weapon("Mythical Sword", "Sword", "Elite", 40, 50);
+const LegendSword = new Weapon("Legend Sword", "Sword", "Elite", 50, 94);
+const HighlandBlade = new Weapon("Highland Blade", "Sword", "Elite", 67, 96);
+const BalrogBlade = new Weapon("Balrog Blade", "Sword", "Elite", 55, 118);
+const ChampionSword = new Weapon("Champion Sword", "Sword", "Elite", 71, 83);
+const ColossusSword = new Weapon("Colossus Sword", "Sword", "Elite", 61, 121);
+const ColossusBlade = new Weapon("Colossus Blade", "Sword", "Elite", 58, 115);
+
+const ThrowingKnife = new Weapon("Throwing Knife", "Throwing", "Normal", 2, 3);
+const BalancedKnife = new Weapon("Balanced Knife", "Throwing", "Normal", 1, 8);
+const ThrowingAxe = new Weapon("Throwing Axe", "Throwing", "Normal", 4, 7);
+const BalancedAxe = new Weapon("Balanced Axe", "Throwing", "Normal", 5, 10);
+const BattleDart = new Weapon("Battle Dart", "Throwing", "Exceptional", 8, 16);
+const WarDart = new Weapon("War Dart", "Throwing", "Exceptional", 11, 22);
+const Francisca = new Weapon("Francisca", "Throwing", "Exceptional", 11, 22);
+const Hurlbat = new Weapon("Hurlbat", "Throwing", "Exceptional", 13, 27);
+const FlyingKnife = new Weapon("Flying Knife", "Throwing", "Elite", 23, 54);
+const WingedKnife = new Weapon("Winged Knife", "Throwing", "Elite", 27, 35);
+const FlyingAxe = new Weapon("Flying Axe", "Throwing", "Elite", 17, 65);
+const WingedAxe = new Weapon("Winged Axe", "Throwing", "Elite", 11, 56);
 
 const SmallCharm = new Base("Small Charm", "Charm", "Elite");
 const LargeCharm = new Base("Large Charm", "Charm", "Elite");
@@ -1369,8 +1472,6 @@ RainbowFacetPoison.addAttr(new SkillAttribute(empty, "Level/Die", "", ""))
 RainbowFacetPoison.addAttr(new SkillAttribute(empty, "Color", "", ""))
 RainbowFacetPoison.addAttr(new Attribute(PsntDmgPerc, 3, 5));
 RainbowFacetPoison.addAttr(new Attribute(EnemyPsnResist, 3, 5));
-
-
 
 const Key = new Base("Key", "Key", "Elite");
 const KeyOfTerror = new QuantizedItem(Key, "Key of Terror", 0, null);
@@ -1458,6 +1559,203 @@ const WispProjector = new Unique(Ring, "Wisp Projector", 0, 0);
 WispProjector.addAttr(new Attribute(LightAbsorbPerc, 10, 20));
 WispProjector.addAttr(new Attribute(MagicFind, 10, 20));
 
+const AngelicSickle = new SetItem(Sabre, "Angelic Sickle", 0, 0, "Angelic Raiment");
+const AngelicMantle = new SetItem(RingMail, "Angelic Mantle", 40, 0, "Angelic Raiment");
+AngelicMantle.addAttr(new BasicAttribute(EnhancedDef, 40))
+const AngelicHalo = new SetItem(Ring, "Angelic Halo", 0, 0, "Angelic Raiment");
+const AngelicWings = new SetItem(Amulet, "Angelic Wings", 0, 0, "Angelic Raiment");
+
+const ArcannasSign = new SetItem(Amulet, "Arcanna's Sign", 0, 0, "Arcanna's Tricks");
+const ArcannasDeathwand = new SetItem(WarStaff, "Arcanna's Deathwand", 0, 0, "Arcanna's Tricks");
+const ArcannasHead = new SetItem(SkullCap, "Arcanna's Head", 0, 0, "Arcanna's Tricks");
+const ArcannasFlesh = new SetItem(LightPlate, "Arcanna's Flesh", 0, 0, "Arcanna's Tricks");
+
+const ArticFurs = new SetItem(QuiltedArmor, "Artic Furs", 0, 0, "Artic Gear");
+ArticFurs.addAttr(new Attribute(EnhancedDef, 275, 325));
+const ArticBinding = new SetItem(LightBelt, "Artic Binding", 0, 0, "Artic Gear");
+const ArticMitts = new SetItem(LightGauntlets, "Artic Mitts", 0, 0, "Artic Gear");
+const ArticHorn = new SetItem(ShortWarBow, "Artic Horn", 0, 0, "Artic Gear");
+
+const BerserkersHeadgear = new SetItem(Helm, "Berserker's Headgear", 0, 15, "Berserker's Arsenal");
+const BerserkersHauberk = new SetItem(SplintMail, "Berserker's Hauberk", 0, 0, "Berserker's Arsenal");
+const BerserkersHatchet = new SetItem(DoubleAxe, "Berserker's Hatchet", 0, 0, "Berserker's Arsenal");
+
+const CathansRule = new SetItem(BattleStaff, "Cathan's Rule", 0, 0, "Cathan's Traps");
+const CathansMesh = new SetItem(ChainMail, "Cathan's Mesh", 0, 15, "Cathan's Traps");
+const CathansVisage = new SetItem(Mask, "Cathan's Visage", 0, 0, "Cathan's Traps");
+const CathansSigil = new SetItem(Amulet, "Cathan's Sigil", 0, 0, "Cathan's Traps");
+const CathansSeal = new SetItem(Ring, "Cathan's Seal", 0, 0, "Cathan's Traps");
+
+const CiverbsWard = new SetItem(LargeShield, "Civerb's Ward", 0, 15, "Civerb's Vestments");
+const CiverbsIcon = new SetItem(Amulet, "Civerb's Icon", 0, 0, "Civerb's Vestments");
+const CiverbsCudgel = new SetItem(GrandScepter, "Civerb's Cudgel", 0, 0, "Civerb's Vestments");
+
+const CleglawsTooth = new SetItem(LongSword, "Cleglaw's Tooth", 0, 0, "Cleglaw's Brace");
+const CleglawsClaw = new SetItem(SmallShield, "Cleglaw's Claw", 0, 17, "Cleglaw's Brace");
+const CleglawsPincers = new SetItem(LongSword, "Cleglaw's Pincers", 0, 0, "Cleglaw's Brace");
+
+const DeathsHand = new SetItem(LeatherGloves, "Death's Hand", 0, 0, "Death's Disguise");
+const DeathsTouch = new SetItem(WarSword, "Death's Touch", 0, 0, "Death's Disguise");
+const DeathsGuard = new SetItem(Sash, "Death's Guard", 0, 0, "Death's Disguise");
+
+const HsarusIronHeel = new SetItem(ChainBoots, "Hsarus' Iron Heel", 0, 0, "Hsarus' Defense");
+const HsarusIronFist = new SetItem(Buckler, "Hsarus' Iron Fist", 0, 0, "Hsarus' Defense");
+const HsarusIronStay = new SetItem(Belt, "Hsarus' Iron Stay", 0, 0, "Hsarus' Defense");
+
+const InfernalCranium = new SetItem(Cap, "Infernal Cranium", 0, 0, "Infernal Tools");
+const InfernalTorch = new SetItem(GrimWand, "Infernal Torch", 0, 0, "Infernal Tools");
+const InfernalSign = new SetItem(HeavyBelt, "Infernal Sign", 0, 0, "Infernal Tools");
+
+const IrathasCollar = new SetItem(Amulet, "Iratha's Collar", 0, 0, "Iratha's Finery");
+const IrathasCuff = new SetItem(LightGauntlets, "Iratha's Cuff", 0, 0, "Iratha's Finery");
+const IrathasCoil = new SetItem(Crown, "Iratha's Coil", 0, 0, "Iratha's Finery");
+const IrathasCord = new SetItem(Cap, "Iratha's Cord", 0, 25, "Iratha's Finery");
+
+const IsenhartsLightbrand = new SetItem(BroadSword, "Isenhart's Lightbrand", 0, 0, "Isenhart's Armory");
+const IsenhartsParry = new SetItem(GothicShield, "Isenhart's Parry", 0, 40, "Isenhart's Armory");
+const IsenhartsCase = new SetItem(BreastPlate, "Isenhart's Case", 0, 40, "Isenhart's Armory");
+const IsenhartsHorns = new SetItem(FullHelm, "Isenhart's Horns", 0, 0, "Isenhart's Armory");
+
+const MilabregasOrb = new SetItem(KiteShield, "Milabrega's Orb", 0, 25, "Milabrega's Regalia");
+const MilabregasRod = new SetItem(WarScepter, "Milabrega's Rod", 0, 0, "Milabrega's Regalia");
+const MilabregasDiadem = new SetItem(Crown, "Milabrega's Diadem", 0, 0, "Milabrega's Regalia");
+const MilabregasRobe = new SetItem(AncientArmor, "Milabrega's Robe", 0, 0, "Milabrega's Regalia");
+
+const SigonsVisor = new SetItem(GreatHelm, "Sigon's Visor", 25, 0, "Sigon's Complete SteelSigon's Visor");
+const SigonsShelter = new SetItem(GothicPlate, "Sigon's Shelter", 25, 0, "Sigon's Complete SteelSigon's Visor");
+const SigonsGage = new SetItem(Gauntlets, "Sigon's Gage", 0, 0, "Sigon's Complete SteelSigon's Visor");
+const SigonsSabot = new SetItem(Greaves, "Sigon's Sabot", 0, 0, "Sigon's Complete SteelSigon's Visor");
+const SigonsWrap = new SetItem(PlatedBelt, "Sigon's Wrap", 0, 0, "Sigon's Complete SteelSigon's Visor");
+const SigonsGuard = new SetItem(TowerShield, "Sigon's Guard", 0, 0, "Sigon's Complete SteelSigon's Visor");
+
+const TancredsSpine = new SetItem(FullPlateMail, "Tancred's Spine", 0, 0, "Tancred's Battlegear");
+const TancredsCrowbill = new SetItem(MiliatryPick, "Tancred's Crowbill", 0, 0, "Tancred's Battlegear");
+const TancredsHobnails = new SetItem(Boots, "Tancred's Hobnails", 0, 0, "Tancred's Battlegear");
+const TancredsWeird = new SetItem(Amulet, "Tancred's Weird", 0, 0, "Tancred's Battlegear");
+const TancredsSkull = new SetItem(BoneHelm, "Tancred's Skull", 0, 0, "Tancred's Battlegear");
+
+const VidalasBarb = new SetItem(LongBattleBow, "Vidala's Barb", 0, 0, "Vidala's Rig");
+const VidalasFetlock = new SetItem(LightPlatedBoots, "Vidala's Fetlock", 0, 0, "Vidala's Rig");
+const VidalasAmbush = new SetItem(LeatherArmor, "Vidala's Ambush", 0, 50, "Vidala's Rig");
+const VidalasSnare = new SetItem(Amulet, "Vidala's Snare", 0, 0, "Vidala's Rig");
+
+const BulKathosSacredCharge = new SetItem(ColossusBlade, "Bul-Kathos Sacred Charge", 0, 0, "Bul-Katho's Children");
+const BulKathosTribaGuardian = new SetItem(MythicalSword, "Bul-Kathos Tribal Guardian", 0, 0, "Bul-Katho's Children");
+
+const CowKingsHorns = new SetItem(WarHat, "Cow King's Horns", 0, 75, "Cow King's Leathers");
+const CowKingsHide = new SetItem(StuddedLeather, "Cow King's Hide", 60, 0, "Cow King's Leathers");
+const CowKingsHooves = new SetItem(HeavyBoots, "Cow King's Hooves", 0, 0, "Cow King's Leathers");
+CowKingsHooves.addAttr(new Attribute(Def, 25, 35));
+
+const DangoonsTeaching = new SetItem(ReinforcedMace, "Dangoon's Teaching", 0, 0, "Heaven's Brethren");
+const TaebaeksGlory = new SetItem(Ward, "Taebaek's Glory", 0, 50, "Heaven's Brethren");
+const HaemosusAdamant = new SetItem(Cuirass, "Haemosu's Adamant", 0, 500, "Heaven's Brethren");
+const OndalsAlmighty = new SetItem(SpiredHelm, "Ondal's Almighty", 0, 50, "Heaven's Brethren");
+
+const HwaninsSplendor = new SetItem(GrandCrown, "Hwanin's Splendor", 100, 0, "Hwanin's Majesty");
+const HwaninsRefuge = new SetItem(TigulatedMail, "Hwanin's Refuge", 200, 0, "Hwanin's Majesty");
+const HwaninsBlessing = new SetItem(Belt, "Hwanin's Blessing", 0, 0, "Hwanin's Majesty");
+const HwaninsJustice = new SetItem(Bill, "Hwanin's Justice", 0, 0, "Hwanin's Majesty");
+
+const NajsPuzzler = new SetItem(ElderStaff, "Naj's Puzzler", 0, 0, "Naj's Ancient Vestige");
+const NajsLightPlate = new SetItem(HellforgePlate, "Naj's Light Plate", 0, 300, "Naj's Ancient Vestige");
+const NajsCirclet = new SetItem(Circlet, "Naj's Circlet", 0, 75, "Naj's Ancient Vestige");
+
+const GuillaumesFace = new SetItem(WingedHelm, "Guillaume's Face", 120, 0, "Orphan's Call");
+const WilhelmsPride = new SetItem(BattleBelt, "Wilhelm's Pride", 75, 0, "Orphan's Call");
+const MagnusSkin = new SetItem(SharkskinGloves, "Magnus' Skin", 50, 0, "Orphan's Call");
+const WhitstansGuard = new SetItem(RoundShield, "Whitstan's Guard", 0, 0, "Orphan's Call");
+
+const SandersParagon = new SetItem(Cap, "Sander's Paragon", 0, 0, "Sander's Folly");
+const SandersRiprap = new SetItem(HeavyBoots, "Sander's Riprap", 0, 0, "Sander's Folly");
+const SandersTaboo = new SetItem(HeavyGloves, "Sander's Taboo", 0, 0, "Sander's Folly");
+SandersTaboo.addAttr(new Attribute(Def, 20, 25));
+const SandersSuperstition = new SetItem(BoneWand, "Sander's Superstition", 0, 0, "Sander's Folly");
+SandersSuperstition.addAttr(new Attribute(ColdDmg, 25, 75));
+const SazabisCobaltRedeemer = new SetItem(CrypticSword, "Sazabi's Cobalt Redeemer", 0, 0, "Sazabi's Grand Tribute");
+const SazabisGhostLiberator = new SetItem(BalrogSkin, "Sazabi's Ghost Liberator", 0, 400, "Sazabi's Grand Tribute");
+SazabisGhostLiberator.addAttr(new Attribute(Life, 25, 75))
+const SazabisMentalSheath = new SetItem(Basinet, "Sazabi's Mental Sheath", 0, 100, "Sazabi's Grand Tribute");
+SazabisMentalSheath.addAttr(new Attribute(LightRes, 15, 20));
+SazabisMentalSheath.addAttr(new Attribute(FireRes, 15, 20));
+
+const TellingOfBeads = new SetItem(Amulet, "Telling of Beads", 0, 0, "The Disciple");
+TellingOfBeads.addAttr(new Attribute(PsnRes, 35, 50));
+const LayingOfHands = new SetItem(BrambleMitts, "Laying of Hands", 0, 25, "The Disciple");
+const RiteOfPassage = new SetItem(DemonhideBoots, "Rite of Passage", 0, 25, "The Disciple");
+RiteOfPassage.addAttr(new Attribute(MaxStam, 15, 25));
+const DarkAdherent = new SetItem(DuskShroud, "Dark Adherent", 0, 0, "The Disciple");
+DarkAdherent.addAttr(new Attribute(Def, 305, 415));
+const Credendum = new SetItem(MithrilCoil, "Credendum", 0, 50, "The Disciple");
+
+const AldursStonyGaze = new SetItem(HuntersGuise, "Aldur's Stony Gaze", 0, 90, "Aldur's Watchtower");
+AldursStonyGaze.addAttr(new Attribute(ColdRes, 40, 50));
+AldursStonyGaze._base._sockets = 2;
+const AldursDeception = new SetItem(ShadowPlate, "Aldur's Deception", 0, 300, "Aldur's Watchtower");
+AldursDeception.addAttr(new Attribute(LightRes, 40, 50));
+const AldursRhythm = new SetItem(JaggedStar, "Aldur's Rhythm", 0, 0, "Aldur's Watchtower");
+AldursRhythm.addAttr(new Attribute(OpenSockets, 2, 3));
+const AldursAdvance = new SetItem(BattleBoots, "Aldur's Advance", 0, 0, "Aldur's Watchtower");
+AldursAdvance.addAttr(new Attribute(FireRes, 40, 50));
+
+const GriswoldsValor = new SetItem(Corona, "Griswold's Valor", 0, 0, "Griswold's Legacy");
+GriswoldsValor.addAttr(new Attribute(EnhancedDef, 50, 75));
+GriswoldsValor.addAttr(new Attribute(MagicFind, 20, 30));
+const GriswoldsHeart = new SetItem(OrnatePlate, "Griswold's Heart", 0, 500, "Griswold's Legacy");
+const GriswoldsRedemption = new SetItem(Caduceus, "Griswold's Redemption", 0, 0, "Griswold's Legacy");
+GriswoldsRedemption.addAttr(new Attribute(EnhancedDmg, 200, 240));
+GriswoldsRedemption.addAttr(new Attribute(OpenSockets, 3, 4));
+const GriswoldsHonor = new SetItem(VortexShield, "Griswold's Honor", 0, 108, "Griswold's Legacy");
+
+const ImmortalKingsWill = new SetItem(AvengerGuard, "Immortal King's Will", 0, 125, "Immortal King");
+ImmortalKingsWill.addAttr(new Attribute(MagicFind, 25, 40));
+const ImmortalKingsSoulCage = new SetItem(SacredArmor, "Immortal King's Soul Cage", 0, 400, "Immortal King");
+const ImmortalKingsDetail = new SetItem(WarBelt, "Immortal King's Detail", 0, 36, "Immortal King");
+const ImmortalKingsForge = new SetItem(WarGauntlets, "Immortal King's Forge", 0, 65, "Immortal King");
+const ImmortalKingsPillar = new SetItem(WarBoots, "Immortal King's Pillar", 0, 75, "Immortal King");
+const ImmortalKingsStoneCrusher = new SetItem(OgreMaul, "Immortal King's Stone Crusher", 0, 0, "Immortal King");
+ImmortalKingsStoneCrusher.addAttr(new Attribute(CrushingBlow, 35, 40));
+
+const MavinasTrueSight = new SetItem(Diadem, "M'avina's True Sight", 0, 150, "M'avina's Battle Hymn");
+const MavinasEmbrace = new SetItem(KrakenShell, "M'avina's Embrace", 0, 350, "M'avina's Battle Hymn");
+MavinasEmbrace.addAttr(new Attribute(MageDmgReduce, 5, 12));
+const MavinasIcyClutch = new SetItem(BattleGauntlets, "M'avina's Icy Clutch", 0, 0, "M'avina's Battle Hymn");
+MavinasIcyClutch.addAttr(new Attribute(Def, 45, 50));
+const MavinasTenet = new SetItem(SharkskinBelt, "M'avina's Tenett", 0, 50, "M'avina's Battle Hymn");
+const MavinasCaster = new SetItem(GrandMatronBow, "M'avina's Caster", 0, 0, "M'avina's Battle Hymn");
+
+const NatalyasTotem = new SetItem(GrimHelm, "Natalya's Totem", 0, 0, "Natalya's Odium");
+NatalyasTotem.addAttr(new Attribute(Def, 135, 175));
+NatalyasTotem.addAttr(new Attribute(AllRes, 10, 20));
+NatalyasTotem.addAttr(new Attribute(20, 30));
+NatalyasTotem.addAttr(new Attribute(Str, 10, 20));
+const NatalyasMark = new SetItem(ScissorsSuwayyah, "Natalya's Mark", 0, 0, "Natalya's Odium");
+const NatalyasShadow = new SetItem(LoricatedMail, "Natalya's Shadow", 0, 0, "Natalya's Odium");
+NatalyasShadow.addAttr(new Attribute(Def, 150, 225));
+NatalyasShadow.addAttr(new Attribute(OpenSockets, 1, 3));
+const NatalyasSoul = new SetItem(MeshBoots, "Natalya's Soul", 0, 0, "Natalya's Odium");
+NatalyasSoul.addAttr(new Attribute(Def, 75, 125));
+NatalyasSoul.addAttr(new Attribute(ColdRes, 15, 25));
+NatalyasSoul.addAttr(new Attribute(LightRes, 15, 25));
+
+const TalRashasFineSpunCloth = new SetItem(MeshBelt, "Tal Rasha's Fine Spun Cloth", 0, 0, "Tal Rasha's Wrappings");
+TalRashasFineSpunCloth.addAttr(new Attribute(MagicFind, 10, 15));
+const TalRashasAdjudication = new SetItem(Amulet, "Tal Rasha's Adjudication", 0, 0, "Tal Rasha's Wrappings");
+const TalRashasLidlessEye = new SetItem(SwirlingCrystal, "Tal Rasha's Lidless Eye", 0, 0, "Tal Rasha's Wrappings");
+TalRashasLidlessEye.addAttr(new SkillAttribute(empty, "Lightning Mastery", 1, 2));
+TalRashasLidlessEye.addAttr(new SkillAttribute(empty, "Fire Mastery", 1, 2));
+TalRashasLidlessEye.addAttr(new SkillAttribute(empty, "Cold Mastery", 1, 2));
+const TalRashasGuardianship = new SetItem(LacqueredPlate, "Tal Rasha's Guardianship", 0, 400, "Tal Rasha's Wrappings");
+const TalRashasHoradricCrest = new SetItem(DeathMask, "Tal Rasha's Horadric Crest", 0, 45, "Tal Rasha's Wrappings");
+const TrangOulsClaws = new SetItem(HeavyBracers, "Trang-Oul's Claws", 0, 30, "Trang-Oul's Avatar");
+const TrangOulsGirth = new SetItem(TrollBelt, "Trang-Oul's Girth", 0, 0, "Trang-Oul's Avatar");
+TrangOulsGirth.addAttr(new Attribute(Def, 75, 100));
+
+const TrangOulsGuise = new SetItem(BoneVisage, "Trang-Oul's Guise", 0, 0, "Trang-Oul's Avatar");
+TrangOulsGuise.addAttr(new Attribute(Def, 80, 100));
+const TrangOulsScales = new SetItem(ChaosArmor, "Trang-Oul's Scales", 150, 0, "Trang-Oul's Avatar");
+const TrangOulsWing = new SetItem(CantorTrophy, "Trang-Oul's Wing", 0, 125, "Trang-Oul's Avatar");
+TrangOulsWing.addAttr(new Attribute(FireRes, 38, 45));
 
 const Services = new Base("Socket", "Services", "Elite");
 const SocketQuest = new QuantizedItem(Services, "Socket quest", 0, null);
@@ -1769,4 +2067,3 @@ const BreathOfTheDying = new RuneWord("BreathOfTheDying", [
   new Attribute(LifeSteal, 12, 15)
 ], []);
 
-export const customRuneWord = new RuneWordItem(GildedShield, Spirit)
