@@ -288,8 +288,8 @@ function calcDefHere(element) {
             ed += parseFloat(edAttr[0]._attrFloorActVal);
         }
     }
-     let g = addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
-     return g;
+    let g = addedDef + Math.floor((parseFloat(def * ethMultiplier)) * ((parseFloat(ed) * 0.01) + 1));
+    return g;
 }
 
 function sortTradeList() {
@@ -420,7 +420,7 @@ function addAttributeSearch(name) {
 }
 
 function addCustomAttribute(name) {
-    currentItem.addAttr(new exports.SkillAttribute(exports.AttributeName.attrArray[96], name, 0, 0));
+    currentItem.addAttr(new exports.SkillAttribute(exports.AttributeName.attrArray[87], name, 0, 0));
     clearWindows();
     setEditFields();
 }
@@ -488,7 +488,7 @@ function setEditFields() {
     if (currentItem == null) {
     }
     displayAddItemBtn();
-    if(!(currentItem instanceof exports.QuantizedItem)){
+    if (!(currentItem instanceof exports.QuantizedItem)) {
         document.getElementById("displayEthCheckBoxID").hidden = false;
 
     }
@@ -1116,7 +1116,6 @@ function updateCurrentItemInfoWindow(element) {
     infoWindow.innerText = ``;
     let itemHasEnhanDefAttr = false;
     let hideIfSpecialCirc = false;
-    console.log(element)
     let addED = 0;
     element._arr.forEach(elementOne => {
         let g = returnAttributeNameObj(elementOne._attributeName._attrName);
@@ -1129,7 +1128,7 @@ function updateCurrentItemInfoWindow(element) {
             } else {
                 addED = elementOne._attrFloorActVal;
             }
-            if(element._magicClass == "Runeword" && elementOne instanceof exports.BasicAttribute && element._base._ed === 0){
+            if (element._magicClass == "Runeword" && elementOne instanceof exports.BasicAttribute && element._base._ed === 0) {
                 hideIfSpecialCirc = true;
             }
         }
@@ -1138,37 +1137,37 @@ function updateCurrentItemInfoWindow(element) {
         if (elementOne._attributeName._attrName == "Open Sockets") { element._base._sockets = elementOne._attrFloorActVal; }
         elementOne
     })
-    if(itemHasEnhanDefAttr == false && element._base._ed != 0){
+    if (itemHasEnhanDefAttr == false && element._base._ed != 0) {
         //hideIfSpecialCirc = false;
     }
     let tempString = ``;
     let eachString = ``;
     let name = element._name;
-    if(element._magicClass == 'Runeword' && element._base._ed != 0){
+    if (element._magicClass == 'Runeword' && element._base._ed != 0) {
         name += " - Superior "
     }
     let isEth = (element._base._isEth) ? ` / Ethereal` : ``;
     let lvlReq = (element._levelReq != 0) ? ` / ${exports.AttributeName.attrArray[79]._attrNickName} ${element._levelReq}` : ``;
     let sockets = (element._base._sockets != 0 || element._magicClass == null) ? ` / ${element._base._sockets} ${exports.AttributeName.attrArray[86]._attrNickName}` : ``;
     let ed = (element._base._ed != null && element._base._type == 'Armor') ? ` / ${exports.AttributeName.attrArray[0]._attrNickName} ${parseFloat(element._base._ed) + parseFloat(addED)}` : ` / ${exports.AttributeName.attrArray[1]._attrNickName}${element._base._ed}`;
-    if(!itemHasEnhanDefAttr){
-        if(element._magicClass != "Base" && element._magicClass != 0){
-        ed = ``
+    if (!itemHasEnhanDefAttr) {
+        if (element._magicClass != "Base" && element._magicClass != 0) {
+            ed = ``
         }
     }
-    if(hideIfSpecialCirc){ed=``}
+    if (hideIfSpecialCirc) { ed = `` }
     if (!itemHasEnhanDefAttr && element._base._ed == 0 || element._base._ed == null) { ed = `` }
     let def = (element._base._type == 'Armor') ? ` / ${calcDefHere(element)} ${exports.AttributeName.attrArray[2]._attrNickName} ` : ``;
-    if (addED) { 
+    if (addED) {
         def = ` / ${element._base._defActVal} ${exports.AttributeName.attrArray[2]._attrNickName} `
-     }
+    }
     if (element._base._defActVal == 0 || !Number.isInteger(element._base._defActVal)) { def = `` };
     if (element._base._ed > 0 && element._magicClass === "Base" && element._base._type === "Armor") {
         name += ` - ${exports.AttributeName.attrArray[85]._attrNickName}`;
-    }else 
-    if (['Magic', 'Rare', 'Crafted'].indexOf(element._magicClass) > -1) {
-        name += ` - ${element._magicClass}`
-    }
+    } else
+        if (['Magic', 'Rare', 'Crafted'].indexOf(element._magicClass) > -1) {
+            name += ` - ${element._magicClass}`
+        }
     if (element._customName) { name = element._customName };
     tempString += `${name}${isEth}${sockets}${ed}${def}${lvlReq}`;
     if (element._magicClass == null) { tempString = `${name}${isEth}${sockets}${ed}${def}` };
@@ -1180,8 +1179,9 @@ function updateCurrentItemInfoWindow(element) {
                 tempString += ` / ${elementTwo._attributeName._attrNickName}`;
                 if (elementTwo._attrType == 'skillAttribute') {
                     if (!isNaN(elementTwo._attrFloorActVal)) {
-                        if(elementTwo._attributeName._attrName != "Empty Value 2"){
-                        tempString += ` ${elementTwo._classOrTreeName}`}
+                        if (elementTwo._attributeName._attrName != "Empty Value 2") {
+                            tempString += ` ${elementTwo._classOrTreeName}`
+                        }
                     }
                 }
                 tempString += ` ${elementTwo._attrFloorActVal}`
@@ -1230,7 +1230,7 @@ function setDayMode() {
     moonIcon.style.display = "block";
     isDay = true;
     const jsonArr = JSON.stringify(isDay);
-    localStorage.setItem('dayMode', isDay);
+    localStorage.setItem('dayMode', jsonArr);
 }
 function setNightMode() {
     body[0].classList.remove('bg-success')
@@ -1240,7 +1240,7 @@ function setNightMode() {
     moonIcon.style.display = "none";
     isDay = false;
     const jsonArr = JSON.stringify(isDay);
-    localStorage.setItem('dayMode', isDay);
+    localStorage.setItem('dayMode', jsonArr);
 }
 document.getElementById('clearAllBtnID').addEventListener("click", clearLocalData);
 function clearLocalData() {

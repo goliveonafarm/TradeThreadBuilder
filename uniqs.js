@@ -25,7 +25,6 @@ export class AttributeName {
     AttributeName.attrArray.forEach((element, index) => {
       element._attrNickName = newAttributeArray[index]._attrNickName;
     });
-    console.log("updateValues() successful");
   }
 }
 
@@ -139,13 +138,13 @@ export class Item {
   addAttr(attr) {
     let g = attr._attributeName._attrName;
     if (g == "Enhanced Defense %") {
-      if(!(this instanceof RuneWordItem)){
+      if (!(this instanceof RuneWordItem)) {
         this._base._ed = attr._attrFloorActVal;
         this._base._defActVal = this._base._maxDef;
       }
-      if(this instanceof RuneWordItem){
-        if(attr instanceof BasicAttribute){
-          let ed = (parseFloat(attr._attrFloorActVal))/100;
+      if (this instanceof RuneWordItem) {
+        if (attr instanceof BasicAttribute) {
+          let ed = (parseFloat(attr._attrFloorActVal)) / 100;
           ed += 1;
           this._base._minDef = Math.floor(parseFloat(this._base._minDef * ed));
           this._base._maxDef = Math.floor(parseFloat(this._base._maxDef * ed));
@@ -181,7 +180,7 @@ export class Unique extends Item {
 }
 
 export class SetItem extends Unique {
-  constructor(setItemBase, setItemName, setItemEd, setAddedDef, fullSetName){
+  constructor(setItemBase, setItemName, setItemEd, setAddedDef, fullSetName) {
     super(setItemBase, setItemName, setItemEd, setAddedDef);
     this._magicClass = "Set";
     this._fullSetName = fullSetName;
@@ -315,26 +314,15 @@ empty._editable = false;
 empty._attrName = "Empty Value";
 const Superior = new AttributeName("Superior");
 const OpenSockets = new AttributeName("Open Sockets");
-const emptyTwo = new AttributeName("");
-emptyTwo._editable = false;
-emptyTwo._attrName = "Custom val1";
-const emptyThree = new AttributeName("");
-emptyThree._editable = false;
-emptyThree._attrName = "Custom val2";
-const emptyFour = new AttributeName("");
-emptyFour._editable = false;
-emptyFour._attrName = "Custom val3";
-const emptyFive = new AttributeName("");
-emptyFive._editable = false;
-emptyFive._attrName = "Custom val4";
+const emptySix = new AttributeName("");
+emptySix._editable = false;
+emptySix._attrName = "Empty Value 2";
 const MagicAbsorb = new AttributeName("Magic Absorb")
 const MagicDmg = new AttributeName("Magic Damage")
 const Damage = new AttributeName("Damage")
 const CrushingBlow = new AttributeName("Crushing Blow %")
 const MaxLifePerc = new AttributeName("Increase Maximum Life %")
-const emptySix = new AttributeName("");
-emptySix._editable = false;
-emptySix._attrName = "Empty Value 2";
+
 
 const JawboneCap = new Armor("Jawbone Cap", "Barbarian Helm", "Normal", 10, 15);
 const FangedHelm = new Armor("Fanged Helm", "Barbarian Helm", "Normal", 15, 20);
@@ -1032,10 +1020,25 @@ Brainhew.addAttr(new Attribute(ManaSteal, 10, 13));
 const Humongous = new Unique(GiantAxe, "Humongous", 0, 0);
 Humongous.addAttr(new Attribute(EnhancedDmg, 80, 120));
 Humongous.addAttr(new Attribute(Str, 20, 30));
-
-//missing exceptional axes
-
-
+const Coldkill = new Unique(Hatchet, "Coldkill", 0, 0);
+Coldkill.addAttr(new Attribute(EnhancedDmg, 150, 190));
+const ButchersPupil = new Unique(Cleaver, "Butcher's Pupil", 0, 0);
+ButchersPupil.addAttr(new Attribute(EnhancedDmg, 150, 200));
+const Islestrike = new Unique(TwinAxe, "Islestrike", 0, 0);
+Islestrike.addAttr(new Attribute(EnhancedDmg));
+const PompeiisWrath = new Unique(Crowbill, "Pompeii's Wrath", 0, 0);
+PompeiisWrath.addAttr(new Attribute(EnhancedDmg, 140, 170));
+const GuardianNaga = new Unique(Naga, "Guardian Naga", 0, 0);
+GuardianNaga.addAttr(new Attribute(EnhancedDmg, 150, 180));
+const WarlordsTrust = new Unique(MilitaryAxe, "Warlord's Trust", 0, 0);
+const Spellsteel = new Unique(BeardedAxe, "Spellsteel", 0, 0);
+const Stormrider = new Unique(Tabar, "Stormrider", 0, 0);
+const BoneslayerBlade = new Unique(GothicAxe, "Boneslayer Blade", 0, 0);
+BoneslayerBlade.addAttr(new Attribute(EnhancedDmg, 180, 220));
+BoneslayerBlade.addAttr(new SkillAttribute(empty, "Holy Bolt Level", 12, 28))
+const Minotaur = new Unique(AncientAxe, "The Minotaur", 0, 0);
+Minotaur.addAttr(new Attribute(EnhancedDmg, 140, 200));
+Minotaur.addAttr(new Attribute(Str, 15, 20));
 const RazorsEdge = new Unique(Tomahawk, "Razor's Edge", 0, 0);
 RazorsEdge.addAttr(new Attribute(EnhancedDmg, 175, 225));
 const RuneMaster = new Unique(EttinAxe, "Rune Master", 220, 270);
@@ -1082,13 +1085,45 @@ const DiamondBow = new Weapon("Diamond Bow", "Bow", "Elite", 33, 40);
 const CrusaderBow = new Weapon("Crusader Bow", "Bow", "Elite", 15, 63);
 const WardBow = new Weapon("Ward Bow", "Bow", "Elite", 20, 53);
 const HydraBow = new Weapon("Hydra Bow", "Bow", "Elite", 10, 68);
-//missing normal bows
+const Pluckeye = new Unique(ShortBow, "Pluckeye", 0, 0);
+const Witherstring = new Unique(HuntersBow, "Witherstring", 0, 0);
+Witherstring.addAttr(new Attribute(EnhancedDmg, 40, 50));
 const RavenClaw = new Unique(LongBow, "Raven Claw", 65, 0);
-//missing exceptional bows
+const RoguesBow = new Unique(CompositeBow, "Rogue's Bow", 0, 0);
+RoguesBow.addAttr(new Attribute(EnhancedDmg, 40, 60));
+const Stormstrike = new Unique(ShortBattleBow, "Stormstrike", 0, 0);
+Stormstrike.addAttr(new Attribute(EnhancedDmg, 70, 90));
+const Wizendraw = new Unique(LongBattleBow, "Wizendraw", 0, 0);
+Wizendraw.addAttr(new Attribute(EnhancedDmg, 70, 80));
+Wizendraw.addAttr(new Attribute(Ar, 50, 100));
+Wizendraw.addAttr(new Attribute(EnemyColdResist, 20, 35));
+const Hellclap = new Unique(ShortWarBow, "Hellclap", 0, 0);
+Hellclap.addAttr(new Attribute(EnhancedDmg, 70, 90));
+Hellclap.addAttr(new Attribute(Ar, 70, 90));
+const Blastbark = new Unique(LongWarBow, "Blastbark", 0, 0);
+Blastbark.addAttr(new Attribute(EnhancedDmg, 70, 130));
+const Skystrike = new Unique(EdgeBow, "Skystrike", 0, 0);
+Skystrike.addAttr(new Attribute(EnhancedDmg, 150, 200));
+const Riphook = new Unique(RazorBow, "Riphook", 0, 0);
+Riphook.addAttr(new Attribute(EnhancedDmg, 180, 220));
+Riphook.addAttr(new Attribute(LifeSteal, 7, 10));
 const KukoShakaku = new Unique(CedarBow, "Kuko Shakaku", 0, 0);
 KukoShakaku.addAttr(new Attribute(EnhancedDmg, 150, 180));
-
-//Elite bows
+const Endlesshail = new Unique(DoubleBow, "Endlesshail", 0, 0);
+Endlesshail.addAttr(new Attribute(EnhancedDmg, 180, 220));
+Endlesshail.addAttr(new SkillAttribute(empty, "Amazon Strafe", 3, 5))
+const WitchwildString = new Unique(ShortSiegeBow, "Witchwild String", 0, 0);
+WitchwildString.addAttr(new Attribute(EnhancedDmg, 150, 170));
+const Cliffkiller = new Unique(LargeSiegeBow, "Cliffkiller", 0, 0);
+Cliffkiller.addAttr(new Attribute(EnhancedDmg, 190, 230));
+const Magewrath = new Unique(RazorBow, "Magewrath", 0, 0);
+Magewrath.addAttr(new Attribute(EnhancedDmg, 120, 150));
+Magewrath.addAttr(new Attribute(MageDmgReduce, 9, 13));
+const GoldstrikeArch = new Unique(RazorBow, "Goldstrike Arch", 0, 0);
+GoldstrikeArch.addAttr(new Attribute(EnhancedDmg, 200, 250));
+GoldstrikeArch.addAttr(new Attribute(DmgDemon, 100, 200));
+GoldstrikeArch.addAttr(new Attribute(DmgUndead, 100, 200));
+GoldstrikeArch.addAttr(new Attribute(ArPerc, 100, 150));
 const Eaglehorn = new Unique(CrusaderBow, "Eaglehorn", 200, 0);
 const Widowmaker = new Unique(WardBow, "Widowmaker", 0, 0);
 Widowmaker.addAttr(new Attribute(EnhancedDmg, 150, 200));
@@ -1108,11 +1143,22 @@ const PelletBow = new Weapon("Pellet Bow", "Crossbow", "Elite", 28, 73);
 const GorgonCrossbow = new Weapon("Gorgon Crossbow", "Crossbow", "Elite", 25, 87);
 const CollossusCrossbow = new Weapon("Colossus Crossbow", "Crossbow", "Elite", 32, 91);
 const DemonCrossbow = new Weapon("Demon Crossbow", "Crossbow", "Elite", 26, 40);
-//missing normal crossbows
-
-//missing exceptional crossbows
-
-//Elite crossbows
+const Leadcrow = new Unique(LightCrossbow, "Leadcrow", 0, 0);
+const Ichorsting = new Unique(Crossbow, "Ichorsting", 0, 0);
+const Hellcast = new Unique(HeavyCrossbow, "Hellcast", 0, 0);
+Hellcast.addAttr(new Attribute(EnhancedDmg, 70, 80));
+const Doomslinger = new Unique(RepeatingCrossbow, "Doomslinger", 0, 0);
+Doomslinger.addAttr(new Attribute(EnhancedDmg, 60, 100));
+const LangerBriser = new Unique(Arbalest, "Langer Briser", 0, 0);
+LangerBriser.addAttr(new Attribute(EnhancedDmg, 170, 200));
+LangerBriser.addAttr(new Attribute(MaxDmg, 10, 30));
+LangerBriser.addAttr(new Attribute(MagicFind, 30, 60));
+const PusSpitter = new Unique(SiegeCrossbow, "Pus Spitter", 0, 0);
+PusSpitter.addAttr(new Attribute(EnhancedDmg, 150, 220));
+const BurizaDoKyanon = new Unique(Ballista, "Buriza-Do Kyanon", 0, 0);
+BurizaDoKyanon.addAttr(new Attribute(EnhancedDmg, 150, 200));
+BurizaDoKyanon.addAttr(new Attribute(Def, 75, 150));
+const DemonMachine = new Unique(ChuKoNu, "Demon Machine", 0, 0);
 const Hellrack = new Unique(CollossusCrossbow, "Hellrack", 0, 0);
 Hellrack.addAttr(new Attribute(EnhancedDmg, 180, 230));
 Hellrack.addAttr(new Attribute(ArPerc, 100, 150));
@@ -1132,20 +1178,23 @@ const BoneKnife = new Weapon("Bone Knife", "Dagger", "Elite", 23, 49);
 const MithrilPoint = new Weapon("Bone Knife", "Dagger", "Elite", 37, 53);
 const FangedKnife = new Weapon("Fanged Kinfe", "Dagger", "Elite", 15, 57);
 const LegendSpike = new Weapon("Legend Spike", "Dagger", "Elite", 31, 47);
-
-//missing normal daggers
 const Gull = new Unique(Dagger, "Gull", 0, 0);
-
-//missing exceptional daggers
-
-//Elite daggers
+const Diggler = new Unique(Dirk, "The Diggler", 0, 0);
+const JadeTanDo = new Unique(Kris, "The Jade Tan Do", 0, 0);
+JadeTanDo.addAttr(new Attribute(Ar, 100, 150));
+const SpectralShard = new Unique(Blade, "Spectral Shard", 0, 0);
+const Spineripper = new Unique(Poignard, "Spineripper", 0, 0);
+Spineripper.addAttr(new Attribute(EnhancedDmg, 200, 240));
+const HeartCarver = new Unique(Rondel, "Heart Carver", 0, 0);
+HeartCarver.addAttr(new Attribute(EnhancedDmg, 190, 240));
+const BlackbogsSharp = new Unique(Cinquedeas, "Blackbog's Sharp", 0, 0);
+const Stormspike = new Unique(Stiletto, "Stormspike", 0, 0);
 const Wizardspike = new Unique(BoneKnife, "Bone Knife", 0, 0);
 const Fleshripper = new Unique(FangedKnife, "Fleshripper", 0, 0);
 Fleshripper.addAttr(new Attribute(EnhancedDmg, 200, 300));
 const GhostFlame = new Unique(LegendSpike, "Dagger", "Elite", 0);
 GhostFlame.addAttr(new Attribute(EnhancedDmg, 190, 240));
 GhostFlame.addAttr(new Attribute(ManaSteal, 10, 15));
-
 
 const Katar = new Weapon("Katar", "Katar", "Normal", 4, 7);
 const WristBlade = new Weapon("Wrist Blade", "Katar", "Normal", 5, 9);
@@ -1158,7 +1207,7 @@ const Quhab = new Weapon("Quhab", "Katar", "Exceptional", 11, 24);
 const WristSpike = new Weapon("Wrist Spike", "Katar", "Exceptional", 13, 27);
 const Fascia = new Weapon("Fascia", "Katar", "Exceptional", 8, 37);
 const HandScythe = new Weapon("Hand Scythe", "Katar", "Exceptional", 21, 35);
-const GreaterClaws= new Weapon("Greater Claws", "Katar", "Exceptional", 18, 37);
+const GreaterClaws = new Weapon("Greater Claws", "Katar", "Exceptional", 18, 37);
 const GreaterTalons = new Weapon("Greater Talons", "Katar", "Exceptional", 21, 35);
 const ScissorsQuhab = new Weapon("ScissorsQuhab", "Katar", "Exceptional", 19, 40);
 const Suwayyah = new Weapon("Suwayyah", "Katar", "Elite", 39, 52);
@@ -1231,11 +1280,31 @@ const Thresher = new Weapon("Thresher", "Polearm", "Elite", 12, 141);
 const CrypticAxe = new Weapon("Cryptic Axe", "Polearm", "Elite", 33, 150);
 const GreatPoleaxe = new Weapon("Great Poleaxe", "Polearm", "Elite", 46, 127);
 const GiantThresher = new Weapon("Giant Thresher", "Polearm", "Elite", 40, 114);
-//missing normal poleaxes
-
-//missing exceptional poleaxes
-
-//Elite poleaxes
+const DimoaksHew = new Unique(Bardiche, "Dimoak's Hew", 0, 0);
+const Steelgoad = new Unique(Voulge, "Steelgoad", 0, 0);
+Steelgoad.addAttr(new Attribute(EnhancedDmg, 60, 80));
+const SoulHarvest = new Unique(Scythe, "Soul Harvest", 0, 0);
+SoulHarvest.addAttr(new Attribute(EnhancedDmg, 50, 90));
+const Battlebranch = new Unique(Poleaxe, "The Battlebranch", 0, 0);
+const Woestave = new Unique(Halberd, "Woestave", 0, 0);
+Woestave.addAttr(new Attribute(EnhancedDmg, 20, 40));
+const GrimReaper = new Unique(WarScythe, "The Grim Reaper", 0, 0);
+const MeatScraper = new Unique(LochaberAxe, "The Meat Scraper", 0, 0);
+MeatScraper.addAttr(new Attribute(EnhancedDmg, 150, 200));
+const BlackleachBlade = new Unique(Bill, "Blackleach Blade", 0, 0);
+BlackleachBlade.addAttr(new Attribute(EnhancedDmg, 100, 140));
+const AthenasWrath = new Unique(BattleScythe, "Athena's Wrath", 0, 0);
+AthenasWrath.addAttr(new Attribute(EnhancedDmg, 150, 180));
+AthenasWrath.addAttr(new SkillAttribute(empty, "Druid Skills", 1, 3));
+const PierreTombaleCouant = new Unique(Partizan, "Pierre Tombale Couant", 0, 0);
+PierreTombaleCouant.addAttr(new Attribute(EnhancedDmg, 160, 220));
+PierreTombaleCouant.addAttr(new Attribute(Ar, 100, 200));
+const HusoldalEvo = new Unique(BedDeCorbin, "Husoldal Evo", 0, 0);
+HusoldalEvo.addAttr(new Attribute(EnhancedDmg, 160, 200));
+HusoldalEvo.addAttr(new Attribute(Ar, 200, 250));
+const GrimsBurningDead = new Unique(GrimScythe, "Grim's Burning Dead", 0, 0);
+GrimsBurningDead.addAttr(new Attribute(EnhancedDmg, 140, 180));
+GrimsBurningDead.addAttr(new Attribute(Ar, 200, 250));
 const Bonehew = new Unique(OgreAxe, "Bonehew", 0, 0);
 Bonehew.addAttr(new Attribute(EnhancedDmg, 270, 320));
 const ReapersToll = new Unique(Thresher, "Reapers Toll", 0, 0);
@@ -1248,6 +1317,7 @@ TombReaver.addAttr(new Attribute(ArUndead, 250, 350));
 TombReaver.addAttr(new Attribute(AllRes, 30, 50));
 TombReaver.addAttr(new Attribute(LifeOnKill, 10, 14));
 TombReaver.addAttr(new Attribute(MagicFind, 50, 80));
+TombReaver.addAttr(new Attribute(OpenSockets, 1, 3));
 const Stormspire = new Unique(GiantThresher, "Stormspire", 0, 0);
 Stormspire.addAttr(new Attribute(EnhancedDmg, 150, 250));
 
@@ -1304,7 +1374,15 @@ const BalrogSpear = new Weapon("Balrog Spear", "Javelin", "Elite", 40, 62);
 const GhostGlaive = new Weapon("Ghost Glaive", "Javelin", "Elite", 30, 85);
 const WingedHarpoon = new Weapon("Winged Harpoon", "Javelin", "Elite", 11, 77);
 
-//missing normal, exceptional, elite javelins
+const DemonsArch = new Unique(BalrogSpear, "Demon's Arch", 0, 0);
+DemonsArch.addAttr(new Attribute(EnhancedDmg, 160, 210));
+DemonsArch.addAttr(new Attribute(LifeSteal, 6, 12));
+const WraithFlight = new Unique(GhostGlaive, "Wraith Flight", 0, 0);
+WraithFlight.addAttr(new Attribute(EnhancedDmg, 150, 190));
+WraithFlight.addAttr(new Attribute(LifeSteal, 9, 13));
+const GargoylesBite = new Unique(WingedHarpoon, "Gargoyle's Bite", 0, 0);
+GargoylesBite.addAttr(new Attribute(EnhancedDmg, 180, 230));
+GargoylesBite.addAttr(new Attribute(LifeSteal, 9, 15));
 
 const Club = new Weapon("Club", "Mace", "Normal", 1, 6);
 const SpikedClub = new Weapon("Spiked Club", "Mace", "Normal", 5, 8);
@@ -1330,8 +1408,59 @@ const Scourge = new Weapon("Scourge", "Mace", "Elite", 3, 80);
 const LegendaryMallet = new Weapon("Legendary Mallet", "Mace", "Elite", 50, 61);
 const OgreMaul = new Weapon("OgreMaul", "Mace", "Elite", 77, 106);
 const ThunderMaul = new Weapon("ThunderMaul", "Mace", "Elite", 33, 180);
-
-//missing normal, exceptional, elite maces
+const Felloak = new Unique(Club, "Felloak", 0, 0);
+Felloak.addAttr(new Attribute(EnhancedDmg, 70, 80));
+const Soutnail = new Unique(SpikedClub, "Soutnail", 0, 0);
+const Crushflange = new Unique(Mace, "Crushflange", 0, 0);
+Crushflange.addAttr(new Attribute(50, 60));
+const Bloodrise = new Unique(MorningStar, "Bloodrise", 0, 0);
+const GeneralsTanDoLiGa = new Unique(Flail, "The General's Tan Do Li Ga", 0, 0);
+GeneralsTanDoLiGa.addAttr(new Attribute(EnhancedDmg, 50, 60));
+const Ironstone = new Unique(WarHammer, "Ironstone", 0, 0);
+const Bonescape = new Unique(Maul, "Bonescape", 0, 0);
+Bonescape.addAttr(new Attribute(EnhancedDmg, 200, 300));
+const Steeldriver = new Unique(GreatMaul, "Steeldriver", 0, 0);
+Steeldriver.addAttr(new Attribute(150, 250));
+const DarkClanCrusher = new Unique(Cudgel, "Dark Clan Crusher", 0, 0);
+DarkClanCrusher.addAttr(new Attribute(ArPerc, 20, 25));
+const Fleshrender = new Unique(BarbedClub, "Fleshrender", 0, 0);
+Fleshrender.addAttr(new Attribute(EnhancedDmg, 130, 200));
+const SureshrillFrost = new Unique(FlangedMace, "Sureshrill Frost", 0, 0);
+SureshrillFrost.addAttr(new Attribute(EnhancedDmg, 150, 180));
+const Moonfall = new Unique(JaggedStar, "Moonfall", 0, 0);
+Moonfall.addAttr(new Attribute(EnhancedDmg, 120, 150));
+Moonfall.addAttr(new Attribute(MageDmgReduce, 9, 12));
+const BaezilsVortex = new Unique(Knout, "Baezil's Vortex", 0, 0);
+BaezilsVortex.addAttr(new Attribute(EnhancedDmg, 160, 200));
+const Earthshaker = new Unique(BattleHammer, "Earthshaker", 0, 0);
+const BloodtreeStump = new Unique(WarClub, "Bloodtree Stump", 0, 0);
+BloodtreeStump.addAttr(new Attribute(EnhancedDmg, 180, 220));
+const GavelOfPain = new Unique(MartelDeFer, "The Gavel Of Pain", 0, 0);
+GavelOfPain.addAttr(new Attribute(EnhancedDmg, 130, 160));
+const NordsTenderizer = new Unique(Truncheon, "Nord's Tenderizer", 0, 0);
+NordsTenderizer.addAttr(new Attribute(EnhancedDmg, 270, 330));
+NordsTenderizer.addAttr(new Attribute(ArPerc, 150, 180));
+const DemonLimb = new Unique(TyrantClub, "Demon Limb", 0, 0);
+DemonLimb.addAttr(new Attribute(EnhancedDmg, 180, 230));
+DemonLimb.addAttr(new Attribute(LifeSteal, 7, 13));
+DemonLimb.addAttr(new Attribute(FireRes, 15, 20));
+const BaranarsStar = new Unique(DevilStar, "Baranar's Star", 0, 0);
+const HorizonsTornado = new Unique(Scourge, "Horizon's Tornado", 0, 0);
+HorizonsTornado.addAttr(new Attribute(EnhancedDmg, 230, 280));
+const Stormlash = new Unique(Scourge, "Stormlash", 0, 0);
+Stormlash.addAttr(new Attribute(EnhancedDmg, 240, 300));
+Stormlash.addAttr(new Attribute(LightAsbInt, 3, 9));
+const StoneCrusher = new Unique(LegendaryMallet, "Stone Crusher", 0, 0);
+StoneCrusher.addAttr(new Attribute(EnhancedDmg, 280, 320));
+StoneCrusher.addAttr(new Attribute(Str, 20, 30));
+const SchaefersHammer = new Unique(LegendaryMallet, "Schaefer's Hammer", 0, 0);
+SchaefersHammer.addAttr(new Attribute(EnhancedDmg, 100, 130));
+const Windhammer = new Unique(OgreMaul, "Windhammer", 0, 0);
+Windhammer.addAttr(new Attribute(EnhancedDmg, 180, 230));
+const EarthShifter = new Unique(ThunderMaul, "Earth Shifter", 0, 0);
+EarthShifter.addAttr(new Attribute(EnhancedDmg, 250, 300));
+const CraniumBasher = new Unique(ThunderMaul, "The Cranium Basher", 0, 0);
+CraniumBasher.addAttr(new Attribute(EnhancedDmg, 200, 240));
 
 const Scepter = new Weapon("Scepter", "Scepter", "Normal", 6, 11);
 const GrandScepter = new Weapon("Grand Scepter", "Scepter", "Normal", 8, 18);
@@ -1342,8 +1471,37 @@ const DivineScepter = new Weapon("Divine Scepter", "Scepter", "Exceptional", 16,
 const MightyScepter = new Weapon("Mighty Scepter", "Scepter", "Elite", 40, 52);
 const SeraphRod = new Weapon("Seraph Rod", "Scepter", "Elite", 45, 54);
 const Caduceus = new Weapon("Caduceus", "Scepter", "Elite", 37, 43);
-
-//missing normal, exceptional, elite maces
+const KnellStriker = new Unique(Scepter, "Knell Striker", 0, 0);
+KnellStriker.addAttr(new Attribute(EnhancedDmg, 70, 80));
+const Rusthandle = new Unique(GrandScepter, "Rusthandle", 0, 0);
+Rusthandle.addAttr(new Attribute(EnhancedDmg, 50, 60));
+Rusthandle.addAttr(new Attribute(DmgUndead, 100, 110));
+Rusthandle.addAttr(new SkillAttribute(empty, "Vengeance", 1, 3));
+const Stormeye = new Unique(WarScepter, "Stormeye", 0, 0);
+Stormeye.addAttr(new Attribute(EnhancedDmg, 80, 120));
+Stormeye.addAttr(new SkillAttribute(empty, "Resist Lightning", 3, 5));
+const ZakarumsHand = new Unique(RuneScepter, "Zakarum's Hand", 0, 0);
+ZakarumsHand.addAttr(new Attribute(EnhancedDmg, 180, 220));
+const FetidSprinkler = new Unique(HolyWaterSprinkler, "The Fetid Sprinkler", 0, 0);
+FetidSprinkler.addAttr(new Attribute(EnhancedDmg, 160, 190));
+FetidSprinkler.addAttr(new Attribute(Ar, 150, 200));
+const HandOfBlessedLight = new Unique(DivineScepter, "Hand of Blessed Light", 0, 0);
+HandOfBlessedLight.addAttr(new Attribute(EnhancedDmg, 130, 160));
+const HeavensLight = new Unique(MightyScepter, "Heaven's Light", 0, 0);
+HeavensLight.addAttr(new Attribute(EnhancedDmg, 250, 300));
+HeavensLight.addAttr(new Attribute(LifeOnDemonKill, 15, 20));
+HeavensLight.addAttr(new SkillAttribute(empty, "Paladin Skill Levels", 2, 3));
+HeavensLight.addAttr(new Attribute(OpenSockets, 1, 2));
+const Redeemer = new Unique(MightyScepter, "The Redeemer", 0, 0);
+Redeemer.addAttr(new Attribute(EnhancedDmg, 250, 300));
+Redeemer.addAttr(new Attribute(DmgDemon, 200, 250));
+Redeemer.addAttr(new SkillAttribute(empty, "Redemption", 2, 4));
+Redeemer.addAttr(new SkillAttribute(empty, "Holy Bolt", 2, 4));
+const AstreonsIron = new Unique(Caduceus, "Astreon's Iron", 0, 0);
+AstreonsIron.addAttr(new Attribute(EnhancedDmg, 240, 290));
+AstreonsIron.addAttr(new Attribute(DmgReduce, 4, 7));
+AstreonsIron.addAttr(new SkillAttribute(empty, "Combat Skills", 2, 4));
+AstreonsIron.addAttr(new Attribute(Ar, 150, 200));
 
 const Spear = new Weapon("Spear", "Spear", "Noraml", 3, 15);
 const Trident = new Weapon("Trident", "Spear", "Noraml", 9, 15);
@@ -1360,8 +1518,34 @@ const StygianPike = new Weapon("Stygian Pike", "Spear", "Elite", 29, 114);
 const Mancatcher = new Weapon("Mancatcher", "Spear", "Elite", 42, 92);
 const GhostSpear = new Weapon("Ghost Spear", "Spear", "Elite", 18, 155);
 const WarPike = new Weapon("War Pike", "Spear", "Elite", 33, 178);
-
-//missing normal, exceptional, elite spears
+const DragonChang = new Unique(Spear, "Dragon Chang", 0, 0);
+const Razortine = new Unique(Trident, "Razortine", 0, 0);
+Razortine.addAttr(new Attribute(EnhancedDmg, 30, 50));
+const Bloodthief = new Unique(Brandistock, "Bloodthief", 0, 0);
+const LanceOfYaggai = new Unique(Spetum, "Lance of Yaggai", 0, 0);
+const TannrGorerod = new Unique(Pike, "The Tannr Gorerod", 0, 0);
+TannrGorerod.addAttr(new Attribute(EnhancedDmg, 80, 100));
+const Impaler = new Unique(WarSpear, "The Impaler", 0, 0);
+Impaler.addAttr(new Attribute(EnhancedDmg, 140, 180));
+const KelpieSnare = new Unique(Fuscina, "Kelpie Snare", 0, 0);
+KelpieSnare.addAttr(new Attribute(EnhancedDmg, 140, 180));
+const SoulfeastTine = new Unique(WarFork, "Soulfeast Tine", 0, 0);
+SoulfeastTine.addAttr(new Attribute(150, 190));
+SoulfeastTine.addAttr(new Attribute(Ar, 150, 250));
+const HoneSundan = new Unique(Yari, "Hone Sundan", 0, 0);
+HoneSundan.addAttr(new Attribute(EnhancedDmg, 160, 200));
+const SpireOfHonor = new Unique(Lance, "Spire of Honor", 0, 0);
+SpireOfHonor.addAttr(new Attribute(EnhancedDmg, 150, 200));
+const AriorcsNeedle = new Unique(HyperionSpear, "Ariorcs Needle", 0, 0);
+AriorcsNeedle.addAttr(new Attribute(EnhancedDmg, 180, 230));
+AriorcsNeedle.addAttr(new Attribute(AllSkills, 2, 4));
+const Viperfork = new Unique(Mancatcher, "Viperfork", 0, 0);
+Viperfork.addAttr(new Attribute(EnhancedDmg, 190, 240));
+Viperfork.addAttr(new Attribute(Ar, 200, 250));
+Viperfork.addAttr(new Attribute(PsnRes, 30, 50));
+const SteelPillar = new Unique(WarPike, "Steel Pillar", 0, 0);
+SteelPillar.addAttr(new Attribute(EnhancedDmg, 210, 260));
+SteelPillar.addAttr(new Attribute(EnhancedDef, 50, 80));
 
 const ShortStaff = new Weapon("Short Staff", "Stave", "Normal", 1, 5);
 const LongStaff = new Weapon("Long Staff", "Stave", "Normal", 2, 8);
@@ -1378,8 +1562,26 @@ const Stalagmite = new Weapon("Stalagmite", "Stave", "Elite", 75, 107);
 const ElderStaff = new Weapon("Elder Staff", "Stave", "Elite", 80, 93);
 const Shillelagh = new Weapon("Shillelagh", "Stave", "Elite", 65, 108);
 const ArchonStaff = new Weapon("Archon Staff", "Stave", "Elite", 83, 99);
-
-//missing normal, exceptional, elite staves
+const BaneAsh = new Unique(ShortStaff, "Bane Ash", 0, 0);
+BaneAsh.addAttr(new Attribute(EnhancedDmg, 50, 60));
+const SerpentLord = new Unique(LongStaff, "Serpent Lord", 0, 0);
+SerpentLord.addAttr(new Attribute(EnhancedDmg, 30, 40));
+const SpireOfLazarus = new Unique(GnarledStaff, "Spire of Lazarus", 0, 0);
+const Salamander = new Unique(BattleStaff, "The Salamander", 0, 0);
+const IronJangBong = new Unique(WarStaff, "The Iron Jang Bong", 0, 0);
+const Razorswitch = new Unique(JoStaff, "Razorswitch", 0, 0);
+const Ribcracker = new Unique(Quarterstaff, "Ribcracker", 0, 0);
+Ribcracker.addAttr(new Attribute(EnhancedDmg, 200, 300));
+const Warpspear = new Unique(GothicStaff, "Warpspear", 0, 0);
+const SkullCollector = new Unique(RuneStaff, "SkullCollector", 0, 0);
+const OndalsWisdom = new Unique(ElderStaff, "Ondal's Wisdom", 0, 0);
+OndalsWisdom.addAttr(new Attribute(AllSkills, 2, 4));
+OndalsWisdom.addAttr(new Attribute(Def, 450, 550));
+OndalsWisdom.addAttr(new Attribute(MageDmgReduce, 5, 8));
+const MangSongs = new Unique(ArchonStaff, "Mang Song's", 0, 0);
+MangSongs.addAttr(new Attribute(EnemyLightResist, 7, 15));
+MangSongs.addAttr(new Attribute(EnemyFireResist, 7, 15));
+MangSongs.addAttr(new Attribute(EnemyFireResist, 7, 15));
 
 const ShortSword = new Weapon("Short Sword", "Sword", "Normal", 2, 7);
 const Scimitar = new Weapon("Scimitar", "Sword", "Normal", 2, 6);
@@ -1423,8 +1625,94 @@ const BalrogBlade = new Weapon("Balrog Blade", "Sword", "Elite", 55, 118);
 const ChampionSword = new Weapon("Champion Sword", "Sword", "Elite", 71, 83);
 const ColossusSword = new Weapon("Colossus Sword", "Sword", "Elite", 61, 121);
 const ColossusBlade = new Weapon("Colossus Blade", "Sword", "Elite", 58, 115);
-
-//missing normal, exceptional, elite swords
+const RixotsKeen = new Unique(ShortSword, "Rixot's Keen", 0, 0);
+const BloodCrescent = new Unique(Scimitar, "Blood Crescent", 0, 0);
+BloodCrescent.addAttr(new Attribute(EnhancedDmg, 60, 80))
+const SkewerOfKrintiz = new Unique(Sabre, "Skewer of Krintiz", 0, 0);
+const Gleamscythe = new Unique(Falchion, "Gleamscythe", 0, 0);
+Gleamscythe.addAttr(new Attribute(EnhancedDmg, 60, 100));
+const GriswoldsEdge = new Unique(BroadSword, "Griswold's Edge", 0, 0);
+GriswoldsEdge.addAttr(new Attribute(EnhancedDmg, 80, 120));
+const Hellplague = new Unique(LongSword, "Hellplague", 0, 0);
+Hellplague.addAttr(new Attribute(EnhancedDmg, 70, 80));
+const CulwensPoint = new Unique(WarSword, "Culwen's Point", 0, 0);
+CulwensPoint.addAttr(new Attribute(EnhancedDmg, 70, 80));
+const Shadowfang = new Unique(TwoHandedSword, "Shadowfang", 0, 0);
+const Soulflay = new Unique(Claymore, "Soulflay", 0, 0);
+Soulflay.addAttr(new Attribute(EnhancedDmg, 70, 100));
+Soulflay.addAttr(new Attribute(ManaSteal, 4, 10));
+const KinemilsAwl = new Unique(GiantSword, "Kinemil's Awl", 0, 0);
+KinemilsAwl.addAttr(new Attribute(EnhancedDmg, 80, 100));
+KinemilsAwl.addAttr(new Attribute(Ar, 100, 150))
+const Blacktongue = new Unique(BastardSword, "Blacktongue", 0, 0);
+Blacktongue.addAttr(new Attribute(EnhancedDmg, 50, 60));
+const Ripsaw = new Unique(Flamberge, "Ripsaw", 0, 0);
+Ripsaw.addAttr(new Attribute(EnhancedDmg, 80, 100));
+const Patriarch = new Unique(GreatSword, "The Patriarch", 0, 0);
+Patriarch.addAttr(new Attribute(100, 120));
+const Bloodletter = new Unique(Gladius, "Bloodletter", 0, 0);
+Bloodletter.addAttr(new SkillAttribute(empty, "Whirlwind", 1, 3));
+Bloodletter.addAttr(new SkillAttribute(empty, "Sword Mastery", 2, 4));
+const ColdsteelEye = new Unique(Cutlass, "Coldsteel Eye", 0, 0);
+ColdsteelEye.addAttr(new Attribute(EnhancedDmg, 200, 250));
+const Hexfire = new Unique(Shamshir, "Hexfire", 0, 0);
+Hexfire.addAttr(new Attribute(EnhancedDmg, 140, 160));
+const BladeOfAliBaba = new Unique(Tulwar, "Blade of Ali Baba", 0, 0);
+BladeOfAliBaba.addAttr(new Attribute(EnhancedDmg, 60, 120));
+BladeOfAliBaba.addAttr(new Attribute(Dex, 5, 15));
+const GinthersRift = new Unique(DimensionialBlade, "Ginther's Rift", 0, 0);
+GinthersRift.addAttr(new Attribute(EnhancedDmg, 100, 150));
+GinthersRift.addAttr(new Attribute(MageDmgReduce, 7, 12));
+const Headstriker = new Unique(BattleSword, "Headstriker", 0, 0);
+const PlagueBearer = new Unique(RuneSword, "Plague Bearer", 0, 0);
+const Atlantean = new Unique(AncientSword, "The Atlantean", 0, 0);
+Atlantean.addAttr(new Attribute(EnhancedDmg, 200, 250));
+const CrainteVomir = new Unique(Espandon, "Crainte Vomir", 0, 0);
+CrainteVomir.addAttr(new Attribute(EnhancedDmg, 160, 200));
+const BingSzWang = new Unique(DacianFalx, "Bing Sz Wang", 0, 0);
+BingSzWang.addAttr(new Attribute(EnhancedDmg, 130, 160));
+const VileHusk = new Unique(TuskSword, "The Vile Husk", 0, 0);
+VileHusk.addAttr(new Attribute(150, 200));
+const Cloudcrack = new Unique(GothicSword, "Cloudcrack", 0, 0);
+Cloudcrack.addAttr(new Attribute(EnhancedDmg, 150, 200));
+const TodesfaelleFlamme = new Unique(Zweihander, "Todesfaelle Flamme", 0, 0);
+TodesfaelleFlamme.addAttr(new Attribute(EnhancedDmg, 120, 160));
+const Swordguard = new Unique(ExecutionerSword, "Swordguard", 0, 0);
+Swordguard.addAttr(new Attribute(EnhancedDmg, 170, 180));
+Swordguard.addAttr(new Attribute(AllRes, 10, 20));
+const DjinnSlayer = new Unique(Ataghan, "DjinnS layer", 0, 0);
+DjinnSlayer.addAttr(new Attribute(EnhancedDmg, 190, 240));
+DjinnSlayer.addAttr(new Attribute(DmgDemon, 100, 150));
+DjinnSlayer.addAttr(new Attribute(ManaSteal, 3, 6));
+DjinnSlayer.addAttr(new Attribute(LightAsbInt, 3, 7));
+DjinnSlayer.addAttr(new Attribute(ArDemon, 200, 300));
+DjinnSlayer.addAttr(new Attribute(OpenSockets, 1, 2));
+const Bloodmoon = new Unique(ElegantBlade, "Bloodmoon", 0, 0);
+Bloodmoon.addAttr(new Attribute(EnhancedDmg, 210, 260));
+Bloodmoon.addAttr(new Attribute(LifeSteal, 10, 15));
+Bloodmoon.addAttr(new Attribute(LifeOnKill, 7, 13));
+const Lightsabre = new Unique(PhaseBlade, "Lightsabre", 0, 0);
+Lightsabre.addAttr(new Attribute(EnhancedDmg, 150, 200));
+Lightsabre.addAttr(new Attribute(ManaSteal, 5, 7));
+const Azurewrath = new Unique(PhaseBlade, "Azurewrath", 0, 0);
+Azurewrath.addAttr(new Attribute(EnhancedDmg, 230, 270));
+Azurewrath.addAttr(new Attribute(AllAttributes, 5, 10));
+Azurewrath.addAttr(new SkillAttribute(empty, 'Sanctuary Aura', 10, 13));
+const Frostwind = new Unique(CrypticSword, "Frostwind", 0, 0);
+Frostwind.addAttr(new Attribute(EnhancedDmg, 180, 230));
+Frostwind.addAttr(new SkillAttribute(empty, "Artic Blast", 7, 14));
+Frostwind.addAttr(new Attribute(ColdAbsorbPerc, 7, 15));
+const Flamebellow = new Unique(BalrogBlade, "Flamebellow", 0, 0);
+Flamebellow.addAttr(new Attribute(EnhancedDmg, 170, 240));
+Flamebellow.addAttr(new SkillAttribute(empty, "Inferno", 12, 18));
+Flamebellow.addAttr(new Attribute(Str, 10, 20));
+Flamebellow.addAttr(new Attribute(Vit, 5, 10));
+Flamebellow.addAttr(new Attribute(FireAbsorbPerc, 20, 30));
+const Doombringer = new Unique(ChampionSword, "Doombringer", 0, 0);
+Doombringer.addAttr(new Attribute(EnhancedDmg, 180, 250));
+Doombringer.addAttr(new Attribute(LifeSteal, 5, 7));
+const Grandfather = new Unique(ColossusBlade, "The Grandfather", 0, 0);
+Grandfather.addAttr(new Attribute(EnhancedDmg, 150, 250));
 
 const ThrowingKnife = new Weapon("Throwing Knife", "Throwing", "Normal", 2, 3);
 const BalancedKnife = new Weapon("Balanced Knife", "Throwing", "Normal", 1, 8);
@@ -1438,8 +1726,20 @@ const FlyingKnife = new Weapon("Flying Knife", "Throwing", "Elite", 23, 54);
 const WingedKnife = new Weapon("Winged Knife", "Throwing", "Elite", 27, 35);
 const FlyingAxe = new Weapon("Flying Axe", "Throwing", "Elite", 17, 65);
 const WingedAxe = new Weapon("Winged Axe", "Throwing", "Elite", 11, 56);
-
-//missing normal, exceptional, elite throwing
+const Deathbit = new Unique(BattleDart, "Deathbit", 0, 0);
+Deathbit.addAttr(new Attribute(EnhancedDmg, 130, 180));
+Deathbit.addAttr(new Attribute(Ar, 200, 450));
+Deathbit.addAttr(new Attribute(LifeSteal, 7, 9));
+Deathbit.addAttr(new Attribute(ManaSteal, 4, 6));
+const Scalper = new Unique(Francisca, "The Scalper", 0, 0);
+Scalper.addAttr(new Attribute(EnhancedDmg, 150, 200));
+Scalper.addAttr(new Attribute(LifeSteal, 4, 6));
+const Warshrike = new Unique(WingedKnife, "Warshrike", 0, 0);
+Warshrike.addAttr(new Attribute(200, 250));
+const Gimmershred = new Unique(FlyingAxe, "Gimmershred", 0, 0);
+Gimmershred.addAttr(new Attribute(EnhancedDmg, 160, 210));
+const Lacerator = new Unique(WingedAxe, "Lacerator", 0, 0);
+Lacerator.addAttr(new Attribute(EnhancedDmg, 150, 210));
 
 const SmallCharm = new Base("Small Charm", "Charm", "Elite");
 const LargeCharm = new Base("Large Charm", "Charm", "Elite");
@@ -2104,4 +2404,3 @@ const BreathOfTheDying = new RuneWord("BreathOfTheDying", [
   new Attribute(EnhancedDmg, 350, 400),
   new Attribute(LifeSteal, 12, 15)
 ], []);
-
