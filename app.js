@@ -216,15 +216,15 @@ function resetAttrNickNames() {
         infoWindow.innerText = `Attribute names reset`
     }
 }
+let rowNumber = 0;
 function setAttrNickNames() {
     let attrHTMLRows = document.querySelectorAll('.attrColID');
     attrHTMLRows.forEach(element => element.innerHTML = ``);
-    exports.AttributeName.attrArray.forEach(element => {
-        let index = (exports.AttributeName.attrArray.indexOf(element));
+    exports.AttributeName.attrArray.forEach((element, index) => {
         const row = document.createElement("div");
         row.style.fontSize = "11px"
-        row.classList.add("row");
-
+        row.classList.add("row", "border", "border-secondary");
+        if (bgSecondaryIndexer++ % 4 == 0) { rowNumber++ };
         let nameCol = document.createElement("div");
         nameCol.classList.add("col-6");
         nameCol.innerText = `${element._attrName}`;
@@ -492,7 +492,6 @@ function setEditFields() {
         document.getElementById("displayEthCheckBoxID").hidden = false;
 
     }
-    let grabInScope = currentItem;
     //if unique
     if (chosenMagicClass == 'Unique' || chosenMagicClass == 'Misc') {
         const uniqListArr = exports.Unique.uniqueArr.map(element => {
@@ -500,8 +499,8 @@ function setEditFields() {
         })
         let uniqList = [...new Set(uniqListArr)];
         attributeArea.innerHTML = ``;
-        grabInScope = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
-        currentItem = grabInScope;
+        currentItem = (uniqList[0] === undefined) ? uniqList[1] : uniqList[0]
+        currentItem = currentItem;
     }
     if (currentItem._base._type == `Weapon` || currentItem._base._type == `Armor`) { ethSockRadRow.hidden = false; }
 
@@ -570,41 +569,35 @@ function setEditFields() {
     }
 
     //add MinMax header row
-    if (grabInScope._magicClass != "Base") {
-        //add custom attribute search bar//wwwwwwwwwwwwwwwwwwww
+    if (currentItem._magicClass != "Base") {
+        //add custom attribute search bar
         attributeArea.appendChild(createCustomNameRow('customAttributeAreaID', "Add custom attribute"));
-
         attributeArea.appendChild(createHeaderRow())
     }
 
     //add special row if no ed and no extra defense
-    let ethMult = (grabInScope._base._isEth) ? 1.5 : 1;
-    let filteredResult = grabInScope._arr.filter((attr) => {
+    let ethMult = (currentItem._base._isEth) ? 1.5 : 1;
+    let filteredResult = currentItem._arr.filter((attr) => {
         return attr._attributeName._attrName === "Enhanced Defense %";
     })
     let runewordHasEDBasic = false
-    if (filteredResult && grabInScope._magicClass == "Runeword") {
+    if (filteredResult && currentItem._magicClass == "Runeword") {
         runewordHasEDBasic = true
     }
-    //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-    if (grabInScope._base._ed == 0 && grabInScope._base._defActVal != undefined && !runewordHasEDBasic) {
-
+    if (currentItem._base._ed == 0 && currentItem._base._defActVal != undefined && !runewordHasEDBasic) {
         let newRow = generateRowForDefOnly(currentItem, ethMult)
         attributeArea.appendChild(newRow);
     }
     //insert superior row  & runeword search bar
-    if (grabInScope._magicClass == "Runeword") {
-
+    if (currentItem._magicClass == "Runeword") {
         if (filteredResult[0] instanceof exports.BasicAttribute) {
             let newRow = generateRowForDefOnly(currentItem, ethMult)
             attributeArea.appendChild(newRow);
-
         }
-        if (grabInScope._base._type === "Armor") {
+        if (currentItem._base._type === "Armor") {
             let returnedEditRow = returnSuperiorEditRow();
             attributeArea.appendChild(returnedEditRow);
         }
-        //}
     }
     //generate row for sockets only on bases
     if (currentItem._magicClass === "Base") {
@@ -612,7 +605,7 @@ function setEditFields() {
         attributeArea.appendChild(generateRowForSocketsOnly(currentItem));
     }
     //iterate over all skills in item array
-    grabInScope._arr.forEach(item => {
+    currentItem._arr.forEach(item => {
         let newRow = generateRowForField(item);
         attributeArea.appendChild(newRow)
     })
@@ -682,6 +675,8 @@ function returnSuperiorEditRow() {
     //add row for superior input
     let superiorEditRow = document.createElement("div");
     superiorEditRow.classList.add("row", "removableAttrRowClass")
+    if (bgSecondaryIndexer++ % 2 == 0) { superiorEditRow.classList.add("bg-secondary") }
+
     const formatCol = document.createElement("div");
     formatCol.classList.add("col-5")
     superiorEditRow.appendChild(formatCol);
@@ -864,11 +859,12 @@ function returnNameRow() {
 
     return nameRow;
 }
-function generateRowForPrice(itemToGen) {
 
+function generateRowForPrice(itemToGen) {
     //1.1 create row to hold price col
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
     formatCol.classList.add("col-5")
     thisRow.appendChild(formatCol);
@@ -909,10 +905,12 @@ function returnCol(divTag, colSize) {
 
     return returnColumn;
 }
+
 function generateRowForSocketsOnly(itemToGen) {
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
     formatCol.classList.add("col-5")
     thisRow.appendChild(formatCol);
@@ -941,9 +939,11 @@ function generateRowForSocketsOnly(itemToGen) {
     return thisRow;
 }
 function generateRowForDefOnly(itemToGen, ethMult) {
+
     let base = itemToGen._base;
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
+    if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
     formatCol.classList.add("col-5")
     thisRow.appendChild(formatCol);
@@ -984,13 +984,43 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
     thisRow.classList.add("row", "removableAttrRowClass");
-    //add col here to try to fix spacing
-    //if(bgSecondaryIndexer++ % 2 == 0){thisRow.classList.add("bg-secondary")}
+    if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
 
     //1.1F 0
-    const formatCol = document.createElement("div");
-    formatCol.classList.add("col-5")
-    thisRow.appendChild(formatCol);
+    //add col here to try to fix spacing
+    //add delete button. this only shows up for our added attributes
+    if (['Magic', 'Rare', 'Crafted'].indexOf(currentItem._magicClass) > -1) {
+        const formatCol = document.createElement("div");
+        formatCol.classList.add("col-3")
+        thisRow.appendChild(formatCol);
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("btn", "btn-sm", "text-light");
+        if (attr._attributeName._attrName === "Enhanced Defense %"){
+            console.log(currentItem)
+            currentItem._base._ed = 0;
+        }
+        let deleteBtnTextNode = document.createTextNode("[Delete]");
+        deleteBtn.addEventListener("click", () => {
+            let removeIndexer = currentItem._arr.indexOf(attr);
+            console.log(attr);
+            if (attr._attributeName._attrName === "Enhanced Defense %") {
+                console.log(currentItem._base._ed)
+                if (["Magic", "Rare", "Crafted", "Runeword"].indexOf(currentItem._magicClass) > -1) {
+                    currentItem._base._ed = 0;
+                }
+            }
+            currentItem._arr[removeIndexer]._attrFloorActVal = 0;
+            currentItem._arr.splice(removeIndexer, 1)
+            clearWindows();
+            setEditFields();
+        })
+        deleteBtn.appendChild(deleteBtnTextNode);
+        thisRow.appendChild(returnCol(deleteBtn, 2));
+    } else {
+        const formatCol = document.createElement("div");
+        formatCol.classList.add("col-5")
+        thisRow.appendChild(formatCol);
+    }
     if (attr._attributeName._attrNickName != ``) {
         const attrNickCol = document.createElement("div");
 
@@ -1122,7 +1152,8 @@ function updateCurrentItemInfoWindow(element) {
         elementOne._attributeName = g;
         if (elementOne._attributeName._attrName == "Enhanced Defense %") {
             if (elementOne._attrFloorActVal != 0) { itemHasEnhanDefAttr = true };
-            if (!(element instanceof exports.RuneWordItem)) {
+            //if (!(element instanceof exports.RuneWordItem)) 
+            if (!(["Magic", "Rare", "Crafted", "Charm", "Runeword", "Jewel"].indexOf(currentItem._magicClass))) {
                 element._base._ed = elementOne._attrFloorActVal;
                 if (element instanceof exports.Unique) { element._base._defActVal = element._base._maxDef };
             } else {
@@ -1138,7 +1169,6 @@ function updateCurrentItemInfoWindow(element) {
         elementOne
     })
     if (itemHasEnhanDefAttr == false && element._base._ed != 0) {
-        //hideIfSpecialCirc = false;
     }
     let tempString = ``;
     let eachString = ``;
@@ -1266,12 +1296,3 @@ function clearWindows() {
 checkNightDay();
 loadAttrNickNames();
 loadTradeList();
-
-document.getElementsByTagName("body")[0].addEventListener("click", (e) => {
-    //console.log(e.target)
-    //console.log('LINE BREAK --------------------------------')
-
-})
-
-//currentItem = exports.customRuneWord;
-//setEditFields();

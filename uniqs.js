@@ -1847,7 +1847,7 @@ const NokozanRelic = new Unique(Amulet, "Nokozan Relic", 0, 0);
 const EyeOfTheEtlich = new Unique(Amulet, "Eye of Etlich", 0, 0);
 EyeOfTheEtlich.addAttr(new Attribute(LightRad, 1, 5));
 EyeOfTheEtlich.addAttr(new Attribute(LifeSteal, 3, 7));
-EyeOfTheEtlich.addAttr(new TwoFieldAttribute(ColdDmg, 1, 2, 3, 5));
+EyeOfTheEtlich.addAttr(new Attribute(ColdDmg, 1, 2, 3, 5));
 EyeOfTheEtlich.addAttr(new Attribute(DefVsMisl, 10, 40));
 const MahimOakCurio = new Unique(Amulet, "Mahim-Oak Curio", 0, 0);
 const SaracensChance = new Unique(Amulet, "Saracen's Chance", 0, 0);
