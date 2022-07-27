@@ -17,6 +17,7 @@ let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
 let infoWindow = document.getElementById('lblCurrentItemID');
 let attributeArea = document.getElementById('attrAreaID');
 let body = document.getElementsByTagName('body');
+let oneTimeWipe = false;
 tradeThreadTextArea.style.resize = "none";
 
 function addNewItemCopy() {
@@ -158,11 +159,18 @@ tradeThreadTextArea.addEventListener("mouseup", e => {
         editFlag = false;
     }
 })
+
 document.getElementById('clearBtnID').addEventListener("click", () => {
-    tradeThreadTextArea.value = ``;
-    myTradeItems = [];
-    saveTradeList();
-    infoWindow.innerText = "Trade thread deleted.";
+    if (myTradeItems.length > 0) {
+        if (confirm("Delete trade list?")) {
+            tradeThreadTextArea.value = ``;
+            myTradeItems = [];
+            saveTradeList();
+            infoWindow.innerText = "Trade thread deleted.";
+        }
+    } else {
+        infoWindow.innerText = noItemsStr;
+    }
 })
 document.getElementById('clipboardBtnID').addEventListener("click", () => {
     if (myTradeItems.length > 0) {
@@ -995,7 +1003,7 @@ function generateRowForField(attr) {
         thisRow.appendChild(formatCol);
         const deleteBtn = document.createElement("button");
         deleteBtn.classList.add("btn", "btn-sm", "text-light");
-        if (attr._attributeName._attrName === "Enhanced Defense %"){
+        if (attr._attributeName._attrName === "Enhanced Defense %") {
             console.log(currentItem)
             currentItem._base._ed = 0;
         }
@@ -1272,12 +1280,17 @@ function setNightMode() {
     const jsonArr = JSON.stringify(isDay);
     localStorage.setItem('dayMode', jsonArr);
 }
-document.getElementById('clearAllBtnID').addEventListener("click", clearLocalData);
+document.getElementById('clearAllBtnID').addEventListener("click", () => {
+    if (confirm("Delete all saved settings?")) {
+        clearLocalData()
+    }
+});
+
 function clearLocalData() {
     let removeKeys = ["attrArray", "tradeArray", "dayMode"];
     removeKeys.forEach(k => localStorage.removeItem(k));
-    document.getElementById('clearAllBtnID');
-    clearWindows();
+    resetAttrNickNames();
+    
     tradeThreadTextArea.value = ``
     infoWindow.innerText = `All page settings and saved trades were deleted`
 }
@@ -1290,7 +1303,14 @@ function clearWindows() {
     document.getElementById("displayEthCheckBoxID").hidden = true;
     let tryMe = document.getElementById("addItemBtnID")
     if (tryMe) { tryMe.remove() }
+}
 
+let wipeSetting = localStorage.getItem("checkSave");
+if (wipeSetting === null) {
+    clearLocalData();
+    let wipeSettingJSON = JSON.stringify(wipeSetting);
+    localStorage.setItem('checkSave', wipeSettingJSON);
+    infoWindow.innerText = `Tab/enter will select the first item or click on any of them. Most buttons have mouse over tool tips. Attributes with values of 0 are hidden or removed`;
 }
 
 checkNightDay();
