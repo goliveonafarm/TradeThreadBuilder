@@ -462,7 +462,7 @@ function setChosenItem(itemName) {
 function displayAddItemBtn() {
     //add item button
     let addItemBtn = document.createElement("button");
-    addItemBtn.classList.add("btn", "btn-sm", "btn-primary", "text-light", "bg-gradient", "removableAttrRowClass", "w-100");
+    addItemBtn.classList.add("btn", "btn-sm", "btn-primary", "text-light", "bg-gradient", "removableAttrRowClass", "w-100", "text-nowrap");
     let addItemBtnTextNode = document.createTextNode("Add item");
     addItemBtn.appendChild(addItemBtnTextNode);
     let addItemBtnImg = document.createElement("img");
@@ -484,6 +484,7 @@ function displayAddItemBtn() {
     })
 
     let modifyCol = returnCol(addItemBtn, 2);
+    modifyCol.classList.add("text-end")
     modifyCol.id = "addItemBtnID";
 
     document.getElementById("infoWindowRowID").appendChild(modifyCol);
@@ -680,7 +681,7 @@ function returnSuperiorEditRow() {
     if (bgSecondaryIndexer++ % 2 == 0) { superiorEditRow.classList.add("bg-secondary") }
 
     const formatCol = document.createElement("div");
-    formatCol.classList.add("col-5")
+    formatCol.classList.add("col-5","d-none","d-sm-block")
     superiorEditRow.appendChild(formatCol);
 
     let supCol = document.createElement("div");
@@ -759,13 +760,13 @@ function createHeaderRow() {
     headerRow.appendChild(emptyHeaderLeaderCol)
 
     let minHeaderCol = document.createElement("div");
-    minHeaderCol.classList.add("col-1");
+    minHeaderCol.classList.add("col-1", "border-bottom", "border-end");
     let minHeaderColTextNode = document.createTextNode("Min")
     minHeaderCol.appendChild(minHeaderColTextNode);
     headerRow.appendChild(minHeaderCol);
 
     let maxHeaderCol = document.createElement("div");
-    maxHeaderCol.classList.add("col-1");
+    maxHeaderCol.classList.add("col-1","border-bottom");
     let maxHeaderColTextNode = document.createTextNode("Max");
     maxHeaderCol.appendChild(maxHeaderColTextNode);
     headerRow.appendChild(maxHeaderCol);
@@ -868,7 +869,7 @@ function generateRowForPrice(itemToGen) {
     thisRow.classList.add("row", "removableAttrRowClass");
     if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
-    formatCol.classList.add("col-5")
+    formatCol.classList.add("col-5","d-none","d-sm-block")
     thisRow.appendChild(formatCol);
     //1.2 create header col
     const priceHeaderCol = document.createElement("div");
@@ -914,7 +915,7 @@ function generateRowForSocketsOnly(itemToGen) {
     thisRow.classList.add("row", "removableAttrRowClass");
     if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
-    formatCol.classList.add("col-5")
+    formatCol.classList.add("col-5","d-none","d-sm-block")
     thisRow.appendChild(formatCol);
 
     const attrNickCol = document.createElement("div");
@@ -947,7 +948,7 @@ function generateRowForDefOnly(itemToGen, ethMult) {
     thisRow.classList.add("row", "removableAttrRowClass");
     if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
     const formatCol = document.createElement("div");
-    formatCol.classList.add("col-5")
+    formatCol.classList.add("col-5","d-none","d-sm-block")
     thisRow.appendChild(formatCol);
     //1.1 f
     const attrNickCol = document.createElement("div");
@@ -985,16 +986,16 @@ function generateRowForDefOnly(itemToGen, ethMult) {
 
 function generateRowForField(attr) {
     const thisRow = document.createElement("div");
-    thisRow.classList.add("row", "removableAttrRowClass");
+    thisRow.classList.add("row", "removableAttrRowClass","justify-content-end");
     if (bgSecondaryIndexer++ % 2 == 0) { thisRow.classList.add("bg-secondary") }
 
     //1.1F 0
     //add col here to try to fix spacing
     //add delete button. this only shows up for our added attributes
     if (['Magic', 'Rare', 'Crafted'].indexOf(currentItem._magicClass) > -1) {
-        const formatCol = document.createElement("div");
-        formatCol.classList.add("col-3")
-        thisRow.appendChild(formatCol);
+        //const formatCol = document.createElement("div");
+        //formatCol.classList.add("col-sm-3")
+        //thisRow.appendChild(formatCol);
         const deleteBtn = document.createElement("button");
         deleteBtn.classList.add("btn", "btn-sm", "text-light");
         if (attr._attributeName._attrName === "Enhanced Defense %") {
@@ -1016,12 +1017,15 @@ function generateRowForField(attr) {
             clearWindows();
             setEditFields();
         })
+        
         deleteBtn.appendChild(deleteBtnTextNode);
         thisRow.appendChild(returnCol(deleteBtn, 2));
     } else {
-        const formatCol = document.createElement("div");
-        formatCol.classList.add("col-5")
-        thisRow.appendChild(formatCol);
+        //const formatCol = document.createElement("div");
+        //formatCol.classList.add("col-5","d-none","d-md-block")
+        //formatCol.classList.add("d-none")
+
+        //thisRow.appendChild(formatCol);
     }
     if (attr._attributeName._attrNickName != ``) {
         const attrNickCol = document.createElement("div");
@@ -1312,7 +1316,11 @@ loadAttrNickNames();
 loadTradeList();
 
 document.getElementsByTagName("body")[0].addEventListener("click", e => {
-    if (e.altKey) return console.log(currentItem);
-    if (e.shiftKey) return console.log(myTradeItems[0]);
+    //if (e.altKey) return console.log(currentItem);
+    //if (e.shiftKey) return console.log(myTradeItems[0]);
     //console.log(e)
+    if(e.altKey){
+        console.log(exports.AttributeName.attrArray)
+    }
+    console.log(e);
 })
