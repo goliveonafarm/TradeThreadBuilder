@@ -519,20 +519,16 @@ function setEditFields() {
     if (currentItem._magicClass === "Base" || currentItem._magicClass === "Jewel") {
         //add magicClass buttons with listeners
         let btnClassRow = document.createElement("div");
-        btnClassRow.classList.add("row", "removableAttrRowClass");
+        btnClassRow.classList.add("row", "removableAttrRowClass", "justify-content-end");
 
-        let btnGroup = document.createElement("div");
-        //btnGroup.classList.add("btn-group")
-        //btnGroup.setAttribute("role", "group");
-
+        console.log(currentItem)
         btnClassRow.appendChild(generateRadioButton('Magic'));
         btnClassRow.appendChild(generateRadioButton('Rare'));
         btnClassRow.appendChild(generateRadioButton('Crafted'));
         if (!(currentItem._magicClass === "Jewel")) {
-            btnGroup.appendChild(generateRadioButton('Runeword'));
+            btnClassRow.appendChild(generateRadioButton('Runeword'));
         }
-        //btnClassRow.classList.add("pb-5")
-        //btnClassRow.appendChild(btnGroup);
+
         attributeArea.appendChild(btnClassRow)
 
         //insert search attribute row
@@ -740,7 +736,7 @@ function returnSuperiorEditRow() {
 
 function generateRadioButton(lblText) {
     let colDiv = document.createElement("div");
-    colDiv.classList.add("col-12","col-sm-6", "col-md-3", "col-lg-2")
+    colDiv.classList.add("col-12", "col-sm-6", "col-md-3", "col-lg-2", "pb-1")
     let genBtn = document.createElement("button");
     genBtn.classList.add("btn", "btn-sm", "bg-gradient", "btn-primary", "text-light", "w-100");
     genBtn.type = "button"
@@ -1288,7 +1284,7 @@ function clearLocalData() {
     let removeKeys = ["attrArray", "tradeArray", "dayMode"];
     removeKeys.forEach(k => localStorage.removeItem(k));
     resetAttrNickNames();
-    
+
     tradeThreadTextArea.value = ``
     infoWindow.innerText = `All page settings and saved trades were deleted`
 }
@@ -1316,7 +1312,7 @@ loadAttrNickNames();
 loadTradeList();
 
 document.getElementsByTagName("body")[0].addEventListener("click", e => {
-    if(e.altKey) return console.log(currentItem);
-    if(e.shiftKey) return console.log(myTradeItems[0]);
+    if (e.altKey) return console.log(currentItem);
+    if (e.shiftKey) return console.log(myTradeItems[0]);
     //console.log(e)
 })
