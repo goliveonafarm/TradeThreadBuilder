@@ -17,7 +17,6 @@ let tradeThreadTextArea = document.getElementById('tradeThreadTextAreaID');
 let infoWindow = document.getElementById('lblCurrentItemID');
 let attributeArea = document.getElementById('attrAreaID');
 let body = document.getElementsByTagName('body');
-let oneTimeWipe = false;
 tradeThreadTextArea.style.resize = "none";
 
 function addNewItemCopy() {
@@ -26,7 +25,6 @@ function addNewItemCopy() {
     let pushedBase = null;
     if (copyBase._type == 'Armor') {
         pushedBase = new exports.Armor(copyBase._name, copyBase._itemClass, copyBase._tier, copyBase._minDef, copyBase._maxDef);
-        //pushedBase._base._defActVal = copyBase._defActVal;
         pushedBase._defActVal = copyBase._defActVal;
         pushedBase._ed = copyBase._ed;
         pushedBase._maxDef = copyBase._maxDef;
@@ -1161,7 +1159,7 @@ function updateCurrentItemInfoWindow(element) {
         if (elementOne._attributeName._attrName == "Enhanced Defense %") {
             if (elementOne._attrFloorActVal != 0) { itemHasEnhanDefAttr = true };
             //if (!(element instanceof exports.RuneWordItem)) 
-            if (!(["Magic", "Rare", "Crafted", "Charm", "Runeword", "Jewel"].indexOf(currentItem._magicClass))) {
+            if (!(["Magic", "Rare", "Crafted", "Charm", "Runeword", "Jewel"].indexOf(element._magicClass))) {
                 element._base._ed = elementOne._attrFloorActVal;
                 if (element instanceof exports.Unique) { element._base._defActVal = element._base._maxDef };
             } else {
@@ -1316,3 +1314,9 @@ if (wipeSetting === null) {
 checkNightDay();
 loadAttrNickNames();
 loadTradeList();
+
+document.getElementsByTagName("body")[0].addEventListener("click", e => {
+    if(e.altKey) return console.log(currentItem);
+    if(e.shiftKey) return console.log(myTradeItems[0]);
+    //console.log(e)
+})
