@@ -760,13 +760,13 @@ function createHeaderRow() {
     headerRow.appendChild(emptyHeaderLeaderCol)
 
     let minHeaderCol = document.createElement("div");
-    minHeaderCol.classList.add("col-1", "border-bottom", "border-end");
+    minHeaderCol.classList.add("col-1");
     let minHeaderColTextNode = document.createTextNode("Min")
     minHeaderCol.appendChild(minHeaderColTextNode);
     headerRow.appendChild(minHeaderCol);
 
     let maxHeaderCol = document.createElement("div");
-    maxHeaderCol.classList.add("col-1","border-bottom");
+    maxHeaderCol.classList.add("col-1");
     let maxHeaderColTextNode = document.createTextNode("Max");
     maxHeaderCol.appendChild(maxHeaderColTextNode);
     headerRow.appendChild(maxHeaderCol);
@@ -993,9 +993,9 @@ function generateRowForField(attr) {
     //add col here to try to fix spacing
     //add delete button. this only shows up for our added attributes
     if (['Magic', 'Rare', 'Crafted'].indexOf(currentItem._magicClass) > -1) {
-        //const formatCol = document.createElement("div");
-        //formatCol.classList.add("col-sm-3")
-        //thisRow.appendChild(formatCol);
+        const formatCol = document.createElement("div");
+        formatCol.classList.add("col-5","d-none","d-sm-block")
+        thisRow.appendChild(formatCol);
         const deleteBtn = document.createElement("button");
         deleteBtn.classList.add("btn", "btn-sm", "text-light");
         if (attr._attributeName._attrName === "Enhanced Defense %") {
@@ -1017,15 +1017,19 @@ function generateRowForField(attr) {
             clearWindows();
             setEditFields();
         })
-        
+        deleteBtn.addEventListener('mouseover', ()=>{
+            console.log('hello there')
+            deleteBtn.classList.add("bg-danger")
+        })
+        deleteBtn.addEventListener('mouseout', ()=> {
+            deleteBtn.classList.remove("bg-danger")
+          });
         deleteBtn.appendChild(deleteBtnTextNode);
         thisRow.appendChild(returnCol(deleteBtn, 2));
     } else {
-        //const formatCol = document.createElement("div");
-        //formatCol.classList.add("col-5","d-none","d-md-block")
-        //formatCol.classList.add("d-none")
-
-        //thisRow.appendChild(formatCol);
+        const formatCol = document.createElement("div");
+        formatCol.classList.add("col-5","d-none","d-sm-block")
+        thisRow.appendChild(formatCol);
     }
     if (attr._attributeName._attrNickName != ``) {
         const attrNickCol = document.createElement("div");
