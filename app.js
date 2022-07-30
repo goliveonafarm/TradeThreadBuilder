@@ -71,9 +71,9 @@ function addNewItemCopy() {
 
     pushedItem._price = copyItem._price;
     copyItem._price = 0;
-    myTradeItems.push(pushedItem);
+    myTradeItems.unshift(pushedItem);
     saveTradeList();
-    sortTradeList();
+    //sortTradeList();
 }
 
 document.getElementById('categBtnID').addEventListener("click", () => {
@@ -474,11 +474,11 @@ function displayAddItemBtn() {
         try {
             document.getElementById("ethCheckBoxID").checked = false;
             addNewItemCopy();
-            sortTradeList();
             clearWindows();
+            updateTradeList();
             infoWindow.innerText = `Added ${currentItem._name} to trade list`;
             currentItem = null;
-        } catch (error) {
+        } catch {
             infoWindow.innerText = `You do not currently have an item to add`;
         }
     })
@@ -522,17 +522,17 @@ function setEditFields() {
         btnClassRow.classList.add("row", "removableAttrRowClass");
 
         let btnGroup = document.createElement("div");
-        btnGroup.classList.add("btn-group")
-        btnGroup.setAttribute("role", "group");
+        //btnGroup.classList.add("btn-group")
+        //btnGroup.setAttribute("role", "group");
 
-        btnGroup.appendChild(generateRadioButton('Magic'));
-        btnGroup.appendChild(generateRadioButton('Rare'));
-        btnGroup.appendChild(generateRadioButton('Crafted'));
+        btnClassRow.appendChild(generateRadioButton('Magic'));
+        btnClassRow.appendChild(generateRadioButton('Rare'));
+        btnClassRow.appendChild(generateRadioButton('Crafted'));
         if (!(currentItem._magicClass === "Jewel")) {
             btnGroup.appendChild(generateRadioButton('Runeword'));
         }
-        btnClassRow.classList.add("pb-5")
-        btnClassRow.appendChild(btnGroup);
+        //btnClassRow.classList.add("pb-5")
+        //btnClassRow.appendChild(btnGroup);
         attributeArea.appendChild(btnClassRow)
 
         //insert search attribute row
@@ -740,9 +740,9 @@ function returnSuperiorEditRow() {
 
 function generateRadioButton(lblText) {
     let colDiv = document.createElement("div");
-    colDiv.classList.add("col-2")
+    colDiv.classList.add("col-12","col-sm-6", "col-md-3", "col-lg-2")
     let genBtn = document.createElement("button");
-    genBtn.classList.add("btn", "btn-sm", "bg-gradient", "btn-primary", "text-light", "w-75");
+    genBtn.classList.add("btn", "btn-sm", "bg-gradient", "btn-primary", "text-light", "w-100");
     genBtn.type = "button"
     let genBtnTextNode = document.createTextNode(`${lblText}`);
     genBtn.appendChild(genBtnTextNode);

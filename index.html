@@ -19,8 +19,8 @@
 <body class="bg-dark text-light bg-gradient" style="font-family: Roboto;">
     <div class="container-xl pt-1 pb-1">
         <div class="row p-1">
-            <div class="col-11">
-                <button class="btn btn-sm btn-primary bg-gradient text-nowrap" type="button" data-bs-toggle="collapse"
+            <div class="col-sm-6 col-md-3 col-lg-2">
+                <button class="btn btn-sm btn-primary bg-gradient text-nowrap w-100" type="button" data-bs-toggle="collapse"
                     data-bs-target="#attrCollapseID" aria-expanded="false" aria-controls="attrCollapseID"
                     data-toggle="tooltip"
                     title="You can customize the attribute names at any time, but only new items will display changes. If you have an error, reset values, save, then load.">Attribute
@@ -35,12 +35,12 @@
             </div>
         </div>
         <div class="row p-1 collapse text-end position-absolute bg-dark text-light" id="attrCollapseID">
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
-            <div class="col-3 attrColID"> </div>
+            <div class="col-12 col-md-6 col-lg-3 attrColID"> </div>
+            <div class="col-12 col-md-6 col-lg-3 attrColID"> </div>
+            <div class="col-12 col-md-6 col-lg-3 attrColID"> </div>
+            <div class="col-12 col-md-6 col-lg-3 attrColID"> </div>
             <div class="row">
-                <div class="col-2">
+                <div class="col-2 p-">
                     <button type="button" class="btn btn-sm btn-warning bg-gradient btn-outline-dark" id="btnResetAttrNickID" data-toggle="tooltip"
                         title="Reset attribute names and update your trade list">! Reset
                         values</button>
@@ -81,26 +81,26 @@
             </div>
         </div>
         <div class="row p-1">
-            <div class="col-2">
+            <div class="col-sm-6 col-md-3 col-lg-2">
                 <button class="w-100 float-start bg-gradient btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false"
                     id="clipboardBtnID" data-toggle="tooltip"
                     title="Copies your entire trade list. You can paste directly it into your trading thread">Copy
                     <img src="FontIcons/clipboardIcon.svg">
                 </button>
             </div>
-            <div class="col-2">
+            <div class="col-sm-6 col-md-3 col-lg-2">
                 <button class="w-100 float-start bg-gradient btn btn-sm btn-primary text-nowrap" type="button" aria-expanded="false" id="categBtnID"
-                    title="This will add category names for your trade list">Sort
+                    title="This will add category names for your trade list">Categorize
                     <img src="FontIcons/sortDownIcon.svg">
                 </button>
             </div>
-            <div class="col-2">
+            <div class="col-sm-6 col-md-3 col-lg-2">
                 <button class="w-100 float-end btn btn-sm btn-info text-nowrap bg-gradient" type="button" aria-expanded="false" id="editBtnID"
                     data-toggle="tooltip" title="DELETES YOUR OLD ITEM then you MUST add it back!">Edit
                     <img src="">
                 </button>
             </div>
-            <div class="col-2">
+            <div class="col-sm-6 col-md-3 col-lg-2">
                 <button class="w-100 float-end bg-gradient btn btn-sm btn-warning text-nowrap" type="button" aria-expanded="false" id="removeBtnID"
                     data-toggle="tooltip" title="Click this button then an item on your trade list to remove it">Remove
                     <img src="FontIcons/earmarkMinusIcon.svg">
